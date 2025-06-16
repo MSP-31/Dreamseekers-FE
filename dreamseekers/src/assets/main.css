@@ -1,0 +1,57 @@
+@import url("https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css");
+
+@import "tailwindcss";
+@import "./base.css";
+
+@theme {
+    --font-body: "NanumSquare", sans-serif;
+    --breakpoint-nav: 1140px;
+
+    /* 사용자 정의 색상 변수 */
+    --dream-main: #007bff;
+    --dream-sub: #6c757d;
+    --dream-text: #333333;
+    --dream-blue: #3490dc;
+    --dream-gray: #f7fafc;
+    --dream-gray-dark: #a0aec0;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-nanum-square, "NanumSquare", sans-serif); /* var(--font-body) -> var(--font-nanum-square) */
+    }
+
+    /* 기본적으로 데스크톱 메뉴는 숨깁니다 (모바일 우선). */
+    .desktop-menu {
+        display: none !important;
+        list-style: none; /* 리스트 점 제거 */
+        padding: 0; /* 기본 패딩 제거 */
+        margin: 0; /* 기본 마진 제거 */
+    }
+
+    /* ❗️ @container 대신 @media 로 다시 변경합니다 ❗️ */
+    /* nav-breakpoint (1140px) 이상일 때 적용될 스타일 */
+    @media (min-width: 1140px) {
+        /* 여기를 var(--breakpoint-nav)로 사용할 수도 있지만, 정확한 픽셀 값을 사용하면 더 명확합니다. */
+        .desktop-menu {
+            display: flex !important; /* 1140px 이상에서 데스크톱 메뉴를 보이게 하고 가로로 정렬 */
+            gap: 32px; /* Tailwind의 space-x-8과 동일한 효과를 위해 flex 컨테이너에 gap 추가 */
+        }
+
+        /* 모바일 메뉴를 숨깁니다. */
+        .mobile-menu {
+            /* HTML에 mobile-menu 클래스가 있다면 */
+            display: none !important;
+        }
+    }
+
+    /* 1140px 미만일 때 (모바일 기본) 적용될 스타일 */
+    /* .desktop-menu는 위에서 display: none;으로 기본 설정되어 있으므로, 굳이 여기서 다시 설정할 필요는 없습니다. */
+    /* .mobile-menu는 기본적으로 display: block; 등을 설정할 수 있습니다. */
+    @media (max-width: 1139px) {
+        /* 만약 mobile-menu를 보여주려면 여기에 추가 */
+        /* .mobile-menu {
+            display: block !important;
+        } */
+    }
+}
