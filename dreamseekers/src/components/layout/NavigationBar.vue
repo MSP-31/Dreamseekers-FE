@@ -2,24 +2,29 @@
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 h-20 flex justify-between items-center">
             <!-- 로고 -->
-            <a href="/" class="flex items-center">
+            <router-link to="/" class="flex items-center">
                 <img class="h-10 w-auto mr-2" src="/img/logo.svg" alt="꿈을 찾는 사람들 교육원" />
                 <span class="text-xl font-bold">꿈을 찾는 사람들 교육원</span>
-            </a>
+            </router-link>
 
             <!-- 데스크탑 메뉴 -->
             <ul class="desktop-menu space-x-16">
                 <li v-for="item in menuItems" :key="item.title" class="relative group">
-                    <a :href="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }}</a>
+                    <router-link :to="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }} </router-link>
                     <div
                         v-if="item.submenu && item.submenu.length > 0"
                         class="absolute left-0 mt-0 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-20"
                     >
-                        <a v-for="subItem in item.submenu" :key="subItem.title" :href="subItem.link" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">
+                        <router-link
+                            v-for="subItem in item.submenu"
+                            :key="subItem.title"
+                            :to="subItem.link"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]"
+                        >
                             {{ subItem.title }}
-                        </a>
+                        </router-link>
                     </div>
-                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-dream-main transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--dream-main)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                 </li>
             </ul>
 
@@ -93,21 +98,21 @@ const menuItems = ref([
     },
     {
         title: "강의 문의",
-        link: props.isStaff ? "/lecture/inquiry/list" : "/lecture/inquiry",
+        link: props.isStaff ? "/inquiry" : "/inquiry",
         submenu: [
-            ...(props.isStaff ? [] : [{title: "강의 상담 문의", link: "/lecture/inquiry"}]),
-            {title: props.isStaff ? "문의 내역" : "내 문의 내역", link: "/lecture/inquiry/list"},
+            ...(props.isStaff ? [] : [{title: "강의 상담 문의", link: "/inquiry/write"}]),
+            {title: props.isStaff ? "문의 내역" : "내 문의 내역", link: "/inquiry"},
             {title: "강의 일정", link: "/lecture/calender"},
         ],
     },
     {
         title: "소통 마당",
-        link: "/board/notice/",
+        link: "/notice/",
         submenu: [
-            {title: "공지사항", link: "/board/notice/"},
-            {title: "자료실", link: "/board/archive/"},
-            {title: "방명록", link: "/board/guest/"},
-            {title: "활동 소식", link: "/board/news/"},
+            {title: "공지사항", link: "/notice/"},
+            {title: "자료실", link: "/archive/"},
+            {title: "방명록", link: "/guest/"},
+            {title: "활동 소식", link: "/news/"},
         ],
     },
 ]);
