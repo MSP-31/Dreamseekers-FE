@@ -4,18 +4,18 @@
             <!-- 로고 -->
             <a href="/" class="flex items-center">
                 <img class="h-10 w-auto mr-2" src="/img/logo.svg" alt="꿈을 찾는 사람들 교육원" />
-                <span class="text-xl font-bold text-dream-main">꿈을 찾는 사람들 교육원</span>
+                <span class="text-xl font-bold">꿈을 찾는 사람들 교육원</span>
             </a>
 
             <!-- 데스크탑 메뉴 -->
-            <ul class="desktop-menu">
+            <ul class="desktop-menu space-x-16">
                 <li v-for="item in menuItems" :key="item.title" class="relative group">
-                    <a :href="item.link" class="text-gray-700 hover:text-dream-main py-2 block">{{ item.title }}</a>
+                    <a :href="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }}</a>
                     <div
                         v-if="item.submenu && item.submenu.length > 0"
                         class="absolute left-0 mt-0 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-20"
                     >
-                        <a v-for="subItem in item.submenu" :key="subItem.title" :href="subItem.link" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-dream-main">
+                        <a v-for="subItem in item.submenu" :key="subItem.title" :href="subItem.link" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">
                             {{ subItem.title }}
                         </a>
                     </div>
@@ -25,7 +25,7 @@
 
             <!-- 모바일 메뉴 토글 버튼 -->
             <div class="nav-breakpoint:hidden">
-                <button @click="toggleMobileMenu" class="text-gray-600 hover:text-dream-main focus:outline-none">
+                <button @click="toggleMobileMenu" class="text-gray-600 hover:text-[var(--dream-main)] focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
@@ -34,7 +34,7 @@
         </div>
 
         <!-- 모바일 사이드바 (MobileSidebar.vue 컴포넌트로 분리 가능) -->
-        <div v-if="isMobileMenuOpen" class="fixed inset-0 bg-black bg-opacity-50 z-40 nav-breakpoint:hidden" @click="closeMobileMenu"></div>
+        <div v-if="isMobileMenuOpen" class="fixed inset-0 bg-black/50 z-40 nav-breakpoint:hidden" @click="closeMobileMenu"></div>
         <div
             :class="[
                 'fixed top-0 right-0 h-full bg-white w-64 shadow-lg transform transition-transform duration-300 ease-in-out z-50 nav-breakpoint:hidden',
@@ -42,17 +42,17 @@
             ]"
         >
             <div class="p-4">
-                <button @click="closeMobileMenu" class="float-right text-gray-600 hover:text-dream-main">
+                <button @click="closeMobileMenu" class="float-right text-gray-600 hover:text-[var(--dream-main)]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
                 <ul class="mt-8 space-y-2">
                     <li v-for="item in menuItems" :key="item.title + '-mobile'">
-                        <a :href="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-dream-main">{{ item.title }}</a>
+                        <a :href="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">{{ item.title }}</a>
                         <ul v-if="item.submenu && item.submenu.length > 0" class="ml-4 mt-1 space-y-1">
                             <li v-for="subItem in item.submenu" :key="subItem.title + '-mobile-sub'">
-                                <a :href="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-dream-main">{{ subItem.title }}</a>
+                                <a :href="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-[var(--dream-main)]">{{ subItem.title }}</a>
                             </li>
                         </ul>
                     </li>
@@ -89,7 +89,7 @@ const menuItems = ref([
     {
         title: "주요 강의",
         link: "/lecture/list",
-        submenu: [{title: "주요 강의", link: "/lecture/list"}],
+        // submenu: [{title: "주요 강의", link: "/lecture/list"}],
     },
     {
         title: "강의 문의",

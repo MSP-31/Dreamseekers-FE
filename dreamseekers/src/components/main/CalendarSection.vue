@@ -4,9 +4,9 @@
             <h1 class="text-3xl font-bold text-dream-text text-center mb-8">강의 일정</h1>
             <div class="sec-cal bg-white p-6 rounded-lg shadow-lg">
                 <div class="cal-nav flex justify-between items-center mb-6">
-                    <button @click="prevMonth" class="nav-btn text-dream-blue hover:text-dream-main font-semibold py-2 px-4 rounded">&lt; 이전 달</button>
+                    <button @click="prevMonth" class="nav-btn text-dream-blue hover:text-[var(--dream-main)] font-semibold py-2 px-4 rounded">&lt; 이전 달</button>
                     <div class="year-month text-xl font-bold text-dream-text">{{ currentYear }}년 {{ currentMonth + 1 }}월</div>
-                    <button @click="nextMonth" class="nav-btn text-dream-blue hover:text-dream-main font-semibold py-2 px-4 rounded">다음 달 &gt;</button>
+                    <button @click="nextMonth" class="nav-btn text-dream-blue hover:text-[var(--dream-main)] font-semibold py-2 px-4 rounded">다음 달 &gt;</button>
                 </div>
                 <div class="cal-wrap">
                     <div class="days grid grid-cols-7 text-center font-semibold text-gray-600 mb-2">

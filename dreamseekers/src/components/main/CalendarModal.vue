@@ -1,5 +1,5 @@
 <template>
-    <div v-if="selectedDateProp" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
+    <div v-if="selectedDateProp" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
         <div class="modal-content bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
             <div class="modal-title flex justify-between items-center border-b pb-3 mb-4">
                 <div>
@@ -14,7 +14,7 @@
             <div class="modal-detail">
                 <ul v-if="schedulesProp.length > 0" class="detail-list-area space-y-3 max-h-60 overflow-y-auto">
                     <li v-for="(schedule, index) in schedulesProp" :key="index" class="p-3 bg-dream-gray rounded-md">
-                        <p class="font-semibold text-dream-main">{{ schedule.title }} ({{ schedule.time }})</p>
+                        <p class="font-semibold text-[var(--dream-main)]">{{ schedule.title }} ({{ schedule.time }})</p>
                         <p class="text-sm text-gray-700">{{ schedule.contents }}</p>
                     </li>
                 </ul>
