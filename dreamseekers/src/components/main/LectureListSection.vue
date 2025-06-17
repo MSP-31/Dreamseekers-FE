@@ -12,7 +12,7 @@
                     <a :href="`/lecture/list/detail/${lecture.pk}`" class="block">
                         <img :src="lecture.image.url" :alt="lecture.title" class="w-full h-48 object-cover" />
                         <div class="p-6">
-                            <h2 class="lecture-title text-xl font-semibold text-dream-main mb-2">{{ lecture.title }}</h2>
+                            <h2 class="lecture-title text-xl font-semibold mb-2">{{ lecture.title }}</h2>
                             <!-- Django의 |linebreaksbr 필터 대신 CSS로 처리하거나, v-html을 주의해서 사용해야 합니다. -->
                             <!-- 여기서는 간단히 white-space: pre-line으로 처리할 수 있도록 가정합니다. -->
                             <p class="lecture-text text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ lecture.contents }}</p>

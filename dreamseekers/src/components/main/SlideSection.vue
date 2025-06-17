@@ -3,18 +3,18 @@
         <!-- 슬라이드 높이 고정 예시 -->
         <div v-for="(slide, index) in slides" :key="slide.id" :class="['absolute inset-0 transition-opacity duration-1000 ease-in-out', currentIndex === index ? 'opacity-100' : 'opacity-0']">
             <img :src="slide.image.url" :alt="slide.title" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-center text-white p-8">
+            <div class="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-white p-8">
                 <h1 class="text-4xl font-bold mb-4 text-center">{{ slide.title }}</h1>
                 <p class="text-lg text-center">{{ slide.contents }}</p>
             </div>
         </div>
 
         <!-- Navigation Buttons -->
-        <button @click="prevSlide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
+        <button @click="prevSlide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
             &#10094;
             <!-- < -->
         </button>
-        <button @click="nextSlide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
+        <button @click="nextSlide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
             &#10095;
             <!-- > -->
         </button>
