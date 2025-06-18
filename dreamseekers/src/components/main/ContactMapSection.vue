@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content py-12 bg-gray-50">
+    <div class="main-content py-12">
         <div class="content-box container mx-auto px-4">
             <h1 class="text-3xl font-bold text-dream-text text-center mb-8">오시는 길</h1>
 
@@ -48,6 +48,7 @@
                                 계좌번호: {{ businessInfo.account }}
                             </td>
                         </tr>
+                        <!-- 
                         <tr class="md:hidden border-t">
                             <th class="py-3 px-2 md:px-4 font-semibold align-top">입금 정보</th>
                             <td class="py-3 px-2 md:px-4">
@@ -56,6 +57,7 @@
                                 계좌번호: {{ businessInfo.account }}
                             </td>
                         </tr>
+                        -->
                     </tbody>
                 </table>
             </div>

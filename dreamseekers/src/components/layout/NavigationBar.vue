@@ -54,10 +54,14 @@
                 </button>
                 <ul class="mt-8 space-y-2">
                     <li v-for="item in menuItems" :key="item.title + '-mobile'">
-                        <a :href="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">{{ item.title }}</a>
+                        <router-link :to="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">{{
+                            item.title
+                        }}</router-link>
                         <ul v-if="item.submenu && item.submenu.length > 0" class="ml-4 mt-1 space-y-1">
                             <li v-for="subItem in item.submenu" :key="subItem.title + '-mobile-sub'">
-                                <a :href="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-[var(--dream-main)]">{{ subItem.title }}</a>
+                                <router-link :to="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-[var(--dream-main)]">{{
+                                    subItem.title
+                                }}</router-link>
                             </li>
                         </ul>
                     </li>

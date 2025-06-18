@@ -48,6 +48,11 @@ const router = createRouter({
                     component: () => import("@/views/lecture/LectureDetailPage.vue"),
                     props: true,
                 },
+                {
+                    path: "calender",
+                    name: "calender",
+                    component: () => import("@/views/lecture/LectureCalender.vue"),
+                },
             ],
         },
         {
@@ -63,12 +68,6 @@ const router = createRouter({
                     path: "write",
                     name: "inquiryWrite",
                     component: () => import("@/views/inquiry/InquiryWritePage.vue"),
-                },
-                {
-                    path: "detail/:id", // 부모 경로를 제외한 상대 경로
-                    name: "lectureDetail",
-                    component: () => import("@/views/lecture/LectureDetailPage.vue"),
-                    props: true,
                 },
             ],
         },

@@ -7,6 +7,7 @@
             <CalendarSection :schedules="dummySchedules" :is-staff="isUserStaff" />
             <ContactMapSection :contacts="dummyContacts" :business-info="dummyBusinessInfo" :naver-map-client-id="naverClientId" />
         </div>
+        <FloatingButtons />
     </main>
 </template>
 
@@ -15,5 +16,6 @@ import SlideSection from "../components/main/SlideSection.vue";
 import LectureListSection from "../components/main/LectureListSection.vue";
 import CalendarSection from "../components/main/CalendarSection.vue";
 import ContactMapSection from "../components/main/ContactMapSection.vue";
+import FloatingButtons from "@/components/layout/FloatingButtons.vue";
 import {dummySlides, dummyLectures, dummySchedules, dummyContacts, dummyBusinessInfo, isUserStaff, naverClientId} from "@/data/dummyData.ts"; // 더미 데이터 모듈
 </script>

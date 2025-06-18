@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-100 py-2 text-sm">
+    <div class="py-2 text-sm">
         <div class="container mx-auto flex justify-end items-center px-4">
             <template v-if="user.isAuthenticated">
                 <b class="mr-2">{{ user.username }}</b
