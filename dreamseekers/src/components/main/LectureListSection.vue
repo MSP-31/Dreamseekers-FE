@@ -8,7 +8,6 @@
             </div>
             <ul class="lecture-box grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <li v-for="lecture in lectures" :key="lecture.pk" class="lecture-content bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-                    <!-- Vue Router를 사용한다면 <router-link>로 변경 -->
                     <router-link :to="`/lecture/list/detail/${lecture.pk}`" class="block">
                         <img :src="lecture.image.url" :alt="lecture.title" class="w-full h-48 object-cover" />
                         <div class="p-6">
