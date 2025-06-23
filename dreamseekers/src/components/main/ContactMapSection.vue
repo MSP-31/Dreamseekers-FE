@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content py-12 bg-gray-50">
+    <div class="main-content py-12">
         <div class="content-box container mx-auto px-4">
             <h1 class="text-3xl font-bold text-dream-text text-center mb-8">오시는 길</h1>
 
@@ -12,7 +12,9 @@
             <div class="map_address text-center mb-8">
                 <h3 class="text-xl font-semibold text-dream-text">꿈을찾는사람들교육원</h3>
                 <h2 class="text-lg text-gray-700 mb-3">{{ contacts.address }} / {{ contacts.sub_address }}</h2>
-                <a :href="contacts.map_add" target="_blank" class="inline-block bg-dream-main hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition-colors"> 지도에서 보기 </a>
+                <a :href="contacts.map_add" target="_blank" class="inline-block bg-[var(--dream-main)] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition-colors">
+                    지도에서 보기
+                </a>
             </div>
 
             <div class="info_box bg-white p-6 rounded-lg shadow-lg">
@@ -32,6 +34,7 @@
                                 {{ contacts.sub_phone }}
                             </td>
                         </tr>
+                        <!--  
                         <tr>
                             <th class="py-3 px-2 md:px-4 font-semibold align-top">사업자 정보</th>
                             <td class="py-3 px-2 md:px-4">
@@ -46,6 +49,8 @@
                                 계좌번호: {{ businessInfo.account }}
                             </td>
                         </tr>
+                        -->
+                        <!-- 
                         <tr class="md:hidden border-t">
                             <th class="py-3 px-2 md:px-4 font-semibold align-top">입금 정보</th>
                             <td class="py-3 px-2 md:px-4">
@@ -54,6 +59,7 @@
                                 계좌번호: {{ businessInfo.account }}
                             </td>
                         </tr>
+                        -->
                     </tbody>
                 </table>
             </div>

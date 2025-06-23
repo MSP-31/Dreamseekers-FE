@@ -2,11 +2,11 @@
     <footer class="bg-[#515151] text-white text-sm mt-16">
         <div class="max-w-7xl mx-auto px-6 py-8">
             <ul class="flex flex-wrap gap-4 justify-center mb-6">
-                <li><a href="/intro/greeting">교육원 소개</a></li>
-                <li><a href="/lecture/list">주요 강의</a></li>
-                <li><a href="/lecture/inquiry">강의 문의</a></li>
-                <li><a href="/unauthorized-collection">이메일무단수집거부</a></li>
-                <li><a href="/privacy-policy">개인정보처리방침</a></li>
+                <li><router-link to="/intro/greeting">교육원 소개</router-link></li>
+                <li><router-link to="/lecture/list">주요 강의</router-link></li>
+                <li><router-link to="/lecture/inquiry">강의 문의</router-link></li>
+                <li><router-link to="/unauthorized-collection">이메일무단수집거부</router-link></li>
+                <li><router-link to="/privacy-policy">개인정보처리방침</router-link></li>
             </ul>
 
             <div class="flex flex-col md:flex-row md:justify-between text-center md:text-left gap-6 md:gap-0">

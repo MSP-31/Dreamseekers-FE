@@ -1,5 +1,5 @@
 <template>
-    <header class="text-dream-text">
+    <header>
         <TopHeader :user="user" @logout="$emit('logout')" />
         <NavigationBar :is-staff="user.isStaff" />
         <!-- MobileSidebar는 NavigationBar 내부 또는 여기서 조건부로 렌더링 가능 -->
