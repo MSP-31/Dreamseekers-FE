@@ -42,24 +42,6 @@ export interface Contact {
     sub_phone: string;
 }
 
-export interface BusinessInfo {
-    rep: string;
-    email: string;
-    depositor: string;
-    bank: string;
-    account: string;
-}
-
-// export interface FooterInfo {
-//   rep: string;
-//   address: string;
-//   sub_address: string;
-//   CRN: string;
-//   phone: string;
-//   email: string;
-//   sub_phone: string;
-// }
-
 //-----------------------------
 export interface IntroData {
     image: string;
@@ -197,6 +179,8 @@ export const dummyBusinessInfo: Ref<BusinessInfo> = ref({
     depositor: "꿈을찾는사람들교육원(홍의섭)",
     bank: "국민은행",
     account: "654301-04-315674",
+    parking_info: "string",
+    usage_guide: "string",
 });
 
 export const isUserStaff: Ref<boolean> = ref(false); // 관리자 여부 더미 데이터
