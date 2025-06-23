@@ -173,12 +173,6 @@ export const dummySlides: Ref<Slide[]> = ref([
     // public/img/slide1.jpg, slide2.jpg 등 이미지 파일 필요
 ]);
 
-export const dummyLectures: Ref<Lecture[]> = ref([
-    {pk: 1, title: "Vue.js 마스터 클래스", contents: "Vue.js의 모든 것을 배우는 심층 강의입니다. 기초부터 실전 프로젝트까지 다룹니다.", image: {url: "/img/1.jpg"}},
-    {pk: 2, title: "Tailwind CSS 디자인 워크샵", contents: "Tailwind CSS를 활용한 빠르고 효율적인 UI 개발 방법을 익힙니다.", image: {url: "/img/1.jpg"}},
-    // public/img/lecture1.jpg, lecture2.jpg 등 이미지 파일 필요
-]);
-
 export const dummySchedules: Ref<ScheduleData> = ref({
     // "2024-7-15": [{ title: "Vue 특강", time: "14:00", contents: "Vue.js 심화 과정" }]
 });
@@ -186,7 +180,7 @@ export const dummySchedules: Ref<ScheduleData> = ref({
 export const dummyContacts: Ref<Contact> = ref({
     address: "경상남도 창원시 성산구용지로 70 ",
     sub_address: "성원 그랜드오피스텔 10층 1029호",
-    map_add: "https://map.naver.com/p/entry/place/12345?c=15.00,0,0,0,dh", // 네이버 지도 링크
+    map_add: "https://map.naver.com/p/entry/place/15838380?c=17.10,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202506231548&locale=ko&svcName=map_pcv5", // 네이버 지도 링크
     latitude: 37.4979, // 예시 위도
     longitude: 127.0276, // 예시 경도
     weekday_start_time: "09:00",
@@ -208,19 +202,6 @@ export const dummyBusinessInfo: Ref<BusinessInfo> = ref({
 export const isUserStaff: Ref<boolean> = ref(false); // 관리자 여부 더미 데이터
 
 export const naverClientId: Ref<string> = ref("YOUR_NCP_CLIENT_ID"); // 네이버 클라우드 플랫폼 Client ID
-
-// Footer 정보는 App.vue에서 이미 정의함
-// export const dummyFooterInfo: Ref<FooterInfo | null> = ref(null); // 예시: 초기값 null
-// 또는
-// export const dummyFooterInfo: Ref<FooterInfo> = ref({
-//   rep: '박원장',
-//   address: '서울특별시 강남구 테헤란로 123',
-//   sub_address: '드림타워 5층',
-//   CRN: '111-22-33333',
-//   phone: '02-987-6543',
-//   email: 'admin@dreamseekers.com',
-//   sub_phone: '070-987-6543'
-// });
 
 //-----------------------------
 // 인사말 페이지에 사용될 더미 데이터
@@ -285,7 +266,7 @@ export const instructorFormSchema: InstructorFormField[] = [
 export const contactInfoData: ContactInfo = {
     address: "경상남도 창원시 성산구용지로 70 ",
     sub_address: "성원 그랜드오피스텔 10층 1029호",
-    map_add: "https://map.naver.com/p/entry/place/12345?c=15.00,0,0,0,dh", // 네이버 지도 링크
+    map_add: "https://map.naver.com/p/entry/place/15838380?c=17.10,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202506231548&locale=ko&svcName=map_pcv5", // 네이버 지도 링크
     weekday_start_time: "09:00",
     weekday_end_time: "18:00",
     weekend_start_time: "10:00",
@@ -313,7 +294,7 @@ export const lectureItemsData: LectureItem[] = [
         id: 1,
         title: "실전! Vue.js 프론트엔드 개발",
         contents: "Vue.js를 활용한 인터랙티브 웹 애플리케이션 구축의 모든 것을 다룹니다. Composition API부터 상태 관리, 라우팅까지 실습 중심으로 진행됩니다.",
-        image: "/img/dummy/lecture-vue.jpg", // public 폴더 기준 예시 경로
+        image: "/img/1.jpg", // public 폴더 기준 예시 경로
     },
     {
         id: 2,
@@ -505,25 +486,23 @@ export interface ActivityNewsItem {
 export const activityNewsData: ActivityNewsItem[] = [
     {
         id: 1,
-        link: "https://blog.naver.com/jhs9747/example_post_1",
-        title: "드림시커즈 교육원, Vue.js 심화 과정 성황리 개최",
+        link: "https://blog.naver.com/jhs9747/223905375765",
+        title: "훈련병의 첫 교육, 존중에서 시작하다 – 해군 714기의 맞춤형... ",
         description:
-            "지난 주말, 드림시커즈 교육원에서 진행된 Vue.js 심화 과정이 많은 수강생들의 열띤 참여 속에 성공적으로 마무리되었습니다. 최신 프론트엔드 기술 동향과 실무 노하우를 공유하는 알찬 시간이었습니다.",
+            "‘꿈을 찾는 사람들 교육원’, 군 맞춤형 성인지 교육의 선두주자 우리 교육원은 군 장병, 간부, 훈련병을 위한 맞춤형 성인지 교육과 폭력 예방 교육을 전문적으로 제공하고 있습니다. ✔ 실전 사례...",
         source: "네이버 블로그",
         sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "20231025",
+        postdate: "2025-06-20",
     },
     {
         id: 2,
-        link: "https://blog.naver.com/jhs9747/example_post_2",
-        title: "Tailwind CSS 워크샵, 디자인 시스템 구축의 새로운 지평을 열다",
-        description:
-            "참가자들은 Tailwind CSS의 강력한 유틸리티 클래스를 활용하여 빠르고 일관된 UI를 구축하는 방법을 실습을 통해 익혔습니다. 현업에서의 적용 사례와 팁도 함께 제공되어 큰 호응을 얻었습니다.",
+        link: "https://blog.naver.com/jhs9747/223904203673",
+        title: "사실혼 파트너가 나를 스토킹으로 신고했다면? 진실과 대응법",
+        description: "꿈을찾는사람들교육원 대표원장 홍의섭입니다. 사실혼 관계에 있다가 갑자기 상대방에게 스토킹...",
         source: "네이버 블로그",
         sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "20231018",
+        postdate: "2025-06-19",
     },
-    // 필요에 따라 더 많은 더미 데이터 추가
 ];
 
 // -----------------
