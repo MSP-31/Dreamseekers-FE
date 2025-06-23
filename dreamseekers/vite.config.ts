@@ -14,4 +14,7 @@ export default defineConfig({
         },
     },
     base: "/Dreamseekers-FE/",
+    build: {
+        outDir: "docs", // 빌드 결과물이 'docs' 폴더에 생성되도록 설정
+    },
 });
