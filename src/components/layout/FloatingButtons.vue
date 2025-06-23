@@ -43,46 +43,11 @@
 </template>
 
 <script setup>
-// Vite 프로젝트의 경우, 아이콘 파일들을 `public` 디렉토리 (예: public/img/icon/map_white_24dp.svg)에 위치시키고,
-// 아래와 같이 절대 경로로 참조합니다.
-const mapIconUrl = "/img/icon/map_white_24dp.svg";
-const textIconUrl = "/img/icon/textsms_white_24dp.svg";
-const upwardIconUrl = "/img/icon/arrow_upward_white_24dp.svg";
-// 중요: arrow_upward_white_24dp.svg 아이콘은 흰색입니다.
-// '맨 위로' 버튼의 배경이 흰색이므로 이 아이콘이 보이지 않을 수 있습니다.
-// 어두운 색상의 아이콘을 사용하거나, 인라인 SVG를 사용하여 색상을 제어하는 것을 고려해 보세요.
+const mapIconUrl = "/Dreamseekers-FE/img/icon/map_white_24dp.svg";
+const textIconUrl = "/Dreamseekers-FE/img/icon/textsms_white_24dp.svg";
+const upwardIconUrl = "/Dreamseekers-FE/img/icon/arrow_upward_white_24dp.svg";
 
 const scrollToTop = () => {
     window.scrollTo({top: 0, behavior: "smooth"});
 };
 </script>
-
-<style scoped>
-/*
-    Tailwind CSS v4 (및 JIT 모드가 활성화된 v3)는 w-[60px], bg-[#1fa2ff]와 같은 임의의 값을 지원합니다.
-    자주 사용하는 값들은 tailwind.config.js 파일에 사용자 정의 값으로 추가하여 재사용성을 높일 수 있습니다. 예:
-  
-    // tailwind.config.js
-    module.exports = {
-      theme: {
-        extend: {
-          colors: {
-            'brand-primary-light': '#1fa2ff', // var(--primary-color-light)
-            'brand-line-color': '#ebebeb',    // var(--line-color)
-          },
-          boxShadow: {
-            'brand-floating': '3px 2px 8px 1px rgba(0, 0, 0, 0.2)',
-          },
-          spacing: {
-            '10px': '10px',
-            '15px': '15px',
-            '50px': '50px',
-          }
-        },
-      },
-      // ...
-    };
-  
-    위와 같이 설정 후, bg-brand-primary-light, shadow-brand-floating, right-50px, ml-10px, pl-15px 등의 클래스를 사용할 수 있습니다.
-  */
-</style>
