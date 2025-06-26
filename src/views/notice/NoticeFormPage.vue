@@ -7,7 +7,7 @@
                 {{ isEditMode ? "공지사항 수정" : "공지사항 작성" }}
             </h1>
 
-            <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6">
+            <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isStaff">
                 <template v-for="field in formSchema" :key="field.id">
                     <!-- Title and Contents Fields -->
                     <div v-if="field.type === 'text' || field.type === 'textarea'">
@@ -129,7 +129,7 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, dummyImportantNotices, dummyNoticePosts, type NoticeFormData} from "@/data/dummyData";
+import {userStatus, dummyImportantNotices, dummyNoticePosts, noticeFormSchema, type NoticeFormData, type NoticeFormField} from "@/data/dummyData";
 
 interface ExistingFileItem {
     id: number;
@@ -161,8 +161,9 @@ const initialFormData: NoticeFormData = {
     contents: "",
     is_important: false,
 };
-const formData = reactive<NoticeFormData>({...initialFormData});
 
+const formData = reactive<NoticeFormData>({...initialFormData});
+const formSchema = ref<NoticeFormField[]>(noticeFormSchema);
 const newImages = ref<File[]>([]);
 const newImagePreviews = ref<NewImagePreview[]>([]);
 const existingImages = ref<ExistingImageItem[]>([]);
