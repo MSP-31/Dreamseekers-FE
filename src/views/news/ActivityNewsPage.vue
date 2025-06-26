@@ -95,6 +95,8 @@ const formatDate = (dateString: string): string => {
 
 // 3. 컴포넌트가 마운트된 후 데이터 로딩 함수를 호출
 onMounted(() => {
+    console.log("테스트");
+    console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
     fetchActivityNews();
 });
 </script>
