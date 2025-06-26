@@ -1,12 +1,19 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
-  "exclude": ["src/**/__tests__/*"],
-  "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
-    "paths": {
-      "@/*": ["./src/*"]
+    "extends": "@vue/tsconfig/tsconfig.web.json",
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue" // .vue 파일 모듈 인식을 위해 포함
+    ],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "composite": true,
+        "baseUrl": ".", // 경로 별칭의 기준 경로 설정
+        "paths": {
+            // 경로 별칭 정의
+            "@/*": ["./src/*"] // @/를 src/로 매핑
+        },
+        "types": ["navermaps"] // 'naver' 객체 타입 인식을 위해 추가
     }
-  }
 }
