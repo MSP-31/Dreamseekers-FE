@@ -1,5 +1,5 @@
 {
-    "extends": "@vue/tsconfig/tsconfig.web.json",
+    "extends": "./node_modules/@vue/tsconfig/tsconfig.web.json", // 명시적인 상대 경로로 변경
     "include": [
         "src/**/*.ts",
         "src/**/*.d.ts",
