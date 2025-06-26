@@ -1,19 +1,31 @@
 {
-    "extends": "./node_modules/@vue/tsconfig/tsconfig.web.json", // 명시적인 상대 경로로 변경
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.d.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue" // .vue 파일 모듈 인식을 위해 포함
-    ],
+    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
     "exclude": ["node_modules"],
     "compilerOptions": {
         "composite": true,
-        "baseUrl": ".", // 경로 별칭의 기준 경로 설정
-        "paths": {
-            // 경로 별칭 정의
-            "@/*": ["./src/*"] // @/를 src/로 매핑
-        },
-        "types": ["navermaps"] // 'naver' 객체 타입 인식을 위해 추가
+        // @vue/tsconfig/tsconfig.web.json 에서 상속받는 설정들
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "preserve",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowJs": true, // tsconfig.base.json 에서 상속
+        "esModuleInterop": true, // tsconfig.base.json 에서 상속
+        "forceConsistentCasingInFileNames": true, // tsconfig.base.json 에서 상속
+
+        // 기존 tsconfig.app.json 의 프로젝트별 설정
+        "baseUrl": ".",
+        "paths": {"@/*": ["./src/*"]},
+        "types": ["navermaps"]
     }
 }
