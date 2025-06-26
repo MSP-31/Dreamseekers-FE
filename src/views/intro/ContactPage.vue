@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted, onBeforeUnmount} from "vue";
+import {reactive, onMounted, onBeforeUnmount} from "vue";
 import ContactInfoBox from "@/components/ContactInfoBox.vue"; // 컴포넌트 경로에 맞게 수정
 import {contactInfoData, businessInfoData, type ContactInfo, type BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 
