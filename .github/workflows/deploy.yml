@@ -4,6 +4,8 @@ on:
     push:
         branches:
             - main # 배포에 사용할 브랜치 이름
+permissions:
+    contents: write
 
 jobs:
     build-and-deploy:
