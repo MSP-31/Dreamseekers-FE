@@ -24,13 +24,13 @@
 import {defineProps, defineEmits} from "vue";
 import type {LectureItem} from "@/data/dummyData";
 
-const props = defineProps<{
+const _props = defineProps<{
     lecture: LectureItem;
     isStaff: boolean;
     detailUrl?: string; // 상세 페이지 URL (선택적)
 }>();
 
-const emit = defineEmits<{
+const _emit = defineEmits<{
     (e: "edit", lecture: LectureItem): void;
     (e: "delete", lectureId: number): void;
 }>();

@@ -47,7 +47,7 @@
 import {defineProps} from "vue";
 import type {ContactInfo, BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 
-const props = defineProps<{
+const _props = defineProps<{
     contactInfo: ContactInfo;
     businessInfo: BusinessInfo;
 }>();

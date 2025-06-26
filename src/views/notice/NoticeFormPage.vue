@@ -129,7 +129,7 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, noticeFormSchema, dummyImportantNotices, dummyNoticePosts, type NoticeFormData, type NoticeFormField, type NoticePost} from "@/data/dummyData";
+import {userStatus, dummyImportantNotices, dummyNoticePosts, type NoticeFormData} from "@/data/dummyData";
 
 interface ExistingFileItem {
     id: number;
@@ -152,7 +152,6 @@ const route = useRoute();
 const router = useRouter();
 
 const isStaff = ref(userStatus.isStaff);
-const formSchemaConfig = ref<NoticeFormField[]>(noticeFormSchema);
 
 const noticeId = ref<number | null>(null);
 const isEditMode = computed(() => noticeId.value !== null);
@@ -172,13 +171,13 @@ const newFiles = ref<File[]>([]);
 const existingFiles = ref<ExistingFileItem[]>([]);
 
 const loadNoticeData = (pk: number) => {
-    const postToEdit = dummyImportantNotices.find((p) => p.pk === pk) || dummyNoticePosts.find((p) => p.pk === pk);
+    const postToEdit = dummyImportantNotices.find((p: {pk: number}) => p.pk === pk) || dummyNoticePosts.find((p: {pk: number}) => p.pk === pk);
     if (postToEdit) {
         formData.title = postToEdit.title;
         formData.contents = postToEdit.contents || "";
         formData.is_important = postToEdit.is_important || false;
-        existingImages.value = (postToEdit.images || []).map((img) => ({...img, toDelete: false}));
-        existingFiles.value = (postToEdit.files || []).map((file) => ({...file, toDelete: false}));
+        existingImages.value = (postToEdit.images || []).map((img: any) => ({...img, toDelete: false}));
+        existingFiles.value = (postToEdit.files || []).map((file: any) => ({...file, toDelete: false}));
     } else {
         console.error("Notice not found for editing");
         router.push("/notice"); // Or show an error message
