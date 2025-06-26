@@ -129,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, computed} from "vue";
 import PageHeader from "@/components/PageHeader.vue";
 import LectureCard from "@/components/LectureCard.vue";
 import {

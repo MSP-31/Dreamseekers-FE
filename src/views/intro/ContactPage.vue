@@ -50,7 +50,7 @@ const businessInfo = reactive<BusinessInfo>({...businessInfoData});
 
 // Naver Map 관련 상태 및 함수
 let map: naver.maps.Map | null = null;
-let marker: naver.maps.Marker | null = null;
+// let marker: naver.maps.Marker | null = null;
 
 // Naver Maps API 스크립트를 동적으로 로드하는 헬퍼 함수
 const loadNaverMapsScript = (clientId: string): Promise<void> => {
@@ -107,10 +107,10 @@ const initMap = () => {
 
     map = new naver.maps.Map("map", mapOptions);
 
-    marker = new naver.maps.Marker({
-        position: new naver.maps.LatLng(contactInfo.latitude, contactInfo.longitude),
-        map: map,
-    });
+    // marker = new naver.maps.Marker({
+    //     position: new naver.maps.LatLng(contactInfo.latitude, contactInfo.longitude),
+    //     map: map,
+    // });
 
     console.log("Naver Map initialized.");
 };
@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
         // map.destroy(); // Naver Maps API v3에는 공식적인 destroy 메서드가 명시되어 있지 않음
         // 대부분의 경우 가비지 컬렉터가 처리하지만, 복잡한 앱에서는 수동 정리 고려
         map = null;
-        marker = null;
+        // marker = null;
     }
 });
 </script>

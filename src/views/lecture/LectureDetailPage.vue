@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, onMounted} from "vue";
 import {useRoute} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
 import LectureSubItemCard from "@/components/LectureSubItemCard.vue";
@@ -175,8 +175,7 @@ const handleSubmit = () => {
     if (uploadedImageFile.value) {
         imageToSave = previewImageUrl.value; // Placeholder for actual upload URL
     } else if (!previewImageUrl.value && isEditing.value) {
-        // If image was removed during edit, set to undefined or a specific placeholder
-        imageToSave = undefined;
+        imageToSave = null;
     }
 
     if (isEditing.value && editingSubItemId.value !== null) {

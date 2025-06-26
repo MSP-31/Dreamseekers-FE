@@ -31,12 +31,12 @@
 import {defineProps, defineEmits} from "vue";
 import type {LectureSubItem} from "@/data/dummyData";
 
-const props = defineProps<{
+const _props = defineProps<{
     subItem: LectureSubItem;
     isStaff: boolean;
 }>();
 
-const emit = defineEmits<{
+const _emit = defineEmits<{
     (e: "edit", item: LectureSubItem): void;
     (e: "delete", itemId: number): void;
 }>();

@@ -129,7 +129,7 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, noticeFormSchema, dummyImportantNotices, dummyNoticePosts, type NoticeFormData, type NoticeFormField, type NoticePost} from "@/data/dummyData";
+import {userStatus, dummyImportantNotices, dummyNoticePosts, type NoticeFormData} from "@/data/dummyData";
 
 interface ExistingFileItem {
     id: number;
@@ -152,7 +152,6 @@ const route = useRoute();
 const router = useRouter();
 
 const isStaff = ref(userStatus.isStaff);
-const formSchemaConfig = ref<NoticeFormField[]>(noticeFormSchema);
 
 const noticeId = ref<number | null>(null);
 const isEditMode = computed(() => noticeId.value !== null);
