@@ -21,3 +21,11 @@
         <!-- Vue 앱 진입점 스크립트 (Vite 기준) -->
     </body>
 </html>
+
+<script>
+    if (location.search.startsWith("?redirect=")) {
+        const redirectUrl = location.search.replace("?redirect=", "");
+        sessionStorage.redirect = redirectUrl;
+        location.replace(location.origin + "/404.html");
+    }
+</script>
