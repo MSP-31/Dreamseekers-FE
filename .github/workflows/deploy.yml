@@ -1,0 +1,43 @@
+name: Deploy to Production
+
+on:
+    push:
+        branches:
+            - main # 배포에 사용할 브랜치 이름
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18" # 사용할 Node.js 버전
+
+            # 캐싱 단계 추가로 빌드 시간 단축
+            - name: Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            - name: Install Dependencies
+              run: npm install
+
+            - name: Build for Production
+              run: npm run build
+              env:
+                  VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }} # API 서버 주소
+                  VITE_BASE_PATH: /Dreamseekers-FE/ # GitHub Pages 배포를 위한 base 경로
+
+            - name: Deploy
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist # 빌드 결과물 디렉토리

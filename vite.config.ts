@@ -13,8 +13,5 @@ export default defineConfig({
             "@": fileURLToPath(new URL("./src", import.meta.url)),
         },
     },
-    base: "/Dreamseekers-FE/",
-    build: {
-        outDir: "docs", // 빌드 결과물이 'docs' 폴더에 생성되도록 설정
-    },
+    base: process.env.VITE_BASE_PATH || "/",
 });

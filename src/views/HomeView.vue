@@ -1,7 +1,6 @@
 <template>
     <main>
         <SlideSection :slides="dummySlides" />
-        <div class="hidden nav-breakpoint:flex bg-red-500">화면 크기가 1140px 이상이면 보여야 합니다!</div>
         <div class="relative text-center text-black flex-1 my-0 mx-[20%]">
             <LectureListSection :lectures="lectureItemsData" />
             <CalendarSection :schedules="dummySchedules" :is-staff="isUserStaff" />
