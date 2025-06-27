@@ -1,6 +1,6 @@
 <template>
     <div class="font-[var(--font-body)]">
-        <PageHeader title="소통 마당" backgroundImageUrl="/Dreamseekers-FE/img/top_header/forum.jpg" />
+        <PageHeader title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg" />
 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">공지사항</h1>
