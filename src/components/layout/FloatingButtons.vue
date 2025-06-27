@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-const mapIconUrl = "/Dreamseekers-FE/img/icon/map_white_24dp.svg";
-const textIconUrl = "/Dreamseekers-FE/img/icon/textsms_white_24dp.svg";
-const upwardIconUrl = "/Dreamseekers-FE/img/icon/arrow_upward_white_24dp.svg";
+const mapIconUrl = "/img/icon/map_white_24dp.svg";
+const textIconUrl = "/img/icon/textsms_white_24dp.svg";
+const upwardIconUrl = "/img/icon/arrow_upward_white_24dp.svg";
 
 const scrollToTop = () => {
     window.scrollTo({top: 0, behavior: "smooth"});

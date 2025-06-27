@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHeader title="소통 마당" backgroundImageUrl="/Dreamseekers-FE/img/top_header/forum.jpg" />
+        <PageHeader title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg" />
 
         <div class="relative text-center text-black flex-1 my-0 mx-[20%] px-4 sm:px-6 lg:px-8 py-12">
             <h1 class="text-3xl font-bold text-center mb-10 text-[var(--dream-text)]">활동 소식</h1>
