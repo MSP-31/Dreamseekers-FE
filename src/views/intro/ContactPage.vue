@@ -44,13 +44,15 @@ import {reactive, onMounted, onBeforeUnmount} from "vue";
 import ContactInfoBox from "@/components/ContactInfoBox.vue"; // 컴포넌트 경로에 맞게 수정
 import {contactInfoData, businessInfoData, type ContactInfo, type BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 
+const ncpClientId = import.meta.env.VITE_NAVER_MAPS_CLIENT_ID;
+
 // 현재 페이지에 표시될 데이터 (초기값은 더미 데이터)
 const contactInfo = reactive<ContactInfo>({...contactInfoData});
 const businessInfo = reactive<BusinessInfo>({...businessInfoData});
 
 // Naver Map 관련 상태 및 함수
 let map: naver.maps.Map | null = null;
-// let marker: naver.maps.Marker | null = null;
+let marker: naver.maps.Marker | null = null;
 
 // Naver Maps API 스크립트를 동적으로 로드하는 헬퍼 함수
 const loadNaverMapsScript = (clientId: string): Promise<void> => {
@@ -74,7 +76,7 @@ const loadNaverMapsScript = (clientId: string): Promise<void> => {
         const script = document.createElement("script");
         script.id = scriptId;
         script.type = "text/javascript";
-        script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${clientId}`;
+        script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}`;
         script.async = true;
         script.onload = () => {
             console.log("Naver Maps script loaded.");
@@ -107,10 +109,10 @@ const initMap = () => {
 
     map = new naver.maps.Map("map", mapOptions);
 
-    // marker = new naver.maps.Marker({
-    //     position: new naver.maps.LatLng(contactInfo.latitude, contactInfo.longitude),
-    //     map: map,
-    // });
+    marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(contactInfo.latitude, contactInfo.longitude),
+        map: map,
+    });
 
     console.log("Naver Map initialized.");
 };
@@ -118,7 +120,8 @@ const initMap = () => {
 // 컴포넌트 마운트 시 지도 로드 및 초기화
 onMounted(async () => {
     try {
-        await loadNaverMapsScript(contactInfo.ncpClientId);
+        console.log(ncpClientId);
+        await loadNaverMapsScript(ncpClientId);
         initMap();
     } catch (error) {
         console.error("Failed to initialize map:", error);
@@ -132,7 +135,7 @@ onBeforeUnmount(() => {
         // map.destroy(); // Naver Maps API v3에는 공식적인 destroy 메서드가 명시되어 있지 않음
         // 대부분의 경우 가비지 컬렉터가 처리하지만, 복잡한 앱에서는 수동 정리 고려
         map = null;
-        // marker = null;
+        marker = null;
     }
 });
 </script>

@@ -257,8 +257,8 @@ export const contactInfoData: ContactInfo = {
     weekend_end_time: "16:00",
     phone: "055-6010-451",
     sub_phone: "010-9371-0450",
-    latitude: 37.4979, // 예시 위도
-    longitude: 127.0276, // 예시 경도
+    latitude: 35.2220973957462,
+    longitude: 128.676299239476,
     ncpClientId: "YOUR_NAVER_MAPS_CLIENT_ID", // !!! 실제 Naver Maps Client ID로 교체하세요 !!!
 };
 
