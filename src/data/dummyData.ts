@@ -252,7 +252,6 @@ export const contactInfoData: ContactInfo = {
     sub_phone: "010-9371-0450",
     latitude: 35.2220973957462,
     longitude: 128.676299239476,
-    ncpClientId: "YOUR_NAVER_MAPS_CLIENT_ID", // !!! 실제 Naver Maps Client ID로 교체하세요 !!!
 };
 
 export const businessInfoData: BusinessInfo = {
