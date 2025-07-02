@@ -1,133 +1,122 @@
 <template>
-    <div class="font-[var(--font-body)]">
-        <PageHeader title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg" />
-
-        <div class=main-content>
-            <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">공지사항</h1>
-
-            <!-- Search Form -->
-            <form @submit.prevent="performSearch" class="mb-8 max-w-xl mx-auto">
-                <div class="flex items-center border border-gray-300 rounded-md shadow-sm overflow-hidden">
-                    <select v-model="searchType" class="px-3 py-2 border-r border-gray-300 bg-gray-50 text-sm text-gray-700 focus:outline-none">
-                        <option v-for="type in searchTypes" :key="type.value" :value="type.value">
-                            {{ type.text }}
-                        </option>
-                    </select>
-                    <input
-                        type="text"
-                        v-model="searchQueryInput"
-                        placeholder="검색어를 입력해주세요"
-                        class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dream-main)]"
-                    />
-                    <button type="submit" class="px-4 py-2 bg-[var(--dream-main)] text-white hover:bg-opacity-80 transition-colors">
-                        <img src="/img/icon/search_black_24dp.svg" alt="검색" class="h-5 w-5" />
-                    </button>
-                </div>
-            </form>
-
-            <div v-if="currentSearchQuery" class="text-center text-sm text-gray-600 mb-6">
-                "'{{ currentSearchQuery }}' 검색 결과입니다. <button @click="clearSearch" class="ml-2 text-[var(--dream-blue)] hover:underline text-xs">(검색 초기화)</button>"
+    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg">
+        <!-- Search Form -->
+        <form @submit.prevent="performSearch" class="mb-8 max-w-xl mx-auto">
+            <div class="flex items-center border border-gray-300 rounded-md shadow-sm overflow-hidden">
+                <select v-model="searchType" class="px-3 py-2 border-r border-gray-300 bg-gray-50 text-sm text-gray-700 focus:outline-none">
+                    <option v-for="type in searchTypes" :key="type.value" :value="type.value">
+                        {{ type.text }}
+                    </option>
+                </select>
+                <input type="text" v-model="searchQueryInput" placeholder="검색어를 입력해주세요" class="flex-grow px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dream-main)]" />
+                <button type="submit" class="px-4 py-2 bg-[var(--dream-main)] text-white hover:bg-opacity-80 transition-colors">
+                    <img src="/img/icon/search_black_24dp.svg" alt="검색" class="h-5 w-5" />
+                </button>
             </div>
+        </form>
 
-            <table class="min-w-full divide-y divide-gray-200 border-t border-b border-gray-300">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">번호</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
-                        <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">글쓴이</th>
-                        <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">작성일</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Important Notices -->
-                    <tr
-                        v-for="post in importantNotices"
-                        :key="`important-${post.pk}`"
-                        class="hover:bg-gray-100 cursor-pointer transition-colors duration-150 bg-yellow-50 font-semibold"
-                        @click="goToDetail(post.pk)"
-                    >
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-center">
-                            <span class="inline-flex items-center justify-center text-[var(--dream-main)]">
-                                <img src="/img/icon/campaign_black_24dp.svg" alt="중요" class="h-5 w-5 mr-1 opacity-70" />
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-left">
-                            <router-link :to="`/notice/${post.pk}`" class="hover:underline text-[var(--dream-text)] hover:text-[var(--dream-main)]">
-                                {{ post.title }}
-                            </router-link>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ post.author }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ formatDate(post.created_at) }}</td>
-                    </tr>
-
-                    <!-- Regular Notices -->
-                    <tr v-for="(post, index) in regularNotices" :key="post.pk" class="hover:bg-gray-100 cursor-pointer transition-colors duration-150" @click="goToDetail(post.pk)">
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">
-                            {{ pagination.count - pagination.start_index - index + 1 }}
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-left">
-                            <router-link :to="`/notice/${post.pk}`" class="hover:underline text-[var(--dream-text)] hover:text-[var(--dream-main)]">
-                                {{ post.title }}
-                            </router-link>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ post.author }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ formatDate(post.created_at) }}</td>
-                    </tr>
-
-                    <tr v-if="importantNotices.length === 0 && regularNotices.length === 0">
-                        <td colspan="4" class="px-4 py-8 text-center text-gray-500">표시할 공지사항이 없습니다.</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div v-if="isAdmin" class="mt-6 text-right">
-                <router-link to="/notice/write" class="inline-block bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm"> 글쓰기 </router-link>
-            </div>
-
-            <!-- Pagination -->
-            <div v-if="pagination.has_other_pages" class="mt-8 flex justify-center">
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <button
-                        @click="changePage(pagination.previous_page_number)"
-                        :disabled="!pagination.has_previous"
-                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                    >
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                    <button
-                        v-for="page in pagination.custom_range"
-                        :key="page"
-                        @click="changePage(page)"
-                        :class="[
-                            'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
-                            page === pagination.number ? 'z-10 bg-[var(--dream-main)] border-[var(--dream-main)] text-white' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50',
-                        ]"
-                    >
-                        {{ page }}
-                    </button>
-                    <button
-                        @click="changePage(pagination.next_page_number)"
-                        :disabled="!pagination.has_next"
-                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                    >
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </nav>
-            </div>
-
-            <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
+        <div v-if="currentSearchQuery" class="text-center text-sm text-gray-600 mb-6">
+            "'{{ currentSearchQuery }}' 검색 결과입니다. <button @click="clearSearch" class="ml-2 text-[var(--dream-blue)] hover:underline text-xs">(검색 초기화)</button>"
         </div>
-    </div>
+
+        <table class="min-w-full divide-y divide-gray-200 border-t border-b border-gray-300">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">번호</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
+                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">글쓴이</th>
+                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">작성일</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Important Notices -->
+                <tr
+                    v-for="post in importantNotices"
+                    :key="`important-${post.pk}`"
+                    class="hover:bg-gray-100 cursor-pointer transition-colors duration-150 bg-yellow-50 font-semibold"
+                    @click="goToDetail(post.pk)"
+                >
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-center">
+                        <span class="inline-flex items-center justify-center text-[var(--dream-main)]">
+                            <img src="/img/icon/campaign_black_24dp.svg" alt="중요" class="h-5 w-5 mr-1 opacity-70" />
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-left">
+                        <router-link :to="`/notice/${post.pk}`" class="hover:underline text-[var(--dream-text)] hover:text-[var(--dream-main)]">
+                            {{ post.title }}
+                        </router-link>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ post.author }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ formatDate(post.created_at) }}</td>
+                </tr>
+
+                <!-- Regular Notices -->
+                <tr v-for="(post, index) in regularNotices" :key="post.pk" class="hover:bg-gray-100 cursor-pointer transition-colors duration-150" @click="goToDetail(post.pk)">
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">
+                        {{ pagination.count - pagination.start_index - index + 1 }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-left">
+                        <router-link :to="`/notice/${post.pk}`" class="hover:underline text-[var(--dream-text)] hover:text-[var(--dream-main)]">
+                            {{ post.title }}
+                        </router-link>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ post.author }}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">{{ formatDate(post.created_at) }}</td>
+                </tr>
+
+                <tr v-if="importantNotices.length === 0 && regularNotices.length === 0">
+                    <td colspan="4" class="px-4 py-8 text-center text-gray-500">표시할 공지사항이 없습니다.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-if="isAdmin" class="mt-6 text-right">
+            <router-link to="/notice/write" class="inline-block bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm"> 글쓰기 </router-link>
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="pagination.has_other_pages" class="mt-8 flex justify-center">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                    @click="changePage(pagination.previous_page_number)"
+                    :disabled="!pagination.has_previous"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                >
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <button
+                    v-for="page in pagination.custom_range"
+                    :key="page"
+                    @click="changePage(page)"
+                    :class="[
+                        'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                        page === pagination.number ? 'z-10 bg-[var(--dream-main)] border-[var(--dream-main)] text-white' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50',
+                    ]"
+                >
+                    {{ page }}
+                </button>
+                <button
+                    @click="changePage(pagination.next_page_number)"
+                    :disabled="!pagination.has_next"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                >
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </nav>
+        </div>
+
+        <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
+    </PageLayout>
 </template>
 
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageLayout from "@/components/layout/PageLayout.vue";
 import {dummyImportantNotices, dummyNoticePosts, dummyNoticePaginationData, noticeSearchTypes, type NoticePost, type PaginationData} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 

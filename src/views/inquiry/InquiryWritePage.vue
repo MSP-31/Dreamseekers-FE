@@ -1,95 +1,88 @@
 <template>
-    <div class="font-[var(--font-body)]">
-        <PageHeader title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg" />
-
-        <div class="main-content">
-            <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">강의 상담 문의</h1>
-            <hr class="mb-8 border-gray-300" />
-
-            <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
-                <table class="w-full mb-6">
-                    <tbody>
+    <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg">
+        <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
+            <table class="w-full mb-6">
+                <tbody>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">작성자</th>
+                        <td class="py-3 text-gray-800">{{ currentUser.username }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">이메일</th>
+                        <td class="py-3 text-gray-800">{{ currentUser.email }}</td>
+                    </tr>
+                    <template v-for="field in formSchema" :key="field.id">
                         <tr class="border-b border-gray-200">
-                            <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">작성자</th>
-                            <td class="py-3 text-gray-800">{{ currentUser.username }}</td>
+                            <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">
+                                <label :for="field.id">{{ field.label }}</label>
+                            </th>
+                            <td class="py-3">
+                                <input
+                                    v-if="field.type === 'text'"
+                                    :type="field.type"
+                                    :id="field.id"
+                                    v-model="formData[field.name]"
+                                    :placeholder="field.placeholder"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
+                                />
+                                <textarea
+                                    v-else-if="field.type === 'textarea'"
+                                    :id="field.id"
+                                    v-model="formData[field.name]"
+                                    :placeholder="field.placeholder"
+                                    rows="8"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
+                                ></textarea>
+                            </td>
                         </tr>
-                        <tr class="border-b border-gray-200">
-                            <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">이메일</th>
-                            <td class="py-3 text-gray-800">{{ currentUser.email }}</td>
-                        </tr>
-                        <template v-for="field in formSchema" :key="field.id">
-                            <tr class="border-b border-gray-200">
-                                <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">
-                                    <label :for="field.id">{{ field.label }}</label>
-                                </th>
-                                <td class="py-3">
-                                    <input
-                                        v-if="field.type === 'text'"
-                                        :type="field.type"
-                                        :id="field.id"
-                                        v-model="formData[field.name]"
-                                        :placeholder="field.placeholder"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
-                                    />
-                                    <textarea
-                                        v-else-if="field.type === 'textarea'"
-                                        :id="field.id"
-                                        v-model="formData[field.name]"
-                                        :placeholder="field.placeholder"
-                                        rows="8"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
-                                    ></textarea>
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
+                    </template>
+                </tbody>
+            </table>
 
-                <div class="mb-6 text-left">
-                    <label for="consent-check" class="flex items-center cursor-pointer text-sm text-gray-700">
-                        <input type="checkbox" id="consent-check" v-model="consentChecked" class="h-4 w-4 text-[var(--dream-main)] border-gray-300 rounded focus:ring-[var(--dream-main)] mr-2" />
-                        개인정보 수집 및 이용에 동의합니다.
-                    </label>
-                    <button type="button" @click="openConsentModal" class="ml-2 text-xs text-[var(--dream-blue)] hover:underline">내용보기</button>
+            <div class="mb-6 text-left">
+                <label for="consent-check" class="flex items-center cursor-pointer text-sm text-gray-700">
+                    <input type="checkbox" id="consent-check" v-model="consentChecked" class="h-4 w-4 text-[var(--dream-main)] border-gray-300 rounded focus:ring-[var(--dream-main)] mr-2" />
+                    개인정보 수집 및 이용에 동의합니다.
+                </label>
+                <button type="button" @click="openConsentModal" class="ml-2 text-xs text-[var(--dream-blue)] hover:underline">내용보기</button>
+            </div>
+
+            <div class="text-right">
+                <button
+                    type="submit"
+                    :disabled="!isFormValid"
+                    class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    등록
+                </button>
+            </div>
+        </form>
+
+        <!-- Consent Modal -->
+        <div v-if="showConsentModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="closeConsentModal">
+            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--dream-text)]">{{ consentContent.title }}</h3>
+                    <button @click="closeConsentModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
                 </div>
-
-                <div class="text-right">
-                    <button
-                        type="submit"
-                        :disabled="!isFormValid"
-                        class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        등록
-                    </button>
+                <div class="space-y-3 text-sm text-gray-600 max-h-80 overflow-y-auto pr-2">
+                    <p v-for="(paragraph, index) in consentContent.paragraphs" :key="index">
+                        {{ paragraph }}
+                    </p>
                 </div>
-            </form>
-
-            <!-- Consent Modal -->
-            <div v-if="showConsentModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="closeConsentModal">
-                <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-semibold text-[var(--dream-text)]">{{ consentContent.title }}</h3>
-                        <button @click="closeConsentModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-                    </div>
-                    <div class="space-y-3 text-sm text-gray-600 max-h-80 overflow-y-auto pr-2">
-                        <p v-for="(paragraph, index) in consentContent.paragraphs" :key="index">
-                            {{ paragraph }}
-                        </p>
-                    </div>
-                    <div class="mt-6 text-right">
-                        <button @click="closeConsentModal" class="bg-[var(--dream-gray-dark)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm">닫기</button>
-                    </div>
+                <div class="mt-6 text-right">
+                    <button @click="closeConsentModal" class="bg-[var(--dream-gray-dark)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm">닫기</button>
                 </div>
             </div>
         </div>
-    </div>
+    </PageLayout>
 </template>
 
 <script setup lang="ts">
 import {ref, reactive, computed} from "vue";
 import {useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
 import {dummyUserData, inquiryWriteFormSchema, consentModalContent, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
+import PageLayout from "@/components/layout/PageLayout.vue";
 
 const router = useRouter();
 

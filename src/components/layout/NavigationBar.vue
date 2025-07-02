@@ -1,16 +1,14 @@
 <template>
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 h-20 flex justify-between items-center">
-            <!-- 로고 -->
             <router-link to="/" class="flex items-center">
                 <img class="h-10 w-auto mr-2" src="/img/logo.svg" alt="꿈을 찾는 사람들 교육원" />
                 <span class="text-xl font-bold">꿈을 찾는 사람들 교육원</span>
             </router-link>
 
-            <!-- 데스크탑 메뉴 -->
             <ul class="desktop-menu space-x-16">
-                <li v-for="item in menuItems" :key="item.title" class="relative group">
-                    <router-link :to="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }} </router-link>
+                <li v-for="item in processedMenuItems" :key="item.title" class="relative group">
+                    <router-link :to="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }}</router-link>
                     <div
                         v-if="item.submenu && item.submenu.length > 0"
                         class="absolute left-0 mt-0 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-20"
@@ -28,7 +26,6 @@
                 </li>
             </ul>
 
-            <!-- 모바일 메뉴 토글 버튼 -->
             <div class="nav-breakpoint:hidden">
                 <button @click="toggleMobileMenu" class="text-gray-600 hover:text-[var(--dream-main)] focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +35,6 @@
             </div>
         </div>
 
-        <!-- 모바일 사이드바 (MobileSidebar.vue 컴포넌트로 분리 가능) -->
         <div v-if="isMobileMenuOpen" class="fixed inset-0 bg-black/50 z-40 nav-breakpoint:hidden" @click="closeMobileMenu"></div>
         <div
             :class="[
@@ -53,13 +49,13 @@
                     </svg>
                 </button>
                 <ul class="mt-8 space-y-2">
-                    <li v-for="item in menuItems" :key="item.title + '-mobile'">
-                        <router-link :to="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]">{{
+                    <li v-for="item in processedMenuItems" :key="item.title + '-mobile'">
+                        <router-link :to="item.link" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[var(--dream-main)]" @click="closeMobileMenu">{{
                             item.title
                         }}</router-link>
                         <ul v-if="item.submenu && item.submenu.length > 0" class="ml-4 mt-1 space-y-1">
                             <li v-for="subItem in item.submenu" :key="subItem.title + '-mobile-sub'">
-                                <router-link :to="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-[var(--dream-main)]">{{
+                                <router-link :to="subItem.link" class="block px-3 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-[var(--dream-main)]" @click="closeMobileMenu">{{
                                     subItem.title
                                 }}</router-link>
                             </li>
@@ -71,53 +67,52 @@
     </nav>
 </template>
 
-<script setup>
-import {ref} from "vue";
+<script setup lang="ts">
+import {ref, computed} from "vue";
+import {useAuthStore} from "@/stores/auth"; // Pinia 스토어 임포트
+import {menuItemsData, type MenuItem} from "@/data/menuData"; // 분리된 데이터 임포트
 
-const props = defineProps({
-    isStaff: {
-        type: Boolean,
-        default: false,
-    },
-});
+// Pinia authStore 인스턴스 가져오기
+const authStore = useAuthStore();
 
 const isMobileMenuOpen = ref(false);
 const toggleMobileMenu = () => (isMobileMenuOpen.value = !isMobileMenuOpen.value);
 const closeMobileMenu = () => (isMobileMenuOpen.value = false);
 
-const menuItems = ref([
-    {
-        title: "교육원 소개",
-        link: "/intro/greeting/",
-        submenu: [
-            {title: "인사말", link: "/intro/greeting/"},
-            {title: "강사 소개", link: "/intro/instructors/"},
-            {title: "오시는 길", link: "/intro/contact/"},
-        ],
-    },
-    {
-        title: "주요 강의",
-        link: "/lecture/list",
-        // submenu: [{title: "주요 강의", link: "/lecture/list"}],
-    },
-    {
-        title: "강의 문의",
-        link: props.isStaff ? "/inquiry" : "/inquiry",
-        submenu: [
-            ...(props.isStaff ? [] : [{title: "강의 상담 문의", link: "/inquiry/write"}]),
-            {title: props.isStaff ? "문의 내역" : "내 문의 내역", link: "/inquiry"},
-            {title: "강의 일정", link: "/lecture/calender"},
-        ],
-    },
-    {
-        title: "소통 마당",
-        link: "/notice/",
-        submenu: [
-            {title: "공지사항", link: "/notice/"},
-            // {title: "자료실", link: "/archive/"},
-            // {title: "방명록", link: "/guest/"},
-            {title: "활동 소식", link: "/news/"},
-        ],
-    },
-]);
+// isStaff 여부에 따라 동적으로 변경될 메뉴 아이템을 계산하는 computed 속성
+const processedMenuItems = computed<MenuItem[]>(() => {
+    // 원본 데이터를 수정하지 않기 위해 깊은 복사본 생성
+    const items = JSON.parse(JSON.stringify(menuItemsData)) as MenuItem[];
+
+    // '강의 문의' 메뉴 찾기
+    const inquiryMenu = items.find((menu) => menu.title === "강의 문의");
+
+    if (inquiryMenu) {
+        // 1. isStaff 여부에 따라 '강의 상담 문의' 서브메뉴 추가/제거
+        const isAdmin = authStore.isAdmin;
+
+        if (!isAdmin) {
+            // 일반 사용자일 경우 '강의 상담 문의' 추가
+            inquiryMenu.submenu = [
+                {title: "강의 상담 문의", link: "/inquiry/write"},
+                ...(inquiryMenu.submenu || []), // 기존 서브메뉴가 있다면 그 뒤에 추가
+            ];
+        } else {
+            // 스태프일 경우 '강의 상담 문의' 제거 (원본 데이터에 없으므로 이 로직은 필요 없을 수 있음)
+            // 만약 원본 데이터에 항상 있고 스태프일 때만 제거하려면 아래와 같이 필터링
+            inquiryMenu.submenu = (inquiryMenu.submenu || []).filter((sub) => sub.link !== "/inquiry/write");
+        }
+
+        // 2. '문의 내역' 서브메뉴 타이틀 변경
+        const myInquiryItem = (inquiryMenu.submenu || []).find((sub) => sub.link === "/inquiry");
+        if (myInquiryItem) {
+            myInquiryItem.title = isAdmin ? "문의 내역" : "내 문의 내역";
+        }
+
+        // 3. '강의 문의' 최상위 링크 변경
+        inquiryMenu.link = isAdmin ? "/inquiry" : "/inquiry/write";
+    }
+
+    return items;
+});
 </script>

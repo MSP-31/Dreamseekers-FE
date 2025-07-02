@@ -1,7 +1,7 @@
 <template>
-    <div class="font-[var(--font-body)]">
+    <div>
         <PageHeader title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg" />
-
+        <SubMenuBreadcrumb />
         <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
                 {{ isAdmin ? "문의 내역" : "내 문의 내역" }}
@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import {
     dummyInquiryPosts,
     dummyPaginationData,
@@ -110,6 +110,7 @@ import {
     type PaginationData,
 } from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 import {useAuthStore} from "@/stores/auth";
+import SubMenuBreadcrumb from "@/components/layout/SubMenuBreadcrumb.vue";
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;

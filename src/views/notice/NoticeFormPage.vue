@@ -128,7 +128,7 @@
 <script setup lang="ts">
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import {dummyImportantNotices, dummyNoticePosts, noticeFormSchema, type NoticeFormData, type NoticeFormField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 

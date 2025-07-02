@@ -1,7 +1,7 @@
 <template>
     <main>
         <SlideSection :slides="dummySlides" />
-        <div class="relative text-center text-black flex-1 my-0 mx-[20%]">
+        <div class="relative text-center text-black flex-1 my-0 mx-[20%] space-y-12">
             <LectureListSection :lectures="lectureItemsData" />
             <CalendarSection :schedules="dummySchedules" :is-staff="authStore.isAdmin" />
             <ContactMapSection :contacts="dummyContacts" :business-info="dummyBusinessInfo" :naver-map-client-id="naverClientId" />

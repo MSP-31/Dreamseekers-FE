@@ -43,7 +43,7 @@
                     :key="lecture.id"
                     :lecture="lecture"
                     :is-staff="isAdmin"
-                    :detail-url="`/lectures/${lecture.id}`"
+                    :detail-url="`/lecture/detail/${lecture.id}`"
                     @edit="openModal"
                     @delete="handleDelete"
                 />
@@ -130,7 +130,7 @@
 
 <script setup lang="ts">
 import {ref, reactive, computed} from "vue";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureCard from "@/components/LectureCard.vue";
 import {lectureItemsData, lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";

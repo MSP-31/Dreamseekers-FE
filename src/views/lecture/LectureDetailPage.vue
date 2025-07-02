@@ -105,7 +105,7 @@
 <script setup lang="ts">
 import {ref, reactive, onMounted} from "vue";
 import {useRoute} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureSubItemCard from "@/components/LectureSubItemCard.vue";
 import {
     lectureItemsData,

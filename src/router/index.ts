@@ -60,7 +60,7 @@ const router = createRouter({
             name: "inquiry",
             children: [
                 {
-                    path: "",
+                    path: "list",
                     name: "inquiryList",
                     component: () => import("@/views/inquiry/InquiryListPage.vue"),
                 },
