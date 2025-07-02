@@ -14,7 +14,7 @@
             <h1 class="text-3xl font-bold text-center mb-10 text-gray-800">인사말</h1>
 
             <!-- Staff-only: Edit Button -->
-            <div v-if="isStaff" class="text-right mb-6">
+            <div v-if="isAdmin" class="text-right mb-6">
                 <button @click="openModal" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">수정</button>
             </div>
 
@@ -32,7 +32,7 @@
 
             <!-- Staff-only: Modal for Editing -->
             <div
-                v-if="isStaff && showModal"
+                v-if="isAdmin && showModal"
                 class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 transition-opacity duration-300 ease-in-out"
                 :class="{'opacity-100': showModal, 'opacity-0 pointer-events-none': !showModal}"
                 @click.self="closeModal"
@@ -123,9 +123,12 @@
 
 <script setup lang="ts">
 import {ref, reactive, onMounted} from "vue";
-import {greetingIntroData, greetingFormFields, userStatus, type IntroData, type FormField} from "@/data/dummyData";
+import {greetingIntroData, greetingFormFields, type IntroData, type FormField} from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
 
-const isStaff = ref(userStatus.isStaff);
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
+
 const showModal = ref(false);
 
 // 현재 페이지에 표시될 인사말 데이터 (초기값은 더미 데이터)

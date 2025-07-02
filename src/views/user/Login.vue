@@ -125,7 +125,7 @@ const handleLogin = async () => {
 
             // Pinia 스토어에 엑세스 키 및 리프레시 키 저장
             // refresh_token이 있다면 함께 전달합니다.
-            authStore.setTokens(access_token, refresh_token || null, isAdmin);
+            authStore.setTokens(access_token, refresh_token || null, isAdmin || false);
 
             // 로그인 성공 후 리디렉션할 경로 결정
             // 쿼리 파라미터에 'next'가 있으면 해당 경로로, 없으면 메인페이지로 이동

@@ -23,7 +23,7 @@
                     </div>
                 </form>
                 <button
-                    v-if="isStaff"
+                    v-if="isAdmin"
                     @click="openModal()"
                     class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out w-full sm:w-auto"
                 >
@@ -42,7 +42,7 @@
                     v-for="lecture in filteredLectures"
                     :key="lecture.id"
                     :lecture="lecture"
-                    :is-staff="isStaff"
+                    :is-staff="isAdmin"
                     :detail-url="`/lectures/${lecture.id}`"
                     @edit="openModal"
                     @delete="handleDelete"
@@ -57,7 +57,7 @@
 
             <!-- Modal for Adding/Editing Lecture -->
             <div
-                v-if="isStaff && showModal"
+                v-if="isAdmin && showModal"
                 class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 transition-opacity duration-300 ease-in-out"
                 :class="{'opacity-100': showModal, 'opacity-0 pointer-events-none': !showModal}"
                 @click.self="closeModal"
@@ -132,16 +132,12 @@
 import {ref, reactive, computed} from "vue";
 import PageHeader from "@/components/PageHeader.vue";
 import LectureCard from "@/components/LectureCard.vue";
-import {
-    lectureItemsData,
-    lectureFormSchema,
-    userStatus, // dummyData.ts에 userStatus가 정의되어 있다고 가정
-    type LectureItem,
-    type LectureFormData,
-    type LectureFormSchemaField,
-} from "@/data/dummyData";
+import {lectureItemsData, lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
 
-const isStaff = ref(userStatus.isStaff);
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
+
 const allLectures = ref<LectureItem[]>([...lectureItemsData]);
 
 const searchInput = ref("");

@@ -183,8 +183,6 @@ export const dummyBusinessInfo: Ref<BusinessInfo> = ref({
     usage_guide: "string",
 });
 
-export const isUserStaff: Ref<boolean> = ref(false); // 관리자 여부 더미 데이터
-
 export const naverClientId: Ref<string> = ref("YOUR_NCP_CLIENT_ID"); // 네이버 클라우드 플랫폼 Client ID
 
 //-----------------------------
@@ -203,11 +201,6 @@ export const greetingFormFields: FormField[] = [
     {id: "intro-contents", name: "contents", label: "내용", type: "textarea"},
     {id: "intro-image", name: "image", label: "대표 이미지", type: "image"},
 ];
-
-// 사용자 상태 (is_staff) - 실제 애플리케이션에서는 인증 상태에 따라 동적으로 관리됩니다.
-export const userStatus = {
-    isStaff: true, // 예시: 현재 사용자가 관리자라고 가정
-};
 //-----------------------------
 
 // 강사 목록 더미 데이터

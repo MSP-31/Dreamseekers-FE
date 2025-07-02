@@ -14,7 +14,7 @@
             <h1 class="text-3xl font-bold text-center mb-10 text-[var(--dream-text)]">강사 소개</h1>
 
             <!-- Staff-only: Add Button -->
-            <div v-if="isStaff" class="text-right mb-6">
+            <div v-if="isAdmin" class="text-right mb-6">
                 <button @click="openModal()" class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out">
                     강사 추가
                 </button>
@@ -36,7 +36,7 @@
                     <p class="text-sm text-[var(--dream-sub)] leading-relaxed whitespace-pre-line flex-grow">{{ instructor.contents }}</p>
 
                     <!-- Staff-only: Edit/Delete Buttons -->
-                    <div v-if="isStaff" class="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div v-if="isAdmin" class="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <button @click="openModal(instructor)" class="bg-[var(--dream-blue)] hover:bg-opacity-80 text-white text-xs font-semibold py-1 px-3 rounded-md shadow-sm">수정</button>
                         <button @click="handleDelete(instructor.id)" class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-3 rounded-md shadow-sm">삭제</button>
                     </div>
@@ -48,7 +48,7 @@
 
             <!-- Staff-only: Modal for Adding/Editing Instructor -->
             <div
-                v-if="isStaff && showModal"
+                v-if="isAdmin && showModal"
                 class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 transition-opacity duration-300 ease-in-out"
                 :class="{'opacity-100': showModal, 'opacity-0 pointer-events-none': !showModal}"
                 @click.self="closeModal"
@@ -128,16 +128,12 @@
 
 <script setup lang="ts">
 import {ref, reactive, onMounted} from "vue";
-import {
-    instructorsListData,
-    instructorFormSchema,
-    userStatus, // dummyData.ts에 userStatus가 정의되어 있다고 가정
-    type Instructor,
-    type InstructorFormData,
-    type InstructorFormField,
-} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
+import {instructorsListData, instructorFormSchema, type Instructor, type InstructorFormData, type InstructorFormField} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
+import {useAuthStore} from "@/stores/auth";
 
-const isStaff = ref(userStatus.isStaff);
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
+
 const instructors = ref<Instructor[]>([...instructorsListData]); // 더미 데이터로 초기화
 
 const showModal = ref(false);

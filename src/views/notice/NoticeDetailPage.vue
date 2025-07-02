@@ -71,21 +71,23 @@
 import {ref, onMounted, computed} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, dummyImportantNotices, dummyNoticePosts, type NoticePost} from "@/data/dummyData";
+import {dummyImportantNotices, dummyNoticePosts, type NoticePost} from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
+
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
 
 const route = useRoute();
 const router = useRouter();
 
 const post = ref<NoticePost | null>(null);
-const isStaff = ref(userStatus.isStaff); // 실제 앱에서는 로그인 상태에서 가져옴
-const currentUserId = ref(null); // 실제 앱에서는 로그인된 사용자 ID
 
 const isAuthorOrStaff = computed(() => {
     if (!post.value) return false;
-    // 더미 데이터에는 author_id가 없으므로, isStaff로만 판단하거나,
+    // 더미 데이터에는 author_id가 없으므로, isAdmin로만 판단하거나,
     // dummyNoticePosts의 author 필드를 ID로 가정하고 비교할 수 있습니다.
-    // 여기서는 isStaff만으로 판단합니다. 실제 앱에서는 post.author_id === currentUserId.value || isStaff.value
-    return isStaff.value;
+    // 여기서는 isAdmin만으로 판단합니다. 실제 앱에서는 post.author_id === currentUserId.value || isAdmin.value
+    return isAdmin.value;
 });
 
 onMounted(() => {

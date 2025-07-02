@@ -80,7 +80,7 @@
                 </tbody>
             </table>
 
-            <div v-if="isStaff" class="mt-6 text-right">
+            <div v-if="isAdmin" class="mt-6 text-right">
                 <router-link to="/notice/write" class="inline-block bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm"> 글쓰기 </router-link>
             </div>
 
@@ -125,14 +125,16 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, computed} from "vue";
-import {useRouter, useRoute} from "vue-router";
+import {ref, onMounted} from "vue";
+import {useRouter} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, dummyImportantNotices, dummyNoticePosts, dummyNoticePaginationData, noticeSearchTypes, type NoticePost, type PaginationData} from "@/data/dummyData";
+import {dummyImportantNotices, dummyNoticePosts, dummyNoticePaginationData, noticeSearchTypes, type NoticePost, type PaginationData} from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
+
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
 
 const router = useRouter();
-const route = useRoute();
-const isStaff = ref(userStatus.isStaff);
 
 const importantNotices = ref<NoticePost[]>([]);
 const regularNotices = ref<NoticePost[]>([]);
