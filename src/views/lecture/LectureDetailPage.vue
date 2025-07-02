@@ -2,23 +2,23 @@
     <div class="font-[var(--font-body)]">
         <PageHeader :title="mainLecture?.title || '강의 상세'" backgroundImageUrl="/img/top_header/lecture.jpg" />
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <div v-if="mainLecture">
                 <h1 class="text-3xl font-bold text-center mb-4 text-[var(--dream-text)]">{{ mainLecture.title }}</h1>
                 <p v-if="mainLecture.contents" class="text-center text-lg text-[var(--dream-sub)] mb-10">{{ mainLecture.contents }}</p>
 
                 <!-- Staff-only: Add Sub-item Button -->
-                <div v-if="isStaff" class="text-right mb-6">
+                <div v-if="isAdmin" class="text-right mb-6">
                     <button @click="openModal()" class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm">세부 항목 추가</button>
                 </div>
 
                 <!-- Sub-Lectures List -->
                 <ul v-if="currentSubItems.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <LectureSubItemCard v-for="item in currentSubItems" :key="item.id" :sub-item="item" :is-staff="isStaff" @edit="openModal" @delete="handleDelete" />
+                    <LectureSubItemCard v-for="item in currentSubItems" :key="item.id" :sub-item="item" :is-staff="isAdmin" @edit="openModal" @delete="handleDelete" />
                 </ul>
                 <div v-else class="text-center text-gray-500 py-8">
                     <p>표시할 세부 강의 항목이 없습니다.</p>
-                    <p v-if="isStaff" class="mt-2 text-sm">"세부 항목 추가" 버튼을 눌러 내용을 추가할 수 있습니다.</p>
+                    <p v-if="isAdmin" class="mt-2 text-sm">"세부 항목 추가" 버튼을 눌러 내용을 추가할 수 있습니다.</p>
                 </div>
             </div>
             <div v-else class="text-center text-gray-500 py-16">
@@ -31,7 +31,7 @@
 
             <!-- Modal for Adding/Editing Sub-Lecture Item -->
             <div
-                v-if="isStaff && showModal"
+                v-if="isAdmin && showModal"
                 class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
                 :class="{'opacity-100': showModal, 'opacity-0 pointer-events-none': !showModal}"
                 @click.self="closeModal"
@@ -105,21 +105,23 @@
 <script setup lang="ts">
 import {ref, reactive, onMounted} from "vue";
 import {useRoute} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureSubItemCard from "@/components/LectureSubItemCard.vue";
 import {
     lectureItemsData,
     lectureSubItemsData,
     lectureSubItemFormSchema,
-    userStatus,
     type LectureItem,
     type LectureSubItem,
     type LectureSubItemFormData,
     type LectureSubItemFormSchemaField,
 } from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
+
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
 
 const route = useRoute();
-const isStaff = ref(userStatus.isStaff);
 
 const mainLecture = ref<LectureItem | null>(null);
 const currentSubItems = ref<LectureSubItem[]>([]);

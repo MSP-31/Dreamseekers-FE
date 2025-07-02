@@ -53,4 +53,17 @@
             display: block !important;
         } */
     }
+
+    .main-content {
+        position: relative; /* relative */
+        flex: 1; /* flex-1 */
+        margin-top: 0; /* my-0 */
+        margin-bottom: 0; /* my-0 */
+        margin-left: 20%; /* mx-[20%] */
+        margin-right: 20%; /* mx-[20%] */
+        padding-top: 3rem; /* py-12 (12 * 0.25rem = 3rem) */
+        padding-bottom: 3rem; /* py-12 */
+        padding-left: 1rem; /* px-4 (4 * 0.25rem = 1rem) */
+        padding-right: 1rem; /* px-4 */
+    }
 }

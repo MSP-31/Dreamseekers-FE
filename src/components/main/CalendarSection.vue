@@ -1,8 +1,7 @@
 <template>
-    <div class="main-content py-12">
+    <div>
         <div class="content-box container mx-auto px-4">
-            <h1 class="text-3xl font-bold text-dream-text text-center mb-8">강의 일정</h1>
-            <div class="sec-cal bg-white p-6 rounded-lg shadow-lg">
+            <div class="sec-cal bg-white rounded-lg shadow-lg">
                 <div class="cal-nav flex justify-between items-center mb-6">
                     <button @click="prevMonth" class="nav-btn hover:text-[var(--dream-main)] font-semibold py-2 px-4 rounded">&lt; 이전 달</button>
                     <div class="year-month text-xl font-bold text-dream-text">{{ currentYear }}년 {{ currentMonth + 1 }}월</div>

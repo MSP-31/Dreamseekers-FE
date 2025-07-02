@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import {defineProps} from "vue";
 
-const _props = defineProps<{
+const props = defineProps<{
     title: string;
     backgroundImageUrl: string;
 }>();
