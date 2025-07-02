@@ -1,10 +1,10 @@
 <template>
-    <div class="font-[var(--font-body)]">
+    <div>
         <PageHeader title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg" />
-
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <SubMenuBreadcrumb />
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
-                {{ isStaff ? "문의 내역" : "내 문의 내역" }}
+                {{ isAdmin ? "문의 내역" : "내 문의 내역" }}
             </h1>
 
             <table class="min-w-full divide-y divide-gray-200 border-t border-b border-gray-300">
@@ -100,9 +100,8 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import {
-    userStatus,
     dummyInquiryPosts,
     dummyPaginationData,
     dummyInquiryPostsPage2, // 예시: 2페이지 데이터
@@ -110,9 +109,13 @@ import {
     type InquiryPost,
     type PaginationData,
 } from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
+import {useAuthStore} from "@/stores/auth";
+import SubMenuBreadcrumb from "@/components/layout/SubMenuBreadcrumb.vue";
+
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
 
 const router = useRouter();
-const isStaff = ref(userStatus.isStaff);
 
 // 실제 애플리케이션에서는 API 호출로 데이터를 가져옵니다.
 // 여기서는 더미 데이터를 사용합니다.

@@ -2,12 +2,12 @@
     <div class="font-[var(--font-body)]">
         <PageHeader title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg" />
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
                 {{ isEditMode ? "공지사항 수정" : "공지사항 작성" }}
             </h1>
 
-            <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isStaff">
+            <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isAdmin">
                 <template v-for="field in formSchema" :key="field.id">
                     <!-- Title and Contents Fields -->
                     <div v-if="field.type === 'text' || field.type === 'textarea'">
@@ -101,7 +101,7 @@
                     </div>
 
                     <!-- Important Checkbox -->
-                    <div v-if="field.type === 'checkbox' && isStaff" class="flex items-center">
+                    <div v-if="field.type === 'checkbox' && isAdmin" class="flex items-center">
                         <input
                             :id="field.id"
                             type="checkbox"
@@ -128,8 +128,9 @@
 <script setup lang="ts">
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import PageHeader from "@/components/PageHeader.vue";
-import {userStatus, dummyImportantNotices, dummyNoticePosts, noticeFormSchema, type NoticeFormData, type NoticeFormField} from "@/data/dummyData";
+import PageHeader from "@/components/layout/PageHeader.vue";
+import {dummyImportantNotices, dummyNoticePosts, noticeFormSchema, type NoticeFormData, type NoticeFormField} from "@/data/dummyData";
+import {useAuthStore} from "@/stores/auth";
 
 interface ExistingFileItem {
     id: number;
@@ -151,7 +152,8 @@ interface NewImagePreview {
 const route = useRoute();
 const router = useRouter();
 
-const isStaff = ref(userStatus.isStaff);
+const authStore = useAuthStore();
+const isAdmin = authStore.isAdmin;
 
 const noticeId = ref<number | null>(null);
 const isEditMode = computed(() => noticeId.value !== null);
