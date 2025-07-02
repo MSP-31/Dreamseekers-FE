@@ -114,7 +114,7 @@ const menuItems = ref([
         link: "/notice/",
         submenu: [
             {title: "공지사항", link: "/notice/"},
-            {title: "자료실", link: "/archive/"},
+            // {title: "자료실", link: "/archive/"},
             // {title: "방명록", link: "/guest/"},
             {title: "활동 소식", link: "/news/"},
         ],

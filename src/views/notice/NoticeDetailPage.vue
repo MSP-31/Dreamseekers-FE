@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="mt-8 flex justify-end items-center space-x-3">
-                    <template v-if="isAuthorOrStaff">
+                    <template v-if="isAdmin">
                         <router-link
                             :to="`/notice/edit/${post.pk}`"
                             class="inline-block text-center text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-700"
@@ -81,14 +81,6 @@ const route = useRoute();
 const router = useRouter();
 
 const post = ref<NoticePost | null>(null);
-
-const isAuthorOrStaff = computed(() => {
-    if (!post.value) return false;
-    // 더미 데이터에는 author_id가 없으므로, isAdmin로만 판단하거나,
-    // dummyNoticePosts의 author 필드를 ID로 가정하고 비교할 수 있습니다.
-    // 여기서는 isAdmin만으로 판단합니다. 실제 앱에서는 post.author_id === currentUserId.value || isAdmin.value
-    return isAdmin.value;
-});
 
 onMounted(() => {
     const postId = parseInt(route.params.pk as string, 10);
