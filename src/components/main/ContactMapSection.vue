@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content py-12">
+    <div class="py-12">
         <div class="content-box container mx-auto px-4">
             <h1 class="text-3xl font-bold text-dream-text text-center mb-8">오시는 길</h1>
 

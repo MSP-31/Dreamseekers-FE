@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content py-12">
+    <div class="py-12">
         <div class="content-box container mx-auto px-4">
             <div class="text-center mb-12">
                 <p class="text-3xl font-bold mb-2">다양한 교육들</p>

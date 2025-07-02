@@ -9,7 +9,7 @@
         </div>
 
         <!-- Main Content Section -->
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-10 text-[var(--dream-text)]">오시는 길</h1>
 
             <!-- Map Area -->

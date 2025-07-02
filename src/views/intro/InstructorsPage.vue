@@ -10,7 +10,7 @@
         </div>
 
         <!-- Main Content Section -->
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-10 text-[var(--dream-text)]">강사 소개</h1>
 
             <!-- Staff-only: Add Button -->

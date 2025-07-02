@@ -2,7 +2,7 @@
     <div class="font-[var(--font-body)]">
         <PageHeader :title="mainLecture?.title || '강의 상세'" backgroundImageUrl="/img/top_header/lecture.jpg" />
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <div v-if="mainLecture">
                 <h1 class="text-3xl font-bold text-center mb-4 text-[var(--dream-text)]">{{ mainLecture.title }}</h1>
                 <p v-if="mainLecture.contents" class="text-center text-lg text-[var(--dream-sub)] mb-10">{{ mainLecture.contents }}</p>

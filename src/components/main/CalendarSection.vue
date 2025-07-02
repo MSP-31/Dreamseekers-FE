@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content py-12">
+    <div class="py-12">
         <div class="content-box container mx-auto px-4">
             <h1 class="text-3xl font-bold text-dream-text text-center mb-8">강의 일정</h1>
             <div class="sec-cal bg-white p-6 rounded-lg shadow-lg">

@@ -2,7 +2,7 @@
     <div class="font-[var(--font-body)]">
         <PageHeader title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg" />
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
                 {{ isAdmin ? "문의 내역" : "내 문의 내역" }}
             </h1>

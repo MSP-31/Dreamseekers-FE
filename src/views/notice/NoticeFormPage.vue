@@ -2,7 +2,7 @@
     <div class="font-[var(--font-body)]">
         <PageHeader title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg" />
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="main-content">
             <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
                 {{ isEditMode ? "공지사항 수정" : "공지사항 작성" }}
             </h1>
