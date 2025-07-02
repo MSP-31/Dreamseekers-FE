@@ -104,6 +104,22 @@ const router = createRouter({
             name: "news",
             component: () => import("@/views/news/ActivityNewsPage.vue"),
         },
+        {
+            path: "/user",
+            name: "user",
+            children: [
+                {
+                    path: "login",
+                    name: "userLogin",
+                    component: () => import("@/views/user/Login.vue"),
+                },
+                {
+                    path: "signup",
+                    name: "userSignup",
+                    component: () => import("@/views/user/Signup.vue"),
+                },
+            ],
+        },
     ],
 });
 

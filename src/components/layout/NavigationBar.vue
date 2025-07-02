@@ -120,8 +120,4 @@ const menuItems = ref([
         ],
     },
 ]);
-
-// Django의 {% if request.user.is_staff %} 와 같은 조건부 링크는 위 menuItems 정의 시 props.isStaff를 활용하여 처리했습니다.
-// 실제 링크는 Vue Router의 <router-link>를 사용하거나, a href를 그대로 사용한다면 페이지 전체가 새로고침됩니다.
-// SPA로 구성한다면 Vue Router 사용이 권장됩니다.
 </script>

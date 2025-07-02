@@ -1,34 +1,30 @@
 <template>
     <div class="py-2 text-sm">
         <div class="container mx-auto flex justify-end items-center px-4">
-            <template v-if="user.isAuthenticated">
-                <b class="mr-2">{{ user.username }}</b
-                >님
+            <template v-if="authStore.isAuthenticated">
+                <b class="mr-2">관리자</b>님
                 <span class="mx-2 border-l border-gray-400 h-3"></span>
                 <a href="#" @click.prevent="goToAccount" class="hover:text-[var(--dream-main)]">정보수정</a>
                 <span class="mx-2 border-l border-gray-400 h-3"></span>
-                <a href="#" @click.prevent="$emit('logout')" class="hover:text-[var(--dream-main)]">로그아웃</a>
-            </template>
-            <template v-else>
-                <a href="#" @click.prevent="goToLogin" class="hover:text-[var(--dream-main)]">로그인</a>
-                <span class="mx-2 border-l border-gray-400 h-3"></span>
-                <a href="#" @click.prevent="goToSignup" class="hover:text-[var(--dream-main)]">회원가입</a>
+                <a href="#" @click.prevent="handleLogout" class="hover:text-[var(--dream-main)]">로그아웃</a>
             </template>
         </div>
     </div>
 </template>
 
-<script setup>
-defineProps({
-    user: {
-        type: Object,
-        required: true,
-    },
-});
-defineEmits(["logout"]);
+<script setup lang="ts">
+import {useAuthStore} from "@/stores/auth";
+import {useRouter} from "vue-router";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = () => {
+    authStore.clearTokens();
+    // 로그아웃 후 로그인 페이지로 리디렉션
+    router.push("/");
+};
 
 // 실제 라우팅 함수로 대체 필요
 const goToAccount = () => alert("정보수정 페이지로 이동");
-const goToLogin = () => alert("로그인 페이지로 이동");
-const goToSignup = () => alert("회원가입 페이지로 이동");
 </script>
