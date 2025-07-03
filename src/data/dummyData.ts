@@ -42,22 +42,6 @@ export interface Contact {
     sub_phone: string;
 }
 
-//-----------------------------
-export interface IntroData {
-    image: string;
-    title: string;
-    contents: string;
-}
-
-export interface FormField {
-    id: string;
-    name: string;
-    label: string;
-    type: "text" | "textarea" | "image";
-    // value?: string | File | null; // 필요에 따라 초기값 타입 확장
-}
-//-----------------------------
-
 // 강사 소개
 export interface Instructor {
     id: number;

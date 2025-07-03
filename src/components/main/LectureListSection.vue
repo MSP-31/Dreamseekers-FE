@@ -9,11 +9,9 @@
             <ul class="lecture-box grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <li v-for="lecture in lectures" :key="lecture.pk" class="lecture-content bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
                     <router-link :to="`/lecture/detail/${lecture.id}`" class="block">
-                        <img :src="lecture.image.url" :alt="lecture.title" class="w-full h-48 object-cover" />
+                        <img :src="lecture.image" :alt="lecture.title" class="w-full h-48 object-cover" />
                         <div class="p-6">
                             <h2 class="lecture-title text-xl font-semibold mb-2">{{ lecture.title }}</h2>
-                            <!-- Django의 |linebreaksbr 필터 대신 CSS로 처리하거나, v-html을 주의해서 사용해야 합니다. -->
-                            <!-- 여기서는 간단히 white-space: pre-line으로 처리할 수 있도록 가정합니다. -->
                             <p class="lecture-text text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ lecture.contents }}</p>
                         </div>
                     </router-link>
@@ -34,8 +32,4 @@ defineProps({
         default: () => [],
     },
 });
-
-// 기존 scroll_wrap, scroll_on 애니메이션은
-// Vue의 <Transition> 컴포넌트나 Intersection Observer API를 사용하여 구현할 수 있습니다.
-// 이 예제에서는 Tailwind의 hover 효과로 대체했습니다.
 </script>
