@@ -6,7 +6,7 @@ interface User {
     pk: number;
     username: string;
     email: string;
-    is_staff: boolean;
+    isAdmin: boolean;
 }
 
 // State의 타입 정의
@@ -60,6 +60,6 @@ export const useAuthStore = defineStore("auth", {
         // 현재 사용자 정보 반환
         currentUser: (state): User | null => state.user,
         // 관리자 여부 반환
-        isAdmin: (state): boolean => state.user?.is_staff || false,
+        isAdmin: (state): boolean => state.user?.isAdmin || false,
     },
 });

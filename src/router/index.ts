@@ -38,6 +38,11 @@ const router = createRouter({
             name: "lecture",
             children: [
                 {
+                    path: "inquiry",
+                    name: "lectureInquiry",
+                    component: () => import("@/views/lecture/LectureListPage.vue"),
+                },
+                {
                     path: "list",
                     name: "lectureList",
                     component: () => import("@/views/lecture/LectureListPage.vue"),
