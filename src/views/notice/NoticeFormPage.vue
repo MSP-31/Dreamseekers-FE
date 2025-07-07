@@ -9,7 +9,6 @@
 
             <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isAdmin">
                 <template v-for="field in formSchema" :key="field.id">
-                    <!-- Title and Contents Fields -->
                     <div v-if="field.type === 'text' || field.type === 'textarea'">
                         <label :for="field.id" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
                         <input
@@ -28,7 +27,6 @@
                         ></textarea>
                     </div>
 
-                    <!-- Image Upload Field -->
                     <div v-if="field.type === 'image'">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
                         <input
@@ -39,14 +37,12 @@
                             @change="handleNewImageSelection"
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[var(--dream-blue)] file:text-white hover:file:bg-opacity-80 cursor-pointer"
                         />
-                        <!-- New Image Previews -->
                         <div v-if="newImagePreviews.length > 0" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                             <div v-for="(preview, index) in newImagePreviews" :key="`new-img-${index}`" class="relative">
                                 <img :src="preview.url" alt="New image preview" class="w-full h-32 object-cover rounded-md shadow" />
                                 <button @click="removeNewImage(index)" type="button" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs leading-none">&times;</button>
                             </div>
                         </div>
-                        <!-- Existing Image Previews (Edit Mode) -->
                         <div v-if="isEditMode && existingImages.length > 0" class="mt-4 pt-4 border-t">
                             <p class="text-xs text-gray-600 mb-2">기존 이미지 (클릭하여 삭제 표시/해제)</p>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -65,7 +61,6 @@
                         </div>
                     </div>
 
-                    <!-- File Upload Field -->
                     <div v-if="field.type === 'file'">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
                         <input
@@ -75,14 +70,12 @@
                             @change="handleNewFileSelection"
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[var(--dream-blue)] file:text-white hover:file:bg-opacity-80 cursor-pointer"
                         />
-                        <!-- New Files List -->
                         <ul v-if="newFiles.length > 0" class="mt-4 list-disc list-inside text-sm space-y-1">
                             <li v-for="(file, index) in newFiles" :key="`new-file-${index}`" class="flex justify-between items-center">
                                 <span>{{ file.name }} ({{ (file.size / 1024).toFixed(1) }} KB)</span>
                                 <button @click="removeNewFile(index)" type="button" class="text-red-500 hover:text-red-700 text-xs">&times; 제거</button>
                             </li>
                         </ul>
-                        <!-- Existing Files List (Edit Mode) -->
                         <div v-if="isEditMode && existingFiles.length > 0" class="mt-4 pt-4 border-t">
                             <p class="text-xs text-gray-600 mb-2">기존 파일 (클릭하여 삭제 표시/해제)</p>
                             <ul class="text-sm space-y-1">
@@ -100,7 +93,6 @@
                         </div>
                     </div>
 
-                    <!-- Important Checkbox -->
                     <div v-if="field.type === 'checkbox' && isAdmin" class="flex items-center">
                         <input
                             :id="field.id"
@@ -121,6 +113,10 @@
                     </div>
                 </div>
             </form>
+            <div v-else class="text-center py-16 text-gray-600">
+                <p>이 페이지는 관리자만 접근할 수 있습니다.</p>
+                <router-link to="/" class="mt-4 inline-block text-[var(--dream-main)] hover:underline">홈으로 돌아가기</router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -129,8 +125,10 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/layout/PageHeader.vue";
-import {dummyImportantNotices, dummyNoticePosts, noticeFormSchema, type NoticeFormData, type NoticeFormField} from "@/data/dummyData";
+// 더미 데이터 대신 API 연동을 위해 필요한 타입만 import
+import {noticeFormSchema, type NoticeFormData, type NoticeFormField, type NoticeItem} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
+import apiClient from "@/api"; // apiClient 임포트
 
 interface ExistingFileItem {
     id: number;
@@ -165,25 +163,32 @@ const initialFormData: NoticeFormData = {
 };
 
 const formData = reactive<NoticeFormData>({...initialFormData});
-const formSchema = ref<NoticeFormField[]>(noticeFormSchema);
+const formSchema = ref<NoticeFormField[]>(noticeFormSchema); // 폼 스키마 사용
+
 const newImages = ref<File[]>([]);
-const newImagePreviews = ref<NewImagePreview[]>([]);
-const existingImages = ref<ExistingImageItem[]>([]);
+const newImagePreviews = ref<NewImagePreview[]>([]); // 새 이미지 프리뷰
+const existingImages = ref<ExistingImageItem[]>([]); // 기존 이미지 관리
 
 const newFiles = ref<File[]>([]);
-const existingFiles = ref<ExistingFileItem[]>([]);
+const existingFiles = ref<ExistingFileItem[]>([]); // 기존 파일 관리
 
-const loadNoticeData = (pk: number) => {
-    const postToEdit = dummyImportantNotices.find((p: {pk: number}) => p.pk === pk) || dummyNoticePosts.find((p: {pk: number}) => p.pk === pk);
-    if (postToEdit) {
+// 공지사항 데이터 불러오기 (수정 모드일 때)
+const loadNoticeData = async (pk: number) => {
+    try {
+        const response = await apiClient.get<NoticeItem>(`/notice/${pk}/`); // API에서 공지사항 상세 데이터 가져오기
+        const postToEdit = response.data;
+
         formData.title = postToEdit.title;
         formData.contents = postToEdit.contents || "";
         formData.is_important = postToEdit.is_important || false;
-        existingImages.value = (postToEdit.images || []).map((img: any) => ({...img, toDelete: false}));
-        existingFiles.value = (postToEdit.files || []).map((file: any) => ({...file, toDelete: false}));
-    } else {
-        console.error("Notice not found for editing");
-        router.push("/notice"); // Or show an error message
+
+        // 기존 이미지와 파일 목록을 상태에 저장
+        existingImages.value = (postToEdit.images || []).map((img) => ({...img, toDelete: false}));
+        existingFiles.value = (postToEdit.files || []).map((file) => ({...file, toDelete: false}));
+    } catch (error: any) {
+        console.error("공지사항 데이터 로딩 오류:", error);
+        alert(error.response?.data?.detail || "공지사항을 불러오는 데 실패했습니다.");
+        router.push("/notice"); // 오류 발생 시 목록 페이지로 이동
     }
 };
 
@@ -194,6 +199,7 @@ onMounted(() => {
     }
 });
 
+// 새 이미지 선택 핸들러
 const handleNewImageSelection = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files) {
@@ -205,71 +211,97 @@ const handleNewImageSelection = (event: Event) => {
             };
             reader.readAsDataURL(file);
         });
-        target.value = ""; // Reset file input
+        target.value = ""; // 파일 인풋 리셋
     }
 };
 
+// 새 이미지 제거
 const removeNewImage = (index: number) => {
     newImages.value.splice(index, 1);
     newImagePreviews.value.splice(index, 1);
 };
 
+// 기존 이미지 삭제 토글
 const toggleDeleteExistingImage = (id: number) => {
     const image = existingImages.value.find((img) => img.id === id);
     if (image) image.toDelete = !image.toDelete;
 };
 
+// 새 파일 선택 핸들러
 const handleNewFileSelection = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files) {
         newFiles.value.push(...Array.from(target.files));
-        target.value = ""; // Reset file input
+        target.value = ""; // 파일 인풋 리셋
     }
 };
 
+// 새 파일 제거
 const removeNewFile = (index: number) => {
     newFiles.value.splice(index, 1);
 };
 
+// 기존 파일 삭제 토글
 const toggleDeleteExistingFile = (id: number) => {
     const file = existingFiles.value.find((f) => f.id === id);
     if (file) file.toDelete = !file.toDelete;
 };
 
-const handleSubmit = () => {
-    const imagesToDelete = existingImages.value.filter((img) => img.toDelete).map((img) => img.id);
-    const filesToDelete = existingFiles.value.filter((file) => file.toDelete).map((file) => file.id);
+// 폼 제출 핸들러 (API 호출)
+const handleSubmit = async () => {
+    console.log("Submitting form data:", formData.title, formData.contents);
+    if (!isAdmin.valueOf) {
+        // 관리자가 아니면 제출 막기
+        alert("공지사항 작성/수정 권한이 없습니다.");
+        return;
+    }
 
-    // FormData 객체 생성 (실제 API 호출 시 사용)
     const apiFormData = new FormData();
     apiFormData.append("title", formData.title);
     apiFormData.append("contents", formData.contents);
-    apiFormData.append("is_important", String(formData.is_important));
+    apiFormData.append("is_important", String(formData.is_important)); // Boolean을 문자열로 변환
 
-    newImages.value.forEach((file) => apiFormData.append("new_images", file));
-    newFiles.value.forEach((file) => apiFormData.append("new_files", file));
-
-    imagesToDelete.forEach((id) => apiFormData.append("delete_images", String(id)));
-    filesToDelete.forEach((id) => apiFormData.append("delete_files", String(id)));
-
-    console.log("Form Data to Submit:", {
-        ...formData,
-        newImages: newImages.value.map((f) => f.name),
-        newFiles: newFiles.value.map((f) => f.name),
-        deleteImageIds: imagesToDelete,
-        deleteFileIds: filesToDelete,
+    // 새로운 이미지 파일 추가
+    newImages.value.forEach((file) => {
+        apiFormData.append("new_images", file); // 백엔드 필드명에 맞게 "new_images" 사용
     });
-    // console.log('API FormData:', Object.fromEntries(apiFormData.entries())); // FormData 내용 확인
+    // 새로운 파일 추가
+    newFiles.value.forEach((file) => {
+        apiFormData.append("new_files", file); // 백엔드 필드명에 맞게 "new_files" 사용
+    });
 
-    if (isEditMode.value) {
-        console.log(`Updating notice with ID: ${noticeId.value}`);
-        // 실제 API 호출: PUT /api/notices/${noticeId.value} with apiFormData
-        alert("공지사항이 수정되었습니다.");
-    } else {
-        console.log("Creating new notice");
-        // 실제 API 호출: POST /api/notices with apiFormData
-        alert("공지사항이 등록되었습니다.");
+    // 삭제할 기존 이미지 ID 추가
+    const imagesToDelete = existingImages.value.filter((img) => img.toDelete).map((img) => img.id);
+    imagesToDelete.forEach((id) => {
+        apiFormData.append("delete_images", String(id)); // 백엔드에서 배열로 받도록 `delete_images` (복수형) 사용
+    });
+
+    // 삭제할 기존 파일 ID 추가
+    const filesToDelete = existingFiles.value.filter((file) => file.toDelete).map((file) => file.id);
+    filesToDelete.forEach((id) => {
+        apiFormData.append("delete_files", String(id)); // 백엔드에서 배열로 받도록 `delete_files` (복수형) 사용
+    });
+
+    try {
+        if (isEditMode.value && noticeId.value !== null) {
+            // 공지사항 수정 (PUT 요청)
+            await apiClient.put(`/notice/${noticeId.value}/`, apiFormData, {
+                headers: {"Content-Type": "multipart/form-data"}, // FormData 사용 시 필수
+            });
+            alert("공지사항이 성공적으로 수정되었습니다.");
+        } else {
+            // 새 공지사항 생성 (POST 요청)
+            await apiClient.post("/notice/", apiFormData, {
+                headers: {"Content-Type": "multipart/form-data"}, // FormData 사용 시 필수
+            });
+            alert("공지사항이 성공적으로 등록되었습니다.");
+        }
+        router.push("/notice"); // 성공 후 목록 페이지로 이동
+    } catch (error: any) {
+        console.error("API 요청 오류:", error);
+        // 서버에서 보낸 에러 메시지를 사용자에게 보여주기
+        const errorMessage = error.response?.data?.detail || error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
+        alert(errorMessage);
     }
-    router.push("/notice"); // 성공 후 목록 페이지로 이동
 };
 </script>

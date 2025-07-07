@@ -122,28 +122,11 @@ export const lectureFormSchema: LectureFormSchemaField[] = [
 ];
 
 //-----------------------------
-
-// 강의 상세 페이지의 하위 강의 항목
-export interface LectureSubItem {
-    id: number; // 하위 항목의 고유 ID
-    mainLectureId: number; // 상위 LectureItem의 ID
-    title: string;
-    contents: string;
-    image?: string; // 하위 항목 이미지 (선택적)
-}
-
-// 하위 강의 추가/수정 모달 폼 데이터 타입
-export interface LectureSubItemFormData {
-    title: string;
-    contents: string;
-}
-
 export const dummySlides: Ref<Slide[]> = ref([
     {id: 1, image: {url: "/img/1.jpg"}, title: "꿈을 찾는 여정", contents: "당신의 가능성을 발견하세요."},
     {id: 2, image: {url: "/img/1.jpg"}, title: "전문가의 길", contents: "최고의 강사진과 함께합니다."},
     // public/img/slide1.jpg, slide2.jpg 등 이미지 파일 필요
 ]);
-
 export const dummySchedules: Ref<ScheduleData> = ref({
     // "2024-7-15": [{ title: "Vue 특강", time: "14:00", contents: "Vue.js 심화 과정" }]
 });
@@ -326,19 +309,6 @@ export const lectureSubItemsData: {[mainLectureId: number]: LectureSubItem[]} = 
         },
     ],
 };
-
-// 하위 강의 추가/수정 모달 폼 스키마
-export interface LectureSubItemFormSchemaField {
-    id: string;
-    name: keyof LectureSubItemFormData | "imageFile";
-    label: string;
-    type: "text" | "textarea" | "image";
-}
-export const lectureSubItemFormSchema: LectureSubItemFormSchemaField[] = [
-    {id: "sublecture-title", name: "title", label: "세부 강의명", type: "text"},
-    {id: "sublecture-contents", name: "contents", label: "세부 내용", type: "textarea"},
-    {id: "sublecture-image", name: "imageFile", label: "대표 이미지 (선택)", type: "image"},
-];
 
 //-----------------------------
 

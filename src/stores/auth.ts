@@ -44,11 +44,22 @@ export const useAuthStore = defineStore("auth", {
                 const response = await apiClient.get<User>("/user/account");
                 this.user = response.data;
                 this.isAuthenticated = true;
-            } catch (error) {
+            } catch (error: any) {
                 this.user = null;
                 this.isAuthenticated = false;
-                console.error("인증되지 않은 사용자입니다.");
-                throw error;
+
+                // 401 Unauthorized 에러
+                if (error.response && error.response.status === 401) {
+                    // 콘솔에 아무것도 출력하지 않음
+                }
+                // 400 Bad Request 에러 (refresh 토큰 만료 등)
+                else if (error.response && error.response.status === 400) {
+                    // 콘솔에 아무것도 출력하지 않음
+                }
+                // 그 외의 예상치 못한 오류는 여전히 콘솔에 출력 (디버깅 목적)
+                else {
+                    console.error("Failed to fetch user:", error);
+                }
             }
         },
     },

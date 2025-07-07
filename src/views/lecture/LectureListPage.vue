@@ -70,7 +70,7 @@ import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureCard from "@/components/LectureCard.vue";
 import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue"; // ReusableFormModal 임포트
+import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
 import apiClient from "@/api";
 
 const authStore = useAuthStore();
