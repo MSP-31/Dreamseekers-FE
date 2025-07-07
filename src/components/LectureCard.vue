@@ -21,7 +21,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, defineEmits} from "vue";
 import type {LectureItem} from "@/data/dummyData";
 
 const _props = defineProps<{

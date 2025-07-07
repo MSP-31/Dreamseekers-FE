@@ -44,7 +44,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 import type {ContactInfo, BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 
 const _props = defineProps<{
