@@ -50,10 +50,18 @@ export interface Instructor {
     image: string; // 이미지 URL
 }
 
-// 모달 폼 데이터 타입 (이미지는 File 객체로 별도 관리)
+// 모달 폼 데이터 타입
 export interface InstructorFormData {
     name: string;
     contents: string;
+    image?: File | string | null;
+}
+
+// 강의 추가/수정 모달 폼 데이터 타입
+export interface LectureFormData {
+    title: string;
+    contents: string;
+    image?: File | string | null;
 }
 
 // 모달 폼 필드 정의
@@ -100,21 +108,18 @@ export interface LectureItem {
     // category?: string; // 필요시 카테고리 추가
 }
 
-// 강의 추가/수정 모달 폼 데이터 타입
-export interface LectureFormData {
-    title: string;
-    contents: string;
-    // imageFile은 별도로 File 객체로 관리
-}
-
-// 강의 추가/수정 모달 폼 필드 정의
 export interface LectureFormSchemaField {
     id: string;
     name: keyof LectureFormData | "imageFile";
     label: string;
     type: "text" | "textarea" | "image";
 }
-//-----------------------------
+
+export const lectureFormSchema: LectureFormSchemaField[] = [
+    {id: "title", name: "title", label: "강의명", type: "text"},
+    {id: "contents", name: "contents", label: "강의 내용", type: "textarea"},
+    {id: "image", name: "image", label: "강의 대표 이미지", type: "image"}, // name이 "image"인지 확인
+];
 
 //-----------------------------
 
@@ -169,59 +174,6 @@ export const dummyBusinessInfo: Ref<BusinessInfo> = ref({
 
 export const naverClientId: Ref<string> = ref("YOUR_NCP_CLIENT_ID"); // 네이버 클라우드 플랫폼 Client ID
 
-//-----------------------------
-// 인사말 페이지에 사용될 더미 데이터
-export const greetingIntroData: IntroData = {
-    image: "/img/1.jpg",
-    title: "꿈을 찾는 이들을 위한 따뜻한 인사말",
-    contents: `안녕하세요. 꿈을찾는사람들 교육원에 오신 것을 진심으로 환영합니다.`,
-};
-
-// (관리자용) 수정 모달 폼 필드 정의
-// Django 템플릿의 {{ form }} 부분을 기반으로 추정하여 작성합니다.
-// 실제 Django Form 클래스의 필드 구성에 맞게 조정해야 합니다.
-export const greetingFormFields: FormField[] = [
-    {id: "intro-title", name: "title", label: "제목", type: "text"},
-    {id: "intro-contents", name: "contents", label: "내용", type: "textarea"},
-    {id: "intro-image", name: "image", label: "대표 이미지", type: "image"},
-];
-//-----------------------------
-
-// 강사 목록 더미 데이터 (예방 교육 주제)
-export const instructorsListData: Instructor[] = [
-    {
-        id: 1,
-        name: "김예방 전문강사",
-        contents: "청소년 및 성인을 대상으로 한 **도박 중독 예방 교육** 전문가입니다.\n도박의 위험성과 실제 사례를 통해 건강한 삶의 중요성을 강조합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 2,
-        name: "이안전 선임강사",
-        contents: "**마약류 오남용 예방 교육**을 담당하고 있습니다.\n마약의 종류, 위험성, 그리고 예방을 위한 실제적인 정보를 제공합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 3,
-        name: "박희망 수석강사",
-        contents: "**성폭력 및 디지털 성범죄 예방 교육**에 특화된 강사입니다.\n젠더 감수성을 높이고 안전한 디지털 환경 조성에 기여합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 4,
-        name: "최지킴 강사",
-        contents: "음주운전, 학교폭력 등 다양한 **생활 안전 및 예방 교육**을 진행합니다.\n실생활에 필요한 안전 수칙과 대응 방법을 쉽고 명확하게 전달합니다.",
-        image: "/img/1.jpg",
-    },
-];
-
-// 강사 추가/수정 모달 폼 스키마
-export const instructorFormSchema: InstructorFormField[] = [
-    {id: "instr-name", name: "name", label: "강사명", type: "text"},
-    {id: "instr-contents", name: "contents", label: "소개", type: "textarea"},
-    {id: "instr-image", name: "imageFile", label: "대표 이미지", type: "image"},
-];
-
 // ----------------
 
 export const contactInfoData: ContactInfo = {
@@ -247,40 +199,6 @@ export const businessInfoData: BusinessInfo = {
     parking_info: "유료주차 / 2시간 무료", // 예시 주차 안내
     usage_guide: "예약\n주차", // 예시 이용 안내 (줄바꿈 포함)
 };
-//-----------------------------
-// 강의 목록 더미 데이터 (예방 교육 강좌로 업데이트)
-export const lectureItemsData: LectureItem[] = [
-    {
-        id: 1,
-        title: "도박 중독, 이제 그만! '스마트한 선택' 예방 강좌",
-        contents: "청소년 및 성인의 도박 중독 위험성을 알리고, 건강한 여가 활동과 충동 제어 방법을 배웁니다. 실생활 사례를 통해 중독의 폐해를 인지하고 예방하는 데 초점을 맞춥니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 2,
-        title: "마약류 오남용 방지 '안전한 우리 사회' 지킴이 강좌",
-        contents: "최근 증가하는 마약류 범죄에 대한 경각심을 높이고, 마약의 종류별 위험성과 중독의 심각성을 교육합니다. 약물 오남용 예방을 위한 올바른 정보와 대처법을 학습합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 3,
-        title: "성폭력 및 디지털 성범죄 예방 '존중과 안전' 교육",
-        contents: "성폭력과 디지털 성범죄의 개념을 명확히 이해하고, 예방을 위한 성인지 감수성 및 디지털 윤리 의식을 함양합니다. 피해 발생 시 대응 방법과 지원 체계에 대해서도 알아봅니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 4, // 추가: 필요하다면 더 많은 예방 교육 주제를 추가할 수 있습니다.
-        title: "학교 폭력 및 사이버 폭력 예방 '평화로운 교실' 만들기",
-        contents: "학교 폭력과 사이버 폭력의 다양한 유형을 인지하고, 피해자와 가해자 모두에게 미치는 영향을 학습합니다. 예방을 위한 친구 관계 형성, 갈등 해결, 그리고 신고 절차를 교육합니다.",
-        image: "/img/1.jpg",
-    },
-];
-
-export const lectureFormSchema: LectureFormSchemaField[] = [
-    {id: "lecture-title", name: "title", label: "강의명", type: "text"},
-    {id: "lecture-contents", name: "contents", label: "강의 내용", type: "textarea"},
-    {id: "lecture-image", name: "imageFile", label: "대표 이미지", type: "image"},
-];
 //-----------------------------
 export const lectureSubItemsData: {[mainLectureId: number]: LectureSubItem[]} = {
     1: [

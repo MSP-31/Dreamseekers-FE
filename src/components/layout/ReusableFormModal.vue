@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import {reactive, watch} from "vue";
-import type {FormField} from "@/types/common";
+import type {FormField} from "@/types/common"; // 이 경로는 프로젝트 구조에 맞게 조정해야 합니다.
 
 // --- Props 정의 ---
 const props = defineProps({
@@ -218,12 +218,6 @@ const handleSubmit = () => {
             payload.append(fieldName, "");
         }
     }
-
-    // 파일 삭제 처리에 대한 추가 고려 사항:
-    // 만약 `images_to_delete`와 같은 별도의 필드가 필요하다면,
-    // removePreviewImage에서 해당 ID를 수집하여 payload에 추가해야 합니다.
-    // 현재 코드에서는 단일 이미지 필드를 가정하고 있으므로,
-    // 이미지를 제거하면 해당 필드에 빈 값을 보내는 것으로 처리합니다.
 
     // 데이터를 부모 컴포넌트로 emit
     emit("submit", payload);

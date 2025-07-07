@@ -17,7 +17,7 @@
         <div class="mt-12 border-t border-gray-200"></div>
 
         <!-- 수정 모달 -->
-        <EditModal
+        <ReusableFormModal
             v-model:show="showModal"
             :modalTitle="modalConfig.title"
             :formFields="modalConfig.formFields"
@@ -30,26 +30,36 @@
 
 <script setup lang="ts">
 import {ref, reactive, onMounted} from "vue";
-import {greetingIntroData, greetingFormFields} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import EditModal from "@/components/layout/EditModal.vue";
+import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
 import {IntroData, FormField} from "@/types/common";
 import apiClient from "@/api";
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;
 
+// 폼 필드 정의
+const greetingFormFields: FormField[] = [
+    {id: "title", name: "title", label: "제목", type: "text"},
+    {id: "contents", name: "contents", label: "내용", type: "textarea"},
+    {id: "image", name: "image", label: "대표 이미지", type: "image"},
+];
+
 // 모달 표시 여부
 const showModal = ref(false);
 
 // 현재 페이지에 표시될 인사말 데이터 (초기값은 더미 데이터)
-const currentIntroData = reactive<IntroData>({...greetingIntroData});
+const currentIntroData = reactive<IntroData>({
+    title: "",
+    contents: "",
+    image: "",
+});
 
 // 모달 설정 객체
 const modalConfig = reactive({
     title: "인사말 수정",
-    formFields: greetingFormFields as FormField[], // 더미 데이터의 필드 스키마 사용
+    formFields: greetingFormFields,
     submitText: "수정 완료",
 });
 

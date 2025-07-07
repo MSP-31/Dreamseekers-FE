@@ -7,7 +7,6 @@
                 <h1 class="text-3xl font-bold text-center mb-4 text-[var(--dream-text)]">{{ mainLecture.title }}</h1>
                 <p v-if="mainLecture.contents" class="text-center text-lg text-[var(--dream-sub)] mb-10">{{ mainLecture.contents }}</p>
 
-                <!-- Staff-only: Add Sub-item Button -->
                 <div v-if="isAdmin" class="text-right mb-6">
                     <button @click="openModal()" class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm">세부 항목 추가</button>
                 </div>
@@ -23,7 +22,7 @@
             </div>
             <div v-else class="text-center text-gray-500 py-16">
                 <p>강의 정보를 불러올 수 없습니다.</p>
-                <router-link to="/lectures" class="text-[var(--dream-main)] hover:underline mt-4 inline-block">강의 목록으로 돌아가기</router-link>
+                <router-link to="/lecture/list" class="text-[var(--dream-main)] hover:underline mt-4 inline-block">강의 목록으로 돌아가기</router-link>
             </div>
 
             <!-- Empty decorative divider -->
@@ -107,15 +106,7 @@ import {ref, reactive, onMounted} from "vue";
 import {useRoute} from "vue-router";
 import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureSubItemCard from "@/components/LectureSubItemCard.vue";
-import {
-    lectureItemsData,
-    lectureSubItemsData,
-    lectureSubItemFormSchema,
-    type LectureItem,
-    type LectureSubItem,
-    type LectureSubItemFormData,
-    type LectureSubItemFormSchemaField,
-} from "@/data/dummyData";
+import {lectureSubItemsData, lectureSubItemFormSchema, type LectureItem, type LectureSubItem, type LectureSubItemFormData, type LectureSubItemFormSchemaField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 
 const authStore = useAuthStore();
@@ -138,10 +129,10 @@ const uploadedImageFile = ref<File | null>(null);
 
 onMounted(() => {
     const lectureId = parseInt(route.params.id as string, 10);
-    mainLecture.value = lectureItemsData.find((l) => l.id === lectureId) || null;
-    if (mainLecture.value) {
-        currentSubItems.value = [...(lectureSubItemsData[lectureId] || [])];
-    }
+    // mainLecture.value = lectureItemsDat.find((l) => l.id === lectureId) || null;
+    // if (mainLecture.value) {
+    //     currentSubItems.value = [...(lectureSubItemsData[lectureId] || [])];
+    // }
 });
 
 const openModal = (itemToEdit?: LectureSubItem) => {
