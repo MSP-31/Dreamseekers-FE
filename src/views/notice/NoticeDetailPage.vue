@@ -11,15 +11,15 @@
                 <div class="board-content py-6 px-2 min-h-[200px]">
                     <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ post.contents }}</p>
 
-                    <div v-if="post.images && post.images.length > 0" class="mt-8 space-y-4">
-                        <img v-for="(image, index) in post.images" :key="`image-${index}`" :src="image.url" :alt="image.alt || post.title" class="max-w-full h-auto rounded-md shadow-md mx-auto" />
+                    <div v-if="post.image_details && post.image_details.length > 0" class="mt-8 space-y-4">
+                        <img v-for="(image, index) in post.image_details" :key="`image-${index}`" :src="image.image" :alt="post.title" class="max-w-full h-auto rounded-md shadow-md mx-auto" />
                     </div>
 
-                    <div v-if="post.files && post.files.length > 0" class="mt-8 pt-4 border-t border-gray-200">
+                    <div v-if="post.file_details && post.file_details.length > 0" class="mt-8 pt-4 border-t border-gray-200">
                         <h4 class="text-sm font-semibold text-gray-600 mb-2">첨부파일</h4>
                         <ul>
-                            <li v-for="(file, index) in post.files" :key="`file-${index}`" class="mb-1">
-                                <a :href="file.url" download class="file-download inline-flex items-center text-[var(--dream-blue)] hover:text-[var(--dream-main)] hover:underline text-sm">
+                            <li v-for="(file, index) in post.file_details" :key="`file-${index}`" class="mb-1">
+                                <a :href="file.file" download class="file-download inline-flex items-center text-[var(--dream-blue)] hover:text-[var(--dream-main)] hover:underline text-sm">
                                     <img src="/img/icon/save_alt_black_24dp.svg" alt="다운로드" class="h-4 w-4 mr-1 opacity-70" />
                                     {{ file.name }}
                                 </a>
@@ -32,14 +32,14 @@
             <div class="mt-8 flex justify-end items-center space-x-3">
                 <template v-if="isAdmin">
                     <router-link
-                        :to="`/notice/edit/${post.pk}`"
+                        :to="`/notice/edit/${post.id}`"
                         class="inline-block text-center text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-700"
                     >
                         수정
                     </router-link>
                     <button
                         @click="handleDelete"
-                        class="inline-block text-center text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out bg-[var(--primary-warning)] hover:bg-[var(--primary-warning-strong)] text-white"
+                        class="inline-block text-center text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-150 ease-in-out bg-orange-500 hover:bg-orange-700 text-white"
                     >
                         삭제
                     </button>
@@ -63,11 +63,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, computed} from "vue";
+import {ref, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import {dummyImportantNotices, dummyNoticePosts, type NoticePost} from "@/data/dummyData";
+import {type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
+import apiClient from "@/api"; // API 클라이언트 임포트
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;
@@ -77,10 +78,29 @@ const router = useRouter();
 
 const post = ref<NoticePost | null>(null);
 
+// 공지사항 상세 정보 불러오기 함수
+const fetchNoticeDetail = async () => {
+    const noticeId = route.params.id; // 라우트 파라미터에서 id 가져오기
+
+    if (!noticeId) {
+        console.error("Notice ID is missing.");
+        post.value = null;
+        return;
+    }
+
+    try {
+        const response = await apiClient.get<NoticePost>(`/notice/${noticeId}`);
+        post.value = response.data;
+    } catch (error: any) {
+        console.error(`Error fetching notice ${noticeId}:`, error);
+        post.value = null; // 데이터를 가져오지 못하면 null로 설정
+        // 사용자에게 오류 메시지를 표시하거나, 목록으로 리다이렉트하는 등의 처리
+        alert(error.response?.data?.detail || "공지사항을 불러오는 데 실패했습니다.");
+    }
+};
+
 onMounted(() => {
-    const postId = parseInt(route.params.pk as string, 10);
-    const foundPost = dummyImportantNotices.find((p) => p.pk === postId) || dummyNoticePosts.find((p) => p.pk === postId);
-    post.value = foundPost || null;
+    fetchNoticeDetail(); // 컴포넌트 마운트 시 공지사항 상세 정보 불러오기
 });
 
 const formatDate = (dateString: string): string => {
@@ -88,13 +108,20 @@ const formatDate = (dateString: string): string => {
     return `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
 };
 
-const handleDelete = () => {
-    if (post.value && window.confirm("정말로 이 공지사항을 삭제하시겠습니까?")) {
-        console.log(`Deleting post with pk: ${post.value.pk}`);
-        // 실제 애플리케이션에서는 여기서 API 호출
-        // 성공 시 목록 페이지로 이동
-        alert("공지사항이 삭제되었습니다."); // 임시 알림
-        router.push("/notice");
+const handleDelete = async () => {
+    if (!post.value) {
+        return; // 게시물이 없으면 삭제 시도하지 않음
+    }
+
+    if (window.confirm("정말로 이 공지사항을 삭제하시겠습니까?")) {
+        try {
+            await apiClient.delete(`/notice/${post.value.id}`); // id 사용
+            alert("공지사항이 삭제되었습니다.");
+            router.push("/notice"); // 삭제 성공 시 목록 페이지로 이동
+        } catch (error: any) {
+            console.error(`Error deleting notice ${post.value.id}:`, error);
+            alert(error.response?.data?.detail || "공지사항 삭제에 실패했습니다.");
+        }
     }
 };
 </script>

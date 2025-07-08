@@ -2,11 +2,7 @@
     <div class="relative w-full overflow-hidden" style="height: 500px">
         <!-- 슬라이드 높이 고정 예시 -->
         <div v-for="(slide, index) in slides" :key="slide.id" :class="['absolute inset-0 transition-opacity duration-1000 ease-in-out', currentIndex === index ? 'opacity-100' : 'opacity-0']">
-            <img :src="slide.image.url" :alt="slide.title" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-white p-8">
-                <h1 class="text-4xl font-bold mb-4 text-center">{{ slide.title }}</h1>
-                <p class="text-lg text-center">{{ slide.contents }}</p>
-            </div>
+            <img :src="slide.image" :alt="'꿈을찾는사람들교육원' + slide.id" class="w-full h-full object-cover" />
         </div>
 
         <!-- Navigation Buttons -->

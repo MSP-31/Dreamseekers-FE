@@ -13,6 +13,7 @@
         </li>
 
         <!-- '강의 문의' Button -->
+        <!--  
         <li>
             <router-link
                 :to="`/lecture/inquiry`"
@@ -23,6 +24,7 @@
                 <span class="ml-[10px] text-xl whitespace-nowrap hidden group-hover:inline"> 강의 문의 </span>
             </router-link>
         </li>
+        -->
 
         <!-- '맨 위로' Button -->
         <li>

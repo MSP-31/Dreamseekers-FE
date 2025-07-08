@@ -7,14 +7,12 @@
                 <h1 class="text-3xl font-bold text-center mb-4 text-[var(--dream-text)]">{{ mainLecture.title }}</h1>
                 <p v-if="mainLecture.contents" class="text-center text-lg text-[var(--dream-sub)] mb-10">{{ mainLecture.contents }}</p>
 
-                <!-- Staff-only: Add Sub-item Button -->
                 <div v-if="isAdmin" class="text-right mb-6">
                     <button @click="openModal()" class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm">세부 항목 추가</button>
                 </div>
 
-                <!-- Sub-Lectures List -->
-                <ul v-if="currentSubItems.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <LectureSubItemCard v-for="item in currentSubItems" :key="item.id" :sub-item="item" :is-staff="isAdmin" @edit="openModal" @delete="handleDelete" />
+                <ul v-if="currentSubItems.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <LectureCard v-for="lecture in currentSubItems" :key="lecture.id" :lecture="lecture" :is-staff="isAdmin" @edit="openModal" @delete="handleDelete" />
                 </ul>
                 <div v-else class="text-center text-gray-500 py-8">
                     <p>표시할 세부 강의 항목이 없습니다.</p>
@@ -23,219 +21,150 @@
             </div>
             <div v-else class="text-center text-gray-500 py-16">
                 <p>강의 정보를 불러올 수 없습니다.</p>
-                <router-link to="/lectures" class="text-[var(--dream-main)] hover:underline mt-4 inline-block">강의 목록으로 돌아가기</router-link>
+                <router-link to="/lecture/list" class="text-[var(--dream-main)] hover:underline mt-4 inline-block">강의 목록으로 돌아가기</router-link>
             </div>
 
-            <!-- Empty decorative divider -->
             <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
 
-            <!-- Modal for Adding/Editing Sub-Lecture Item -->
-            <div
-                v-if="isAdmin && showModal"
-                class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
-                :class="{'opacity-100': showModal, 'opacity-0 pointer-events-none': !showModal}"
-                @click.self="closeModal"
-            >
-                <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out" :class="{'scale-100': showModal, 'scale-95': !showModal}">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-semibold text-[var(--dream-text)]">{{ isEditing ? "세부 항목 수정" : "새 세부 항목 추가" }}</h3>
-                        <button @click="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-                    </div>
-                    <form @submit.prevent="handleSubmit">
-                        <div class="space-y-4">
-                            <template v-for="field in formSchema" :key="field.name">
-                                <div v-if="field.type === 'text' || field.type === 'textarea'">
-                                    <label :for="field.id" class="block text-sm font-medium text-[var(--dream-sub)] mb-1">{{ field.label }}</label>
-                                    <input
-                                        v-if="field.type === 'text'"
-                                        :type="field.type"
-                                        :id="field.id"
-                                        v-model="formData[field.name as keyof LectureSubItemFormData]"
-                                        class="mt-1 block w-full px-3 py-2 border border-[var(--dream-gray-dark)] rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
-                                    />
-                                    <textarea
-                                        v-else-if="field.type === 'textarea'"
-                                        :id="field.id"
-                                        v-model="formData[field.name as keyof LectureSubItemFormData]"
-                                        rows="4"
-                                        class="mt-1 block w-full px-3 py-2 border border-[var(--dream-gray-dark)] rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
-                                    ></textarea>
-                                </div>
-                                <div v-if="field.type === 'image'">
-                                    <label class="block text-sm font-medium text-[var(--dream-sub)] mb-1">{{ field.label }}</label>
-                                    <label
-                                        class="mt-1 w-full flex flex-col items-center px-4 py-3 bg-white text-[var(--dream-blue)] rounded-lg shadow border border-[var(--dream-blue)] border-dashed cursor-pointer hover:bg-[var(--dream-gray)] hover:text-[var(--dream-main)] transition-colors"
-                                    >
-                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                                        </svg>
-                                        <span class="mt-1 text-xs leading-normal">{{ uploadedImageFile ? uploadedImageFile.name : "이미지 선택 (선택 사항)" }}</span>
-                                        <input :id="field.id" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
-                                    </label>
-                                    <div v-if="previewImageUrl" class="mt-3 text-center">
-                                        <p class="text-xs font-medium text-[var(--dream-sub)] mb-1">미리보기</p>
-                                        <div class="border border-gray-300 p-2 rounded-md w-full max-w-xs h-40 mx-auto flex items-center justify-center overflow-hidden relative bg-gray-50">
-                                            <img :src="previewImageUrl" alt="이미지 미리보기" class="max-h-full max-w-full object-contain rounded" />
-                                            <button
-                                                type="button"
-                                                @click="removePreviewImage"
-                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs leading-none hover:bg-red-600"
-                                                title="이미지 제거"
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                        <div class="mt-8 text-right space-x-3">
-                            <button type="button" @click="closeModal" class="bg-[var(--dream-gray-dark)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm">취소</button>
-                            <button type="submit" class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm">
-                                {{ isEditing ? "수정 완료" : "등록" }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <ReusableFormModal
+                v-if="isAdmin"
+                v-model:show="showModal"
+                :modal-title="isEditing ? '세부 항목 수정' : '새 세부 항목 추가'"
+                :form-fields="formSchema"
+                :initial-data="initialModalData"
+                :submit-button-text="isEditing ? '수정 완료' : '등록'"
+                @submit="handleModalSubmit"
+            />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted} from "vue";
+import {ref, onMounted} from "vue"; // reactive 제거, onMounted 추가
 import {useRoute} from "vue-router";
 import PageHeader from "@/components/layout/PageHeader.vue";
-import LectureSubItemCard from "@/components/LectureSubItemCard.vue";
-import {
-    lectureItemsData,
-    lectureSubItemsData,
-    lectureSubItemFormSchema,
-    type LectureItem,
-    type LectureSubItem,
-    type LectureSubItemFormData,
-    type LectureSubItemFormSchemaField,
-} from "@/data/dummyData";
+import LectureCard from "@/components/LectureCard.vue";
+// dummyData 대신 API 연동을 위해 필요한 타입만 import
+import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
+import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
 import {useAuthStore} from "@/stores/auth";
+import apiClient from "@/api"; // apiClient 임포트
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;
 
 const route = useRoute();
+const lectureId = ref<number | null>(null); // 현재 보고 있는 메인 강의 ID
 
 const mainLecture = ref<LectureItem | null>(null);
-const currentSubItems = ref<LectureSubItem[]>([]);
+const currentSubItems = ref<LectureItem[]>([]);
 
 const showModal = ref(false);
 const isEditing = ref(false);
 const editingSubItemId = ref<number | null>(null);
 
-const initialFormData: LectureSubItemFormData = {title: "", contents: ""};
-const formData = reactive<LectureSubItemFormData>({...initialFormData});
-const formSchema = ref<LectureSubItemFormSchemaField[]>(lectureSubItemFormSchema);
-const previewImageUrl = ref<string | null>(null);
-const uploadedImageFile = ref<File | null>(null);
-
-onMounted(() => {
-    const lectureId = parseInt(route.params.id as string, 10);
-    mainLecture.value = lectureItemsData.find((l) => l.id === lectureId) || null;
-    if (mainLecture.value) {
-        currentSubItems.value = [...(lectureSubItemsData[lectureId] || [])];
-    }
+// ReusableFormModal에 전달할 초기 데이터
+// reactive 대신 ref 사용, LectureFormData 타입 명시
+const initialModalData = ref<LectureFormData>({
+    title: "",
+    contents: "",
+    image: null, // 이미지 필드 포함
 });
 
-const openModal = (itemToEdit?: LectureSubItem) => {
+// 폼 스키마는 동일하게 사용
+const formSchema = ref<LectureFormSchemaField[]>(lectureFormSchema);
+
+// 메인 강의 및 하위 항목 데이터 불러오기
+const fetchLectureData = async () => {
+    lectureId.value = parseInt(route.params.id as string, 10);
+    if (isNaN(lectureId.value)) {
+        console.error("Invalid lecture ID in route params.");
+        return;
+    }
+
+    try {
+        // 1. 메인 강의 정보 불러오기
+        const mainLectureResponse = await apiClient.get<LectureItem>(`/lecture/titles/${lectureId.value}`);
+        mainLecture.value = mainLectureResponse.data;
+
+        // 2. 해당 메인 강의의 하위 항목들 불러오기
+        const subItemsResponse = await apiClient.get<LectureItem[]>(`/lecture/titles/${lectureId.value}/details`); // API 경로 확인 필요
+        currentSubItems.value = subItemsResponse.data;
+    } catch (error: any) {
+        console.error("강의 데이터 로딩 오류:", error);
+        alert(error.response?.data?.detail || "강의 정보를 불러오는 데 실패했습니다.");
+        mainLecture.value = null; // 오류 시 메인 강의 정보 초기화
+    }
+};
+
+const openModal = (itemToEdit?: LectureItem) => {
     if (itemToEdit) {
         isEditing.value = true;
         editingSubItemId.value = itemToEdit.id;
-        formData.title = itemToEdit.title;
-        formData.contents = itemToEdit.contents;
-        previewImageUrl.value = itemToEdit.image || null;
+        // 기존 데이터를 initialModalData에 할당
+        initialModalData.value = {
+            title: itemToEdit.title,
+            contents: itemToEdit.contents,
+            image: itemToEdit.image || null, // 기존 이미지 URL 전달
+        };
     } else {
         isEditing.value = false;
         editingSubItemId.value = null;
-        Object.assign(formData, initialFormData);
-        previewImageUrl.value = null;
+        // 새 항목 추가 시 초기 데이터 리셋
+        initialModalData.value = {title: "", contents: "", image: null};
     }
-    uploadedImageFile.value = null;
     showModal.value = true;
 };
 
-const closeModal = () => {
-    showModal.value = false;
-    Object.assign(formData, initialFormData);
-    previewImageUrl.value = null;
-    uploadedImageFile.value = null;
-    isEditing.value = false;
-    editingSubItemId.value = null;
-};
-
-const handleSubmit = () => {
-    if (!mainLecture.value) return;
-
-    let imageToSave = previewImageUrl.value;
-    if (uploadedImageFile.value) {
-        imageToSave = previewImageUrl.value; // Placeholder for actual upload URL
-    } else if (!previewImageUrl.value && isEditing.value) {
-        imageToSave = null;
+// ReusableFormModal에서 submit 이벤트 발생 시 호출될 핸들러
+const handleModalSubmit = async (payload: FormData) => {
+    if (!lectureId.value) {
+        alert("메인 강의 ID를 찾을 수 없습니다.");
+        return;
     }
 
-    if (isEditing.value && editingSubItemId.value !== null) {
-        const index = currentSubItems.value.findIndex((item) => item.id === editingSubItemId.value);
-        if (index !== -1) {
-            currentSubItems.value[index] = {
-                ...currentSubItems.value[index],
-                ...formData,
-                image: imageToSave === undefined ? currentSubItems.value[index].image : imageToSave || undefined,
-            };
+    try {
+        if (isEditing.value && editingSubItemId.value !== null) {
+            // 세부 항목 수정 API 호출
+            await apiClient.put(`/lecture/titles/${lectureId.value}/details/${editingSubItemId.value}`, payload, {
+                headers: {"Content-Type": "multipart/form-data"},
+            });
+            alert("세부 항목이 수정되었습니다.");
+        } else {
+            // 세부 항목 추가 API 호출
+            await apiClient.post(`/lecture/titles/${lectureId.value}/details`, payload, {
+                headers: {"Content-Type": "multipart/form-data"},
+            });
+            alert("세부 항목이 추가되었습니다.");
         }
-    } else {
-        const newId = currentSubItems.value.length > 0 ? Math.max(...currentSubItems.value.map((i) => i.id)) + 1001 : 1001; // Ensure unique ID
-        currentSubItems.value.push({
-            id: newId,
-            mainLectureId: mainLecture.value.id,
-            ...formData,
-            image: imageToSave || undefined,
-        });
-    }
-    // Update the main store if this were a real app
-    if (mainLecture.value) lectureSubItemsData[mainLecture.value.id] = [...currentSubItems.value];
-    closeModal();
-};
-
-const handleDelete = (itemId: number) => {
-    if (window.confirm("정말로 이 항목을 삭제하시겠습니까?")) {
-        currentSubItems.value = currentSubItems.value.filter((item) => item.id !== itemId);
-        if (mainLecture.value) lectureSubItemsData[mainLecture.value.id] = [...currentSubItems.value];
+        showModal.value = false; // 모달 닫기
+        await fetchLectureData(); // 데이터 다시 로딩
+    } catch (error: any) {
+        console.error("API 호출 오류:", error);
+        const errorMessage = error.response?.data?.detail || "요청 처리 중 오류가 발생했습니다.";
+        alert(errorMessage);
     }
 };
 
-const handleImageUpload = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-        const file = target.files[0];
-        uploadedImageFile.value = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewImageUrl.value = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
-        target.value = "";
+const handleDelete = async (itemId: number) => {
+    if (!lectureId.value) {
+        alert("메인 강의 ID를 찾을 수 없습니다.");
+        return;
+    }
+    if (window.confirm("정말로 이 세부 항목을 삭제하시겠습니까?")) {
+        try {
+            await apiClient.delete(`/lecture/titles/${lectureId.value}/details/${itemId}`);
+            alert("세부 항목이 삭제되었습니다.");
+            await fetchLectureData(); // 데이터 다시 로딩
+        } catch (error: any) {
+            console.error("API 호출 오류:", error);
+            const errorMessage = error.response?.data?.detail || "삭제 중 오류가 발생했습니다.";
+            alert(errorMessage);
+        }
     }
 };
 
-const removePreviewImage = () => {
-    previewImageUrl.value = null;
-    uploadedImageFile.value = null;
-};
+onMounted(() => {
+    fetchLectureData(); // 컴포넌트 마운트 시 데이터 로딩
+});
 </script>
-
-<style scoped>
-/* 모달 트랜지션 */
-.fixed.inset-0 {
-    transition: opacity 0.3s ease-in-out;
-}
-.fixed.inset-0 > div {
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-</style>

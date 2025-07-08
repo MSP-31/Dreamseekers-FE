@@ -11,11 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 import PageHeader from "./PageHeader.vue";
 import SubMenuBreadcrumb from "./SubMenuBreadcrumb.vue";
 
-const props = defineProps<{
+defineProps<{
     title: string;
     backgroundImageUrl: string;
 }>();

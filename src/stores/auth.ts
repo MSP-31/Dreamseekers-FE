@@ -1,61 +1,76 @@
+import apiClient from "@/api";
 import {defineStore} from "pinia";
 
-// State의 타입을 정의합니다.
-interface AuthState {
-    accessToken: string | null;
-    refreshToken: string | null;
-    isAuthenticated: boolean;
+// 사용자 정보 타입 정의
+interface User {
+    pk: number;
+    username: string;
+    email: string;
     isAdmin: boolean;
 }
 
+// State의 타입 정의
+interface AuthState {
+    user: User | null;
+    isAuthenticated: boolean;
+}
+
 export const useAuthStore = defineStore("auth", {
-    // State 정의: 반드시 화살표 함수로 반환하여 각 스토어 인스턴스가 독립적인 상태를 가지도록 합니다.
     state: (): AuthState => ({
-        accessToken: null,
-        refreshToken: null,
+        user: null,
         isAuthenticated: false,
-        isAdmin: false,
     }),
 
     // Actions 정의: 상태를 변경하거나 비동기 작업을 수행합니다.
     actions: {
-        // 로그인 성공 후 토큰을 설정하고 로컬 스토리지에 저장합니다.
-        setTokens(accessToken: string, refreshToken: string | null = null, isAdmin: boolean) {
-            this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
-            this.isAuthenticated = true;
-            this.isAdmin = isAdmin;
-            localStorage.setItem("accessToken", accessToken);
-            if (refreshToken) {
-                localStorage.setItem("refreshToken", refreshToken);
-            }
+        // 로그인 : API 호출 후 성공 시 사용자 정보 저장
+        async login(credentials: {username: string; password: string}) {
+            await apiClient.post("/user/login", credentials);
+            await this.fetchUser();
         },
 
-        // 로그아웃 시 토큰을 지우고 로컬 스토리지에서도 제거합니다.
-        clearTokens() {
-            this.accessToken = null;
-            this.refreshToken = null;
+        // 로그아웃 : API 호출 후 상태 초기화
+        async logout() {
+            await apiClient.post("/user/logout");
+            // 프론트엔드 상태 초기화
+            this.user = null;
             this.isAuthenticated = false;
-            this.isAdmin = false;
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
         },
 
-        // 애플리케이션 초기 로드 시 로컬 스토리지에서 토큰을 가져와 인증 상태를 복원합니다.
-        initializeAuth() {
-            const storedAccessToken = localStorage.getItem("accessToken");
-            const storedRefreshToken = localStorage.getItem("refreshToken");
-            if (storedAccessToken) {
-                this.setTokens(storedAccessToken, storedRefreshToken);
+        // 사용자 정보 가져오기 : 인증 상태 확인 및 사용자 정보 업데이트
+        async fetchUser() {
+            try {
+                // dj-rest-auth의 기본 사용자 정보 URL
+                const response = await apiClient.get<User>("/user/account");
+                this.user = response.data;
+                this.isAuthenticated = true;
+            } catch (error: any) {
+                this.user = null;
+                this.isAuthenticated = false;
+
+                // 401 Unauthorized 에러
+                if (error.response && error.response.status === 401) {
+                    // 콘솔에 아무것도 출력하지 않음
+                }
+                // 400 Bad Request 에러 (refresh 토큰 만료 등)
+                else if (error.response && error.response.status === 400) {
+                    // 콘솔에 아무것도 출력하지 않음
+                }
+                // 그 외의 예상치 못한 오류는 여전히 콘솔에 출력 (디버깅 목적)
+                else {
+                    console.error("Failed to fetch user:", error);
+                }
             }
         },
     },
 
     // Getters 정의: 상태로부터 파생된 데이터를 계산합니다.
     getters: {
-        // 엑세스 토큰을 반환합니다.
-        getAccessToken: (state): string | null => state.accessToken,
-        // 사용자가 인증되었는지 여부를 반환합니다.
-        isAuthenticatedUser: (state): boolean => state.isAuthenticated,
+        // 로그인 여부 반환
+        isLoggedIn: (state): boolean => state.isAuthenticated,
+        // 현재 사용자 정보 반환
+        currentUser: (state): User | null => state.user,
+        // 관리자 여부 반환
+        isAdmin: (state): boolean => state.user?.isAdmin || false,
     },
 });

@@ -81,7 +81,6 @@
 </template>
 
 <script setup lang="ts">
-import apiClient from "@/api";
 import {onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth"; // Pinia 스토어
@@ -102,50 +101,28 @@ const handleLogin = async () => {
     errorMessage.value = null; // 이전 에러 메시지 초기화
 
     try {
-        // API 호출 (response.data의 타입을 명확히 하기 위해 인터페이스 사용 권장)
-        interface LoginResponse {
-            access_token: string;
-            refresh_token?: string; // refresh_token이 없을 수도 있으므로 선택적으로
-            message?: string; // 백엔드에서 메시지를 줄 수도 있음
-            // ... 기타 로그인 성공 시 반환되는 데이터
-        }
-
-        const response = await apiClient.post<LoginResponse>("/user/login", {
+        await authStore.login({
             username: username.value,
             password: password.value,
         });
 
-        // 백엔드 응답의 상태 코드 확인
-        if (response.status === 200) {
-            console.log("로그인 성공!");
-            console.log(response.data);
-
-            const {access_token, refresh_token} = response.data;
-            const isAdmin = response.data.user.is_staff;
-
-            // Pinia 스토어에 엑세스 키 및 리프레시 키 저장
-            // refresh_token이 있다면 함께 전달합니다.
-            authStore.setTokens(access_token, refresh_token || null, isAdmin || false);
-
-            // 로그인 성공 후 리디렉션할 경로 결정
-            // 쿼리 파라미터에 'next'가 있으면 해당 경로로, 없으면 메인페이지로 이동
-            const redirectPath = (route.query.next as string) || "/";
-            router.push(redirectPath);
-        } else {
-            // 200 OK가 아니지만 에러가 발생하지 않은 경우 (백엔드 로직에 따라 다름)
-            throw new Error("아이디 또는 비밀번호가 올바르지 않습니다.");
-        }
+        // 로그인 성공! 스토어에서 상태가 업데이트되었으므로, 페이지를 이동합니다.
+        const redirectPath = (route.query.next as string) || "/";
+        router.push(redirectPath);
     } catch (error: any) {
-        // 에러 객체의 타입을 any로 지정하거나 Error 인터페이스로 구체화
         console.error("로그인 실패:", error);
-        // 에러 메시지 추출
-        errorMessage.value = error.response?.data?.message || error.message || "로그인 중 오류가 발생했습니다.";
+        // 스토어에서 발생한 에러를 잡아서 UI에 표시합니다.
+        // dj-rest-auth는 보통 non_field_errors에 에러 메시지를 담아 보냅니다.
+        errorMessage.value =
+            error.response?.data?.non_field_errors?.[0] || // dj-rest-auth의 일반적인 에러 형식
+            error.response?.data?.detail ||
+            "아이디 또는 비밀번호가 올바르지 않습니다.";
     }
 };
 
 onMounted(() => {
     // 컴포넌트가 마운트될 때 이미 로그인 상태인지 확인
-    if (authStore.isAuthenticatedUser) {
+    if (authStore.isAuthenticated) {
         // 이미 로그인되어 있다면 메인 페이지로 리디렉션
         router.push("/");
     }
