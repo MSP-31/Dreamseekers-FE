@@ -123,6 +123,11 @@ const router = createRouter({
                     name: "userSignup",
                     component: () => import("@/views/user/Signup.vue"),
                 },
+                {
+                    path: "setting",
+                    name: "userSetting",
+                    component: () => import("@/views/user/Settings.vue"),
+                },
             ],
         },
     ],

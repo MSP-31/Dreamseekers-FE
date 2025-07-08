@@ -14,7 +14,7 @@
 import PageHeader from "./PageHeader.vue";
 import SubMenuBreadcrumb from "./SubMenuBreadcrumb.vue";
 
-const props = defineProps<{
+defineProps<{
     title: string;
     backgroundImageUrl: string;
 }>();

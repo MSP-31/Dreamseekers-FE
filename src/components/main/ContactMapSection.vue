@@ -43,7 +43,7 @@ import {type PropType} from "vue";
 import type {Contact, BusinessInfo} from "@/data/dummyData.ts";
 import NaverMap from "./NaverMap.vue";
 
-const props = defineProps({
+defineProps({
     contacts: {type: Object as PropType<Contact>, required: true},
     businessInfo: {type: Object as PropType<BusinessInfo>, required: true},
     naverMapClientId: {type: String, required: true},

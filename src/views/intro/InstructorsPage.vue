@@ -43,10 +43,10 @@
 
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
-import {type Instructor, type LectureFormData, type InstructorFormField} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
+import {type Instructor, type LectureFormData, type InstructorFormField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue"; // 새로 생성한 모달 컴포넌트 임포트
+import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
 import apiClient from "@/api";
 
 const authStore = useAuthStore();

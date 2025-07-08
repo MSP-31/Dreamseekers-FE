@@ -22,8 +22,6 @@
         <div v-if="isAdmin" class="mt-6 text-right">
             <router-link to="/notice/write" class="inline-block bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm"> 글쓰기 </router-link>
         </div>
-
-        <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
     </PageLayout>
 </template>
 

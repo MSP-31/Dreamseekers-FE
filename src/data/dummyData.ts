@@ -122,15 +122,6 @@ export const lectureFormSchema: LectureFormSchemaField[] = [
 ];
 
 //-----------------------------
-export const dummySlides: Ref<Slide[]> = ref([
-    {id: 1, image: {url: "/img/1.jpg"}, title: "꿈을 찾는 여정", contents: "당신의 가능성을 발견하세요."},
-    {id: 2, image: {url: "/img/1.jpg"}, title: "전문가의 길", contents: "최고의 강사진과 함께합니다."},
-    // public/img/slide1.jpg, slide2.jpg 등 이미지 파일 필요
-]);
-export const dummySchedules: Ref<ScheduleData> = ref({
-    // "2024-7-15": [{ title: "Vue 특강", time: "14:00", contents: "Vue.js 심화 과정" }]
-});
-
 export const dummyContacts: Ref<Contact> = ref({
     address: "경상남도 창원시 성산구용지로 70 ",
     sub_address: "성원 그랜드오피스텔 10층 1029호",
@@ -432,45 +423,10 @@ export interface ActivityNewsItem {
     postdate: string; // 게시일 (예: "20231027" 또는 "2023-10-27")
 }
 
-// 활동 소식 더미 데이터
-export const activityNewsData: ActivityNewsItem[] = [
-    {
-        id: 1,
-        link: "https://blog.naver.com/jhs9747/223905375765",
-        title: "훈련병의 첫 교육, 존중에서 시작하다 – 해군 714기의 맞춤형... ",
-        description:
-            "‘꿈을 찾는 사람들 교육원’, 군 맞춤형 성인지 교육의 선두주자 우리 교육원은 군 장병, 간부, 훈련병을 위한 맞춤형 성인지 교육과 폭력 예방 교육을 전문적으로 제공하고 있습니다. ✔ 실전 사례...",
-        source: "네이버 블로그",
-        sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "2025-06-20",
-    },
-    {
-        id: 2,
-        link: "https://blog.naver.com/jhs9747/223904203673",
-        title: "사실혼 파트너가 나를 스토킹으로 신고했다면? 진실과 대응법",
-        description: "꿈을찾는사람들교육원 대표원장 홍의섭입니다. 사실혼 관계에 있다가 갑자기 상대방에게 스토킹...",
-        source: "네이버 블로그",
-        sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "2025-06-19",
-    },
-];
-
 // -----------------
-
-// 페이지네이션 데이터 타입 (InquiryListPage와 동일하게 사용 가능)
-// export interface PaginationData { ... } // 이미 정의되어 있다면 생략
-
 // 검색 유형 옵션
 export const noticeSearchTypes = [
     {value: "all", text: "전체"},
     {value: "title", text: "제목"},
     {value: "contents", text: "내용"},
 ];
-
-// export const noticeFormSchema: NoticeFormField[] = [
-//     {id: "notice-title", name: "title", label: "제목", type: "text"},
-//     {id: "notice-contents", name: "contents", label: "내용", type: "textarea"},
-//     {id: "notice-images", name: "newImages", label: "이미지 첨부", type: "image"},
-//     {id: "notice-files", name: "newFiles", label: "파일 첨부", type: "file"},
-//     {id: "notice-important", name: "is_important", label: "중요 공지", type: "checkbox"},
-// ];
