@@ -48,7 +48,7 @@
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 <div v-for="image in existingImages" :key="image.id" class="relative cursor-pointer" @click="toggleDeleteExistingImage(image.id)">
                                     <img
-                                        :src="image.url"
+                                        :src="image.image"
                                         :alt="image.alt || 'Existing image'"
                                         class="w-full h-32 object-cover rounded-md shadow"
                                         :class="{'opacity-50 ring-2 ring-red-500': image.toDelete}"
@@ -125,33 +125,40 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageHeader from "@/components/layout/PageHeader.vue";
-// 더미 데이터 대신 API 연동을 위해 필요한 타입만 import
-import {noticeFormSchema, type NoticeFormData, type NoticeFormField, type NoticeItem} from "@/data/dummyData";
+// NoticeFormData, NoticeFormField는 그대로 유지하되, NoticeItem의 정의는 API 응답에 맞게 수정
+import {type NoticeFormData, type NoticeFormField, type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api"; // apiClient 임포트
 
+// API 응답에 맞춰 NoticePost (NoticeItem) 타입 업데이트
+// 이미지와 파일 배열의 각 객체에 'image', 'file' 필드와 'id'가 있다고 가정
+interface NoticePostWithDetails extends NoticePost {
+    image_details?: {id: number; image: string; alt?: string}[];
+    file_details?: {id: number; file: string; name: string}[];
+}
+
 interface ExistingFileItem {
     id: number;
-    url: string;
+    file: string; // API에서 파일 URL이 'file' 필드로 온다고 가정
     name: string;
     toDelete: boolean;
 }
 interface ExistingImageItem {
     id: number;
-    url: string;
+    image: string; // API에서 이미지 URL이 'image' 필드로 온다고 가정
     alt?: string;
     toDelete: boolean;
 }
 interface NewImagePreview {
     file: File;
-    url: string;
+    url: string; // FileReader로 생성된 blob URL
 }
 
 const route = useRoute();
 const router = useRouter();
 
 const authStore = useAuthStore();
-const isAdmin = authStore.isAdmin;
+const isAdmin = authStore.isAdmin; // isAdmin은 직접 사용 (ref 아님)
 
 const noticeId = ref<number | null>(null);
 const isEditMode = computed(() => noticeId.value !== null);
@@ -163,28 +170,47 @@ const initialFormData: NoticeFormData = {
 };
 
 const formData = reactive<NoticeFormData>({...initialFormData});
-const formSchema = ref<NoticeFormField[]>(noticeFormSchema); // 폼 스키마 사용
+// formSchema는 더미 데이터에서 가져왔지만, 이 컴포넌트에서는 필드 렌더링에만 사용
+// 실제 API 요청 데이터는 formData와 new/existing files/images로 구성
+const formSchema = ref<NoticeFormField[]>([
+    {id: "title", name: "title", label: "제목", type: "text"},
+    {id: "contents", name: "contents", label: "내용", type: "textarea"},
+    {id: "images", name: "images", label: "이미지 첨부", type: "image"},
+    {id: "files", name: "files", label: "파일 첨부", type: "file"},
+    {id: "is_important", name: "is_important", label: "중요 공지", type: "checkbox"},
+]);
 
 const newImages = ref<File[]>([]);
-const newImagePreviews = ref<NewImagePreview[]>([]); // 새 이미지 프리뷰
-const existingImages = ref<ExistingImageItem[]>([]); // 기존 이미지 관리
+const newImagePreviews = ref<NewImagePreview[]>([]);
+const existingImages = ref<ExistingImageItem[]>([]);
 
 const newFiles = ref<File[]>([]);
-const existingFiles = ref<ExistingFileItem[]>([]); // 기존 파일 관리
+const existingFiles = ref<ExistingFileItem[]>([]);
 
 // 공지사항 데이터 불러오기 (수정 모드일 때)
-const loadNoticeData = async (pk: number) => {
+const loadNoticeData = async (id: number) => {
+    // pk 대신 id 사용
     try {
-        const response = await apiClient.get<NoticeItem>(`/notice/${pk}/`); // API에서 공지사항 상세 데이터 가져오기
+        const response = await apiClient.get<NoticePostWithDetails>(`/notice/${id}`); // API에서 공지사항 상세 데이터 가져오기
         const postToEdit = response.data;
 
         formData.title = postToEdit.title;
         formData.contents = postToEdit.contents || "";
         formData.is_important = postToEdit.is_important || false;
 
-        // 기존 이미지와 파일 목록을 상태에 저장
-        existingImages.value = (postToEdit.images || []).map((img) => ({...img, toDelete: false}));
-        existingFiles.value = (postToEdit.files || []).map((file) => ({...file, toDelete: false}));
+        // 기존 이미지와 파일 목록을 상태에 저장 (API 응답 필드명에 맞게 image_details, file_details 사용)
+        existingImages.value = (postToEdit.image_details || []).map((img) => ({
+            id: img.id,
+            image: img.image, // URL 필드명
+            alt: img.alt,
+            toDelete: false,
+        }));
+        existingFiles.value = (postToEdit.file_details || []).map((file) => ({
+            id: file.id,
+            file: file.file, // URL 필드명
+            name: file.name,
+            toDelete: false,
+        }));
     } catch (error: any) {
         console.error("공지사항 데이터 로딩 오류:", error);
         alert(error.response?.data?.detail || "공지사항을 불러오는 데 실패했습니다.");
@@ -193,8 +219,9 @@ const loadNoticeData = async (pk: number) => {
 };
 
 onMounted(() => {
-    if (route.params.pk) {
-        noticeId.value = parseInt(route.params.pk as string, 10);
+    // 라우트 파라미터가 'pk' 대신 'id'로 넘어올 것이라고 가정
+    if (route.params.id) {
+        noticeId.value = parseInt(route.params.id as string, 10);
         loadNoticeData(noticeId.value);
     }
 });
@@ -250,8 +277,8 @@ const toggleDeleteExistingFile = (id: number) => {
 // 폼 제출 핸들러 (API 호출)
 const handleSubmit = async () => {
     console.log("Submitting form data:", formData.title, formData.contents);
-    if (!isAdmin.valueOf) {
-        // 관리자가 아니면 제출 막기
+    if (!isAdmin) {
+        // isAdmin은 ref가 아니므로 .value 없이 직접 사용
         alert("공지사항 작성/수정 권한이 없습니다.");
         return;
     }
@@ -259,7 +286,8 @@ const handleSubmit = async () => {
     const apiFormData = new FormData();
     apiFormData.append("title", formData.title);
     apiFormData.append("contents", formData.contents);
-    apiFormData.append("is_important", String(formData.is_important)); // Boolean을 문자열로 변환
+    // is_important는 'true' 또는 'false' 문자열로 변환하여 전송
+    apiFormData.append("is_important", formData.is_important ? "true" : "false");
 
     // 새로운 이미지 파일 추가
     newImages.value.forEach((file) => {
@@ -284,23 +312,24 @@ const handleSubmit = async () => {
 
     try {
         if (isEditMode.value && noticeId.value !== null) {
-            // 공지사항 수정 (PUT 요청)
-            await apiClient.put(`/notice/${noticeId.value}/`, apiFormData, {
-                headers: {"Content-Type": "multipart/form-data"}, // FormData 사용 시 필수
+            // 공지사항 수정 (PATCH 또는 PUT 요청, 부분 수정은 PATCH가 더 적합)
+            // Django REST Framework는 PUT/PATCH 모두 multipart/form-data를 지원합니다.
+            await apiClient.patch(`/notice/${noticeId.value}`, apiFormData, {
+                // PATCH 사용
+                headers: {"Content-Type": "multipart/form-data"},
             });
             alert("공지사항이 성공적으로 수정되었습니다.");
         } else {
             // 새 공지사항 생성 (POST 요청)
             await apiClient.post("/notice/", apiFormData, {
-                headers: {"Content-Type": "multipart/form-data"}, // FormData 사용 시 필수
+                headers: {"Content-Type": "multipart/form-data"},
             });
             alert("공지사항이 성공적으로 등록되었습니다.");
         }
         router.push("/notice"); // 성공 후 목록 페이지로 이동
     } catch (error: any) {
         console.error("API 요청 오류:", error);
-        // 서버에서 보낸 에러 메시지를 사용자에게 보여주기
-        const errorMessage = error.response?.data?.detail || error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
+        const errorMessage = error.response?.data?.detail || error.response?.data?.message || JSON.stringify(error.response?.data) || "요청 처리 중 오류가 발생했습니다.";
         alert(errorMessage);
     }
 };

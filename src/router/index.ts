@@ -91,13 +91,13 @@ const router = createRouter({
                     component: () => import("@/views/notice/NoticeFormPage.vue"), // 공지사항 작성 페이지
                 },
                 {
-                    path: "edit/:pk",
+                    path: "edit/:id",
                     name: "noticeEdit",
                     component: () => import("@/views/notice/NoticeFormPage.vue"), // 공지사항 작성 페이지
-                    props: true, // route.params.pk를 props로 전달
+                    props: true, // route.params.id를 props로 전달
                 },
                 {
-                    path: ":pk", // :pk는 공지사항 고유 ID
+                    path: ":id", // :id는 공지사항 고유 ID
                     name: "noticeDetail",
                     component: () => import("@/views/notice/NoticeDetailPage.vue"), // 공지사항 상세 페이지
                     props: true,

@@ -456,73 +456,9 @@ export const activityNewsData: ActivityNewsItem[] = [
 ];
 
 // -----------------
-// 공지사항 페이지에 사용될 데이터 타입
-export interface NoticePost {
-    pk: number; // 게시글 고유 ID
-    title: string;
-    author: string;
-    created_at: string; // 날짜 형식 (예: "YYYY-MM-DD")
-    is_important?: boolean; // 중요 공지 여부 (선택적)
-    contents?: string; // 상세 내용
-    images?: {id: number; url: string; alt?: string}[]; // 이미지 목록 (id 추가)
-    files?: {id: number; url: string; name: string}[]; // 첨부 파일 목록 (id 추가)
-}
 
 // 페이지네이션 데이터 타입 (InquiryListPage와 동일하게 사용 가능)
 // export interface PaginationData { ... } // 이미 정의되어 있다면 생략
-
-// 공지사항 더미 데이터 (중요 공지 포함)
-export const dummyImportantNotices: NoticePost[] = [
-    {
-        pk: 101,
-        title: "시스템 점검 안내 (중요)",
-        author: "관리자",
-        created_at: "2023-11-01",
-        is_important: true,
-        contents:
-            "안녕하세요. 꿈을 찾는 사람들 교육원입니다.\n보다 안정적인 서비스 제공을 위해 아래와 같이 시스템 점검을 실시할 예정입니다.\n\n- 점검 일시: 2023년 11월 15일 (수) 02:00 ~ 06:00 (4시간)\n- 점검 내용: 서버 안정화 및 보안 업데이트\n\n점검 시간 동안에는 웹사이트 및 모든 서비스 이용이 일시적으로 중단될 수 있습니다.\n이용에 불편을 드려 죄송하며, 너른 양해 부탁드립니다.\n감사합니다.",
-        images: [
-            // id 추가
-            {id: 1, url: "/img/dummy/notice-img1.jpg", alt: "점검 안내 이미지"},
-        ],
-        files: [
-            // id 추가
-            {id: 1, url: "/files/dummy/점검 상세 안내.pdf", name: "점검 상세 안내.pdf"},
-        ],
-    },
-    {
-        pk: 102,
-        title: "개인정보처리방침 변경 안내 (필독)",
-        author: "관리자",
-        created_at: "2023-10-30",
-        is_important: true,
-        contents: "개인정보처리방침이 일부 변경되어 안내드립니다. 자세한 내용은 첨부파일을 확인해주시기 바랍니다.",
-        files: [
-            // id 추가
-            {id: 2, url: "/files/dummy/개인정보처리방침_v2.0.docx", name: "개인정보처리방침_v2.0.docx"},
-        ],
-    },
-];
-
-export const dummyNoticePosts: NoticePost[] = [
-    {pk: 19, title: "10월 우수 수강생 발표", author: "관리자", created_at: "2023-10-27"},
-    {pk: 18, title: "교육원 휴관일 안내 (11월)", author: "관리자", created_at: "2023-10-26"},
-    {pk: 17, title: "스터디 그룹 모집 공고", author: "관리자", created_at: "2023-10-25"},
-    {pk: 16, title: "강의 만족도 설문조사 참여 안내", author: "관리자", created_at: "2023-10-24"},
-];
-
-// 공지사항 페이지네이션 더미 데이터 (예시: 일반 공지 5개 중 페이지 1)
-export const dummyNoticePaginationData: PaginationData = {
-    count: dummyNoticePosts.length, // 전체 일반 공지 수
-    start_index: 1,
-    number: 1,
-    has_other_pages: dummyNoticePosts.length > 5, // 예시: 페이지당 5개
-    has_previous: false,
-    has_next: dummyNoticePosts.length > 5,
-    previous_page_number: null,
-    next_page_number: dummyNoticePosts.length > 5 ? 2 : null,
-    custom_range: Array.from({length: Math.ceil(dummyNoticePosts.length / 5)}, (_, i) => i + 1).slice(0, 5), // 최대 5개 페이지 버튼
-};
 
 // 검색 유형 옵션
 export const noticeSearchTypes = [
@@ -531,26 +467,10 @@ export const noticeSearchTypes = [
     {value: "contents", text: "내용"},
 ];
 
-// 공지사항 작성/수정 폼 데이터 타입
-export interface NoticeFormData {
-    title: string;
-    contents: string;
-    is_important: boolean;
-    // images와 files는 File 객체 배열로 별도 관리
-}
-
-// 공지사항 작성/수정 폼 필드 정의
-export interface NoticeFormField {
-    id: string;
-    name: keyof NoticeFormData | "newImages" | "newFiles"; // 'newImages', 'newFiles'는 File 객체 배열을 다루기 위함
-    label: string;
-    type: "text" | "textarea" | "checkbox" | "image" | "file";
-}
-
-export const noticeFormSchema: NoticeFormField[] = [
-    {id: "notice-title", name: "title", label: "제목", type: "text"},
-    {id: "notice-contents", name: "contents", label: "내용", type: "textarea"},
-    {id: "notice-images", name: "newImages", label: "이미지 첨부", type: "image"},
-    {id: "notice-files", name: "newFiles", label: "파일 첨부", type: "file"},
-    {id: "notice-important", name: "is_important", label: "중요 공지", type: "checkbox"},
-];
+// export const noticeFormSchema: NoticeFormField[] = [
+//     {id: "notice-title", name: "title", label: "제목", type: "text"},
+//     {id: "notice-contents", name: "contents", label: "내용", type: "textarea"},
+//     {id: "notice-images", name: "newImages", label: "이미지 첨부", type: "image"},
+//     {id: "notice-files", name: "newFiles", label: "파일 첨부", type: "file"},
+//     {id: "notice-important", name: "is_important", label: "중요 공지", type: "checkbox"},
+// ];
