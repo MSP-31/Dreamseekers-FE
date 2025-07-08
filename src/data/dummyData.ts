@@ -42,22 +42,6 @@ export interface Contact {
     sub_phone: string;
 }
 
-//-----------------------------
-export interface IntroData {
-    image: string;
-    title: string;
-    contents: string;
-}
-
-export interface FormField {
-    id: string;
-    name: string;
-    label: string;
-    type: "text" | "textarea" | "image";
-    // value?: string | File | null; // 필요에 따라 초기값 타입 확장
-}
-//-----------------------------
-
 // 강사 소개
 export interface Instructor {
     id: number;
@@ -66,10 +50,18 @@ export interface Instructor {
     image: string; // 이미지 URL
 }
 
-// 모달 폼 데이터 타입 (이미지는 File 객체로 별도 관리)
+// 모달 폼 데이터 타입
 export interface InstructorFormData {
     name: string;
     contents: string;
+    image?: File | string | null;
+}
+
+// 강의 추가/수정 모달 폼 데이터 타입
+export interface LectureFormData {
+    title: string;
+    contents: string;
+    image?: File | string | null;
 }
 
 // 모달 폼 필드 정의
@@ -116,49 +108,20 @@ export interface LectureItem {
     // category?: string; // 필요시 카테고리 추가
 }
 
-// 강의 추가/수정 모달 폼 데이터 타입
-export interface LectureFormData {
-    title: string;
-    contents: string;
-    // imageFile은 별도로 File 객체로 관리
-}
-
-// 강의 추가/수정 모달 폼 필드 정의
 export interface LectureFormSchemaField {
     id: string;
     name: keyof LectureFormData | "imageFile";
     label: string;
     type: "text" | "textarea" | "image";
 }
-//-----------------------------
+
+export const lectureFormSchema: LectureFormSchemaField[] = [
+    {id: "title", name: "title", label: "강의명", type: "text"},
+    {id: "contents", name: "contents", label: "강의 내용", type: "textarea"},
+    {id: "image", name: "image", label: "강의 대표 이미지", type: "image"}, // name이 "image"인지 확인
+];
 
 //-----------------------------
-
-// 강의 상세 페이지의 하위 강의 항목
-export interface LectureSubItem {
-    id: number; // 하위 항목의 고유 ID
-    mainLectureId: number; // 상위 LectureItem의 ID
-    title: string;
-    contents: string;
-    image?: string; // 하위 항목 이미지 (선택적)
-}
-
-// 하위 강의 추가/수정 모달 폼 데이터 타입
-export interface LectureSubItemFormData {
-    title: string;
-    contents: string;
-}
-
-export const dummySlides: Ref<Slide[]> = ref([
-    {id: 1, image: {url: "/img/1.jpg"}, title: "꿈을 찾는 여정", contents: "당신의 가능성을 발견하세요."},
-    {id: 2, image: {url: "/img/1.jpg"}, title: "전문가의 길", contents: "최고의 강사진과 함께합니다."},
-    // public/img/slide1.jpg, slide2.jpg 등 이미지 파일 필요
-]);
-
-export const dummySchedules: Ref<ScheduleData> = ref({
-    // "2024-7-15": [{ title: "Vue 특강", time: "14:00", contents: "Vue.js 심화 과정" }]
-});
-
 export const dummyContacts: Ref<Contact> = ref({
     address: "경상남도 창원시 성산구용지로 70 ",
     sub_address: "성원 그랜드오피스텔 10층 1029호",
@@ -185,59 +148,6 @@ export const dummyBusinessInfo: Ref<BusinessInfo> = ref({
 
 export const naverClientId: Ref<string> = ref("YOUR_NCP_CLIENT_ID"); // 네이버 클라우드 플랫폼 Client ID
 
-//-----------------------------
-// 인사말 페이지에 사용될 더미 데이터
-export const greetingIntroData: IntroData = {
-    image: "/img/1.jpg", // Vite의 public 폴더 기준 예시 경로입니다. 실제 이미지 경로로 수정해주세요.
-    title: "꿈을 찾는 이들을 위한 따뜻한 인사말",
-    contents: `안녕하세요. 꿈을찾는사람들 교육원에 오신 것을 진심으로 환영합니다.\n저희는 여러분 각자의 소중한 꿈이 현실이 될 수 있도록 돕는 든든한 동반자가 되겠습니다.\n\n다년간 축적된 교육 경험과 전문성을 바탕으로, 여러분의 잠재력을 최대한 발휘하고 성공적인 미래를 설계할 수 있도록 양질의 교육 콘텐츠와 맞춤형 지원을 제공할 것을 약속드립니다.`,
-};
-
-// (관리자용) 수정 모달 폼 필드 정의
-// Django 템플릿의 {{ form }} 부분을 기반으로 추정하여 작성합니다.
-// 실제 Django Form 클래스의 필드 구성에 맞게 조정해야 합니다.
-export const greetingFormFields: FormField[] = [
-    {id: "intro-title", name: "title", label: "제목", type: "text"},
-    {id: "intro-contents", name: "contents", label: "내용", type: "textarea"},
-    {id: "intro-image", name: "image", label: "대표 이미지", type: "image"},
-];
-//-----------------------------
-
-// 강사 목록 더미 데이터 (예방 교육 주제)
-export const instructorsListData: Instructor[] = [
-    {
-        id: 1,
-        name: "김예방 전문강사",
-        contents: "청소년 및 성인을 대상으로 한 **도박 중독 예방 교육** 전문가입니다.\n도박의 위험성과 실제 사례를 통해 건강한 삶의 중요성을 강조합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 2,
-        name: "이안전 선임강사",
-        contents: "**마약류 오남용 예방 교육**을 담당하고 있습니다.\n마약의 종류, 위험성, 그리고 예방을 위한 실제적인 정보를 제공합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 3,
-        name: "박희망 수석강사",
-        contents: "**성폭력 및 디지털 성범죄 예방 교육**에 특화된 강사입니다.\n젠더 감수성을 높이고 안전한 디지털 환경 조성에 기여합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 4,
-        name: "최지킴 강사",
-        contents: "음주운전, 학교폭력 등 다양한 **생활 안전 및 예방 교육**을 진행합니다.\n실생활에 필요한 안전 수칙과 대응 방법을 쉽고 명확하게 전달합니다.",
-        image: "/img/1.jpg",
-    },
-];
-
-// 강사 추가/수정 모달 폼 스키마
-export const instructorFormSchema: InstructorFormField[] = [
-    {id: "instr-name", name: "name", label: "강사명", type: "text"},
-    {id: "instr-contents", name: "contents", label: "소개", type: "textarea"},
-    {id: "instr-image", name: "imageFile", label: "대표 이미지", type: "image"},
-];
-
 // ----------------
 
 export const contactInfoData: ContactInfo = {
@@ -252,7 +162,6 @@ export const contactInfoData: ContactInfo = {
     sub_phone: "010-9371-0450",
     latitude: 35.2220973957462,
     longitude: 128.676299239476,
-    ncpClientId: "YOUR_NAVER_MAPS_CLIENT_ID", // !!! 실제 Naver Maps Client ID로 교체하세요 !!!
 };
 
 export const businessInfoData: BusinessInfo = {
@@ -264,40 +173,6 @@ export const businessInfoData: BusinessInfo = {
     parking_info: "유료주차 / 2시간 무료", // 예시 주차 안내
     usage_guide: "예약\n주차", // 예시 이용 안내 (줄바꿈 포함)
 };
-//-----------------------------
-// 강의 목록 더미 데이터 (예방 교육 강좌로 업데이트)
-export const lectureItemsData: LectureItem[] = [
-    {
-        id: 1,
-        title: "도박 중독, 이제 그만! '스마트한 선택' 예방 강좌",
-        contents: "청소년 및 성인의 도박 중독 위험성을 알리고, 건강한 여가 활동과 충동 제어 방법을 배웁니다. 실생활 사례를 통해 중독의 폐해를 인지하고 예방하는 데 초점을 맞춥니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 2,
-        title: "마약류 오남용 방지 '안전한 우리 사회' 지킴이 강좌",
-        contents: "최근 증가하는 마약류 범죄에 대한 경각심을 높이고, 마약의 종류별 위험성과 중독의 심각성을 교육합니다. 약물 오남용 예방을 위한 올바른 정보와 대처법을 학습합니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 3,
-        title: "성폭력 및 디지털 성범죄 예방 '존중과 안전' 교육",
-        contents: "성폭력과 디지털 성범죄의 개념을 명확히 이해하고, 예방을 위한 성인지 감수성 및 디지털 윤리 의식을 함양합니다. 피해 발생 시 대응 방법과 지원 체계에 대해서도 알아봅니다.",
-        image: "/img/1.jpg",
-    },
-    {
-        id: 4, // 추가: 필요하다면 더 많은 예방 교육 주제를 추가할 수 있습니다.
-        title: "학교 폭력 및 사이버 폭력 예방 '평화로운 교실' 만들기",
-        contents: "학교 폭력과 사이버 폭력의 다양한 유형을 인지하고, 피해자와 가해자 모두에게 미치는 영향을 학습합니다. 예방을 위한 친구 관계 형성, 갈등 해결, 그리고 신고 절차를 교육합니다.",
-        image: "/img/1.jpg",
-    },
-];
-
-export const lectureFormSchema: LectureFormSchemaField[] = [
-    {id: "lecture-title", name: "title", label: "강의명", type: "text"},
-    {id: "lecture-contents", name: "contents", label: "강의 내용", type: "textarea"},
-    {id: "lecture-image", name: "imageFile", label: "대표 이미지", type: "image"},
-];
 //-----------------------------
 export const lectureSubItemsData: {[mainLectureId: number]: LectureSubItem[]} = {
     1: [
@@ -426,19 +301,6 @@ export const lectureSubItemsData: {[mainLectureId: number]: LectureSubItem[]} = 
     ],
 };
 
-// 하위 강의 추가/수정 모달 폼 스키마
-export interface LectureSubItemFormSchemaField {
-    id: string;
-    name: keyof LectureSubItemFormData | "imageFile";
-    label: string;
-    type: "text" | "textarea" | "image";
-}
-export const lectureSubItemFormSchema: LectureSubItemFormSchemaField[] = [
-    {id: "sublecture-title", name: "title", label: "세부 강의명", type: "text"},
-    {id: "sublecture-contents", name: "contents", label: "세부 내용", type: "textarea"},
-    {id: "sublecture-image", name: "imageFile", label: "대표 이미지 (선택)", type: "image"},
-];
-
 //-----------------------------
 
 // 문의 내역 페이지에 사용될 데이터 타입
@@ -561,125 +423,10 @@ export interface ActivityNewsItem {
     postdate: string; // 게시일 (예: "20231027" 또는 "2023-10-27")
 }
 
-// 활동 소식 더미 데이터
-export const activityNewsData: ActivityNewsItem[] = [
-    {
-        id: 1,
-        link: "https://blog.naver.com/jhs9747/223905375765",
-        title: "훈련병의 첫 교육, 존중에서 시작하다 – 해군 714기의 맞춤형... ",
-        description:
-            "‘꿈을 찾는 사람들 교육원’, 군 맞춤형 성인지 교육의 선두주자 우리 교육원은 군 장병, 간부, 훈련병을 위한 맞춤형 성인지 교육과 폭력 예방 교육을 전문적으로 제공하고 있습니다. ✔ 실전 사례...",
-        source: "네이버 블로그",
-        sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "2025-06-20",
-    },
-    {
-        id: 2,
-        link: "https://blog.naver.com/jhs9747/223904203673",
-        title: "사실혼 파트너가 나를 스토킹으로 신고했다면? 진실과 대응법",
-        description: "꿈을찾는사람들교육원 대표원장 홍의섭입니다. 사실혼 관계에 있다가 갑자기 상대방에게 스토킹...",
-        source: "네이버 블로그",
-        sourceLink: "http://blog.naver.com/jhs9747",
-        postdate: "2025-06-19",
-    },
-];
-
 // -----------------
-// 공지사항 페이지에 사용될 데이터 타입
-export interface NoticePost {
-    pk: number; // 게시글 고유 ID
-    title: string;
-    author: string;
-    created_at: string; // 날짜 형식 (예: "YYYY-MM-DD")
-    is_important?: boolean; // 중요 공지 여부 (선택적)
-    contents?: string; // 상세 내용
-    images?: {id: number; url: string; alt?: string}[]; // 이미지 목록 (id 추가)
-    files?: {id: number; url: string; name: string}[]; // 첨부 파일 목록 (id 추가)
-}
-
-// 페이지네이션 데이터 타입 (InquiryListPage와 동일하게 사용 가능)
-// export interface PaginationData { ... } // 이미 정의되어 있다면 생략
-
-// 공지사항 더미 데이터 (중요 공지 포함)
-export const dummyImportantNotices: NoticePost[] = [
-    {
-        pk: 101,
-        title: "시스템 점검 안내 (중요)",
-        author: "관리자",
-        created_at: "2023-11-01",
-        is_important: true,
-        contents:
-            "안녕하세요. 꿈을 찾는 사람들 교육원입니다.\n보다 안정적인 서비스 제공을 위해 아래와 같이 시스템 점검을 실시할 예정입니다.\n\n- 점검 일시: 2023년 11월 15일 (수) 02:00 ~ 06:00 (4시간)\n- 점검 내용: 서버 안정화 및 보안 업데이트\n\n점검 시간 동안에는 웹사이트 및 모든 서비스 이용이 일시적으로 중단될 수 있습니다.\n이용에 불편을 드려 죄송하며, 너른 양해 부탁드립니다.\n감사합니다.",
-        images: [
-            // id 추가
-            {id: 1, url: "/img/dummy/notice-img1.jpg", alt: "점검 안내 이미지"},
-        ],
-        files: [
-            // id 추가
-            {id: 1, url: "/files/dummy/점검 상세 안내.pdf", name: "점검 상세 안내.pdf"},
-        ],
-    },
-    {
-        pk: 102,
-        title: "개인정보처리방침 변경 안내 (필독)",
-        author: "관리자",
-        created_at: "2023-10-30",
-        is_important: true,
-        contents: "개인정보처리방침이 일부 변경되어 안내드립니다. 자세한 내용은 첨부파일을 확인해주시기 바랍니다.",
-        files: [
-            // id 추가
-            {id: 2, url: "/files/dummy/개인정보처리방침_v2.0.docx", name: "개인정보처리방침_v2.0.docx"},
-        ],
-    },
-];
-
-export const dummyNoticePosts: NoticePost[] = [
-    {pk: 19, title: "10월 우수 수강생 발표", author: "관리자", created_at: "2023-10-27"},
-    {pk: 18, title: "교육원 휴관일 안내 (11월)", author: "관리자", created_at: "2023-10-26"},
-    {pk: 17, title: "스터디 그룹 모집 공고", author: "관리자", created_at: "2023-10-25"},
-    {pk: 16, title: "강의 만족도 설문조사 참여 안내", author: "관리자", created_at: "2023-10-24"},
-];
-
-// 공지사항 페이지네이션 더미 데이터 (예시: 일반 공지 5개 중 페이지 1)
-export const dummyNoticePaginationData: PaginationData = {
-    count: dummyNoticePosts.length, // 전체 일반 공지 수
-    start_index: 1,
-    number: 1,
-    has_other_pages: dummyNoticePosts.length > 5, // 예시: 페이지당 5개
-    has_previous: false,
-    has_next: dummyNoticePosts.length > 5,
-    previous_page_number: null,
-    next_page_number: dummyNoticePosts.length > 5 ? 2 : null,
-    custom_range: Array.from({length: Math.ceil(dummyNoticePosts.length / 5)}, (_, i) => i + 1).slice(0, 5), // 최대 5개 페이지 버튼
-};
-
 // 검색 유형 옵션
 export const noticeSearchTypes = [
     {value: "all", text: "전체"},
     {value: "title", text: "제목"},
     {value: "contents", text: "내용"},
-];
-
-// 공지사항 작성/수정 폼 데이터 타입
-export interface NoticeFormData {
-    title: string;
-    contents: string;
-    is_important: boolean;
-    // images와 files는 File 객체 배열로 별도 관리
-}
-
-// 공지사항 작성/수정 폼 필드 정의
-export interface NoticeFormField {
-    id: string;
-    name: keyof NoticeFormData | "newImages" | "newFiles"; // 'newImages', 'newFiles'는 File 객체 배열을 다루기 위함
-    label: string;
-    type: "text" | "textarea" | "checkbox" | "image" | "file";
-}
-
-export const noticeFormSchema: NoticeFormField[] = [
-    {id: "notice-title", name: "title", label: "제목", type: "text"},
-    {id: "notice-contents", name: "contents", label: "내용", type: "textarea"},
-    {id: "notice-images", name: "newImages", label: "이미지 첨부", type: "image"},
-    {id: "notice-files", name: "newFiles", label: "파일 첨부", type: "file"},
-    {id: "notice-important", name: "is_important", label: "중요 공지", type: "checkbox"},
 ];

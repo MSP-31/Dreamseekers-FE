@@ -33,7 +33,6 @@ const loadNaverMapsScript = (clientId: string): Promise<void> => {
         script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}`;
         script.async = true;
         script.onload = () => {
-            console.log("Naver Maps script loaded.");
             resolve();
         };
         script.onerror = (error) => {
@@ -47,7 +46,6 @@ const loadNaverMapsScript = (clientId: string): Promise<void> => {
 // 지도 초기화 및 마커 설정 함수
 const initMap = () => {
     if (!naver || !naver.maps) {
-        console.error("Naver Maps API not available.");
         return;
     }
 
@@ -68,8 +66,6 @@ const initMap = () => {
         position: new naver.maps.LatLng(contactInfo.latitude, contactInfo.longitude),
         map: mapInstance,
     });
-
-    console.log("Naver Map initialized.");
 };
 
 // 컴포넌트 마운트 시 지도 로드 및 초기화

@@ -87,6 +87,7 @@ const processedMenuItems = computed<MenuItem[]>(() => {
     // '강의 문의' 메뉴 찾기
     const inquiryMenu = items.find((menu) => menu.title === "강의 문의");
 
+    /*
     if (inquiryMenu) {
         // 1. isStaff 여부에 따라 '강의 상담 문의' 서브메뉴 추가/제거
         const isAdmin = authStore.isAdmin;
@@ -112,6 +113,7 @@ const processedMenuItems = computed<MenuItem[]>(() => {
         // 3. '강의 문의' 최상위 링크 변경
         inquiryMenu.link = isAdmin ? "/inquiry" : "/inquiry/write";
     }
+    */
 
     return items;
 });

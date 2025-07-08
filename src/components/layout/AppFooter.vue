@@ -23,7 +23,7 @@
                 </ul>
                 <!-- 아이콘 -->
                 <div class="flex items-center justify-center md:justify-end space-x-6">
-                    <a
+                    <!-- <a
                         href="https://www.facebook.com/people/꿈을-찾는-사람들-교육원/100046588332120/"
                         target="_blank"
                         rel="noopener"
@@ -32,6 +32,7 @@
                     >
                         <img src="/img/icon/facebook.svg" alt="페이스북 아이콘" />
                     </a>
+                    -->
                     <a href="https://www.instagram.com/dreamseekers1004/" target="_blank" rel="noopener" class="text-gray-700 hover:text-pink-600 text-2xl" aria-label="인스타그램">
                         <img src="/img/icon/instagram.svg" alt="인스타그램 아이콘" />
                     </a>

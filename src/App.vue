@@ -1,6 +1,6 @@
 <template>
     <div id="app-container">
-        <TheHeader @logout="handleLogout" />
+        <TheHeader />
 
         <router-view />
 
