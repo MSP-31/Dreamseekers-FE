@@ -16,8 +16,8 @@
             <div class="modal-detail">
                 <ul v-if="schedulesProp.length > 0" class="detail-list-area space-y-3 max-h-60 overflow-y-auto">
                     <li v-for="(schedule, index) in schedulesProp" :key="index" class="p-3 bg-[var(--dream-gray)] rounded-md">
-                        <p class="font-semibold text-[var(--dream-main)]">{{ schedule.title }} ({{ schedule.time }})</p>
-                        <p class="text-sm text-gray-700">{{ schedule.contents }}</p>
+                        <p class="font-semibold text-[var(--dream-main)]">({{ schedule.startTime }} - {{ schedule.endTime }})</p>
+                        <p class="text-sm text-gray-700">{{ schedule.title }}</p>
                     </li>
                 </ul>
                 <p v-else class="text-gray-600">해당 날짜에 등록된 강의 일정이 없습니다.</p>
@@ -28,7 +28,19 @@
 
 <script setup lang="ts">
 import {computed, type PropType} from "vue";
-import type {ScheduleEntry} from "@/data/dummyData.ts";
+
+export interface ScheduleEntry {
+    id: string; // 고유 ID (선택 사항이지만 FullCalendar에서 이벤트 관리에 유용)
+    date: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    startTime: string; // 'HH:mm' 형식의 시작 시간
+    endTime: string; // 'HH:mm' 형식의 종료 시간
+    title: string; // 이벤트 제목
+    allDay: boolean; // 하루 종일 이벤트인지 여부
+}
+
+export interface ScheduleData {
+    [date: string]: ScheduleEntry[];
+}
 
 const props = defineProps({
     selectedDateProp: {

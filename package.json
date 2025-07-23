@@ -9,6 +9,11 @@
         "dev": "vite"
     },
     "dependencies": {
+        "@fullcalendar/daygrid": "^6.1.18",
+        "@fullcalendar/interaction": "^6.1.18",
+        "@fullcalendar/list": "^6.1.18",
+        "@fullcalendar/timegrid": "^6.1.18",
+        "@fullcalendar/vue3": "^6.1.18",
         "@types/axios": "^0.9.36",
         "axios": "^1.10.0",
         "pinia": "^3.0.1",

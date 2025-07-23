@@ -18,16 +18,6 @@ export interface Lecture {
     image: ImageUrl;
 }
 
-export interface ScheduleEntry {
-    title: string;
-    time: string;
-    contents: string;
-}
-
-export interface ScheduleData {
-    [date: string]: ScheduleEntry[];
-}
-
 export interface Contact {
     address: string;
     sub_address: string;
