@@ -13,60 +13,105 @@
             <form @submit.prevent="handleSubmit">
                 <table class="w-full">
                     <tbody>
+                        <tr v-if="formFields.some((field) => field.name === 'date')">
+                            <th class="text-left py-3 pr-4 align-top">
+                                <label :for="formFields.find((f) => f.name === 'date')?.id" class="block text-sm font-medium text-gray-700">날짜</label>
+                            </th>
+                            <td class="py-3 w-full flex items-center space-x-2">
+                                <input
+                                    v-if="formFields.find((f) => f.name === 'date')"
+                                    type="date"
+                                    :id="formFields.find((f) => f.name === 'date')?.id"
+                                    :name="formFields.find((f) => f.name === 'date')?.name"
+                                    v-model="formData[formFields.find(f => f.name === 'date')?.name as string]"
+                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-grow w-40"
+                                />
+                                <input
+                                    v-if="formFields.find((f) => f.name === 'startTime')"
+                                    type="time"
+                                    :id="formFields.find((f) => f.name === 'startTime')?.id"
+                                    :name="formFields.find((f) => f.name === 'startTime')?.name"
+                                    v-model="formData[formFields.find(f => f.name === 'startTime')?.name as string]"
+                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm w-40"
+                                    step="60"
+                                />
+                                <span class="text-gray-500">~</span>
+                                <input
+                                    v-if="formFields.find((f) => f.name === 'endTime')"
+                                    type="time"
+                                    :id="formFields.find((f) => f.name === 'endTime')?.id"
+                                    :name="formFields.find((f) => f.name === 'endTime')?.name"
+                                    v-model="formData[formFields.find(f => f.name === 'endTime')?.name as string]"
+                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm w-40"
+                                    step="60"
+                                />
+                            </td>
+                        </tr>
+
                         <template v-for="field in formFields" :key="field.name">
-                            <tr v-if="field.type === 'image'">
-                                <td colspan="2" class="py-3">
-                                    <label :for="field.id" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
-                                    <label
-                                        class="w-full flex flex-col items-center px-4 py-3 bg-white text-blue-600 rounded-lg shadow border border-blue-300 cursor-pointer hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                                    >
-                                        <svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                                        </svg>
-                                        <span class="mt-1 text-sm leading-normal">이미지 선택</span>
-                                        <input :id="field.id" :name="field.name" type="file" accept="image/*" class="hidden" @change="handleImageUpload($event, field.name)" />
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr v-if="field.type === 'image' && (previewImages[field.name] || initialData[field.name])">
-                                <td colspan="2" class="py-3">
-                                    <p class="text-sm font-medium text-gray-700 mb-1">미리보기</p>
-                                    <div class="border border-gray-300 p-2 rounded-md w-full max-w-md h-48 mx-auto flex items-center justify-center overflow-hidden relative">
-                                        <img :src="previewImages[field.name] || initialData[field.name]" alt="이미지 미리보기" class="max-h-full max-w-full object-contain rounded" />
-                                        <button
-                                            type="button"
-                                            @click="removePreviewImage(field.name)"
-                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs leading-none hover:bg-red-600"
-                                            title="이미지 제거"
+                            <template v-if="!['id', 'date', 'startTime', 'endTime'].includes(field.name)">
+                                <tr v-if="field.type === 'image'">
+                                    <td colspan="2" class="py-3">
+                                        <label :for="field.id" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                                        <label
+                                            class="w-full flex flex-col items-center px-4 py-3 bg-white text-blue-600 rounded-lg shadow border border-blue-300 cursor-pointer hover:bg-blue-50 hover:text-blue-700 transition-colors"
                                         >
-                                            X
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr v-if="field.type !== 'image'">
-                                <th class="text-left py-3 pr-4 align-top">
-                                    <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
-                                </th>
-                                <td class="py-3 w-full">
-                                    <input
-                                        v-if="field.type === 'text'"
-                                        :type="field.type"
-                                        :id="field.id"
-                                        :name="field.name"
-                                        v-model="formData[field.name]"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    />
-                                    <textarea
-                                        v-else-if="field.type === 'textarea'"
-                                        :id="field.id"
-                                        :name="field.name"
-                                        v-model="formData[field.name]"
-                                        rows="5"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-none"
-                                    ></textarea>
-                                </td>
-                            </tr>
+                                            <svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                            </svg>
+                                            <span class="mt-1 text-sm leading-normal">이미지 선택</span>
+                                            <input :id="field.id" :name="field.name" type="file" accept="image/*" class="hidden" @change="handleImageUpload($event, field.name)" />
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr v-if="field.type === 'image' && (previewImages[field.name] || initialData[field.name])">
+                                    <td colspan="2" class="py-3">
+                                        <p class="text-sm font-medium text-gray-700 mb-1">미리보기</p>
+                                        <div class="border border-gray-300 p-2 rounded-md w-full max-w-md h-48 mx-auto flex items-center justify-center overflow-hidden relative">
+                                            <img :src="previewImages[field.name] || initialData[field.name]" alt="이미지 미리보기" class="max-h-full max-w-full object-contain rounded" />
+                                            <button
+                                                type="button"
+                                                @click="removePreviewImage(field.name)"
+                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs leading-none hover:bg-red-600"
+                                                title="이미지 제거"
+                                            >
+                                                X
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="field.type !== 'image'">
+                                    <th class="text-left py-3 pr-4 align-top">
+                                        <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                                    </th>
+                                    <td class="py-3 w-full">
+                                        <input
+                                            v-if="field.type === 'text'"
+                                            :type="field.type"
+                                            :id="field.id"
+                                            :name="field.name"
+                                            v-model="formData[field.name]"
+                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        />
+                                        <textarea
+                                            v-else-if="field.type === 'textarea'"
+                                            :id="field.id"
+                                            :name="field.name"
+                                            v-model="formData[field.name]"
+                                            rows="5"
+                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-none"
+                                        ></textarea>
+                                        <input
+                                            v-else-if="field.type === 'checkbox'"
+                                            :type="field.type"
+                                            :id="field.id"
+                                            :name="field.name"
+                                            v-model="formData[field.name]"
+                                            class="mt-1 h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                        />
+                                    </td>
+                                </tr>
+                            </template>
                         </template>
                     </tbody>
                 </table>
@@ -205,6 +250,7 @@ const handleSubmit = () => {
     // 텍스트 데이터 추가
     for (const key in formData) {
         payload.append(key, formData[key]);
+        console.log(key, formData[key]);
     }
 
     // 파일 데이터 추가

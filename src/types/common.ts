@@ -10,5 +10,5 @@ export interface FormField {
     id: string;
     name: string;
     label: string;
-    type: "text" | "textarea" | "image";
+    type: "text" | "textarea" | "image" | "date" | "time" | "checkbox" | "number";
 }
