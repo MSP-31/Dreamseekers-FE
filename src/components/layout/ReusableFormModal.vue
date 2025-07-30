@@ -52,35 +52,18 @@
                             <template v-if="!['id', 'date', 'startTime', 'endTime'].includes(field.name)">
                                 <tr v-if="field.type === 'image'">
                                     <td colspan="2" class="py-3">
-                                        <label :for="field.id" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
-                                        <label
-                                            class="w-full flex flex-col items-center px-4 py-3 bg-white text-blue-600 rounded-lg shadow border border-blue-300 cursor-pointer hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                                        >
-                                            <svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                                            </svg>
-                                            <span class="mt-1 text-sm leading-normal">이미지 선택</span>
-                                            <input :id="field.id" :name="field.name" type="file" accept="image/*" class="hidden" @change="handleImageUpload($event, field.name)" />
-                                        </label>
+                                        <ImageUploader
+                                            v-model="formData[field.name]"
+                                            :inputId="field.id"
+                                            :buttonText="field.label"
+                                            :maxSizeMB="1"
+                                            :maxWidthOrHeight="1024"
+                                            :initialPreviewUrl="initialData[field.name]"
+                                            @error="handleImageUploaderError"
+                                        />
                                     </td>
                                 </tr>
-                                <tr v-if="field.type === 'image' && (previewImages[field.name] || initialData[field.name])">
-                                    <td colspan="2" class="py-3">
-                                        <p class="text-sm font-medium text-gray-700 mb-1">미리보기</p>
-                                        <div class="border border-gray-300 p-2 rounded-md w-full max-w-md h-48 mx-auto flex items-center justify-center overflow-hidden relative">
-                                            <img :src="previewImages[field.name] || initialData[field.name]" alt="이미지 미리보기" class="max-h-full max-w-full object-contain rounded" />
-                                            <button
-                                                type="button"
-                                                @click="removePreviewImage(field.name)"
-                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs leading-none hover:bg-red-600"
-                                                title="이미지 제거"
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr v-if="field.type !== 'image'">
+                                <tr v-else>
                                     <th class="text-left py-3 pr-4 align-top">
                                         <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
                                     </th>
@@ -130,7 +113,8 @@
 
 <script setup lang="ts">
 import {reactive, watch} from "vue";
-import type {FormField} from "@/types/common"; // 이 경로는 프로젝트 구조에 맞게 조정해야 합니다.
+import type {FormField} from "@/types/common";
+import ImageUploader from "./ImageUploader.vue";
 
 // --- Props 정의 ---
 const props = defineProps({
@@ -167,8 +151,6 @@ const emit = defineEmits(["update:show", "submit"]);
 
 // --- Internal State ---
 const formData = reactive<Record<string, any>>({}); // 폼 입력 값
-const uploadedFiles = reactive<Record<string, File | null>>({}); // 업로드된 파일 객체 (필드명 기준)
-const previewImages = reactive<Record<string, string | null>>({}); // 이미지 미리보기 URL (필드명 기준)
 
 // --- Watcher: `show` prop이 변경될 때 폼 데이터 초기화 및 미리보기 설정 ---
 watch(
@@ -186,32 +168,20 @@ watch(
 
 // 폼 데이터 초기화
 const initializeFormData = () => {
-    // formData 초기화 (기존 값 유지)
+    // formData 초기화
     for (const key in formData) {
         delete formData[key];
-    }
-    // uploadedFiles 및 previewImages 초기화
-    for (const key in uploadedFiles) {
-        delete uploadedFiles[key];
-    }
-    for (const key in previewImages) {
-        delete previewImages[key];
     }
 
     props.formFields.forEach((field) => {
         if (field.type === "image") {
-            // 이미지 필드는 초기 데이터가 있으면 미리보기 설정
-            if (props.initialData[field.name]) {
-                previewImages[field.name] = props.initialData[field.name];
-            } else {
-                previewImages[field.name] = null;
-            }
-            uploadedFiles[field.name] = null; // 업로드 파일 초기화
+            formData[field.name] = null; // 초기에는 파일이 선택되지 않은 상태
         } else {
             // 텍스트 필드는 초기 데이터가 있으면 그 값으로, 없으면 빈 문자열
-            formData[field.name] = props.initialData[field.name] !== undefined ? props.initialData[field.name] : "";
+            formData[field.name] = props.initialData[field.name] !== undefined ? props.initialData[field.name] : field.type === "checkbox" ? false : "";
         }
     });
+    console.log("Initialized formData:", JSON.parse(JSON.stringify(formData)));
 };
 
 // 모달 닫기
@@ -219,56 +189,61 @@ const closeModal = () => {
     emit("update:show", false); // v-model 사용을 위한 이벤트
 };
 
-// 이미지 업로드 핸들러
-const handleImageUpload = (event: Event, fieldName: string) => {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-        const file = target.files[0];
-        uploadedFiles[fieldName] = file; // 해당 필드명으로 파일 저장
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewImages[fieldName] = e.target?.result as string; // 해당 필드명으로 미리보기 URL 저장
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
-// 이미지 미리보기 제거
-const removePreviewImage = (fieldName: string) => {
-    previewImages[fieldName] = null; // 미리보기 URL 제거
-    uploadedFiles[fieldName] = null; // 업로드된 파일 제거
-    // 초기 데이터에 해당 이미지가 있었다면, 이 이미지를 삭제해야 함을 부모에게 알릴 수 있도록 추가 로직 필요
-    // 예: emit('imageDelete', fieldName, props.initialData[fieldName])
-};
-
 // 폼 제출
+// CalendarModal.vue 또는 ReusableFormModal.vue 의 handleSubmit 함수
 const handleSubmit = () => {
-    // FormData 객체를 생성하여 파일과 텍스트 데이터를 함께 담음
     const payload = new FormData();
 
-    // 텍스트 데이터 추가
     for (const key in formData) {
-        payload.append(key, formData[key]);
-        console.log(key, formData[key]);
-    }
+        const value = formData[key];
+        const fieldDef = props.formFields.find((f) => f.name === key);
 
-    // 파일 데이터 추가
-    for (const fieldName in uploadedFiles) {
-        const file = uploadedFiles[fieldName];
-        if (file) {
-            payload.append(fieldName, file);
-        } else if (props.initialData[fieldName] && !previewImages[fieldName]) {
-            // 기존 이미지가 있었는데 제거된 경우, 해당 필드를 빈 값으로 보냄 (서버가 이를 삭제로 인지하도록)
-            // 서버 API 설계에 따라 'delete_image_field: true' 같은 별도 플래그를 보낼 수도 있음
-            payload.append(fieldName, "");
+        // 이미지 필드 처리 (blob 또는 file 인스턴스 모두 검사)
+        // console.log(`Processing key: ${key}, value:`, value, `instanceof File: ${value instanceof File}, instanceof Blob: ${value instanceof Blob}`); // 디버깅용 로그
+
+        if (fieldDef && fieldDef.type === "image") {
+            if (value instanceof File || value instanceof Blob) {
+                // File 또는 Blob 인스턴스 모두 허용
+                let fileToSend: File;
+
+                if (value instanceof File) {
+                    fileToSend = value; // 이미 File 객체라면 그대로 사용
+                } else {
+                    // Blob 객체인 경우 File 객체로 변환
+                    // Blob에서 File 객체를 생성할 때 필요한 이름과 타입을 명시적으로 지정
+                    // 이 이름은 `ImageUploader`에서 `v-model`로 받아온 `Blob`의 `name` 속성 (만약 있다면)
+                    // 또는 기본 이름을 사용합니다.
+                    const originalFileName = value.name || `${key}_${Date.now()}.jpeg`; // 콘솔에 찍힌 name 속성 활용
+                    const originalFileType = value.type || "image/jpeg"; // 콘솔에 찍힌 type 속성 활용
+
+                    // Blob을 File 객체로 변환
+                    fileToSend = new File([value], originalFileName, {type: originalFileType, lastModified: value.lastModified || Date.now()});
+                }
+
+                // 이제 fileToSend는 확실히 File 객체입니다.
+                // 파일 이름이 비어있다면, 기본 이름을 생성하거나 유효한 이름을 사용하도록 합니다.
+                const finalFileName = fileToSend.name || `${key}_${Date.now()}.jpeg`;
+
+                payload.append(key, fileToSend, finalFileName);
+                console.log(`Appending image: key=${key}, name=${finalFileName}, size=${fileToSend.size}, type=${fileToSend.type}`);
+            } else if (value === null && props.initialData[key]) {
+                // 이미지가 제거된 경우:
+                // 이미지가 null이면 해당 필드를 payload에 아예 추가하지 않습니다.
+            }
+        } else {
+            // 텍스트 필드 또는 다른 타입의 필드
+            payload.append(key, value);
         }
     }
 
-    // 데이터를 부모 컴포넌트로 emit
     emit("submit", payload);
-
-    // 제출 후 모달 닫기
     closeModal();
+};
+
+// ImageUploader에서 발생한 오류를 처리하는 함수
+const handleImageUploaderError = (error: string | Error) => {
+    console.error("ImageUploader 오류:", error);
+    // 사용자에게 오류 메시지를 표시하는 등의 로직 추가
+    // alert("이미지 업로드에 문제가 발생했습니다. 다시 시도해 주세요.");
 };
 </script>

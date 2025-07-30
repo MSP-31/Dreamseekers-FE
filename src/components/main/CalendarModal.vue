@@ -7,9 +7,6 @@
                     <span class="selected-day text-lg text-gray-600 ml-2">{{ dayOfWeek }}</span>
                 </div>
                 <div>
-                    <!-- <button v-if="isStaff" @click="$emit('add-schedule')" class="add-sched bg-[var(--dream-blue)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded text-sm mr-2">
-                        추가
-                    </button> -->
                     <button @click="$emit('close')" class="modal-close text-2xl text-gray-500 hover:text-gray-700">&times;</button>
                 </div>
             </div>
