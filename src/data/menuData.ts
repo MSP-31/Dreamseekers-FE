@@ -12,7 +12,7 @@ export const menuItemsData: MenuItem[] = [
         link: "/intro/greeting/",
         submenu: [
             {title: "인사말", link: "/intro/greeting/"},
-            {title: "강사 소개", link: "/intro/instructors/"},
+            {title: "교육원 소개", link: "/intro/instructors/"},
             {title: "오시는 길", link: "/intro/contact/"},
         ],
     },

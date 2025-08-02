@@ -101,6 +101,8 @@ const fetchData = async () => {
         currentIntroData.title = response.data.title;
         currentIntroData.contents = response.data.contents;
         currentIntroData.image = response.data.image; // 서버에서 반환된 새 이미지 URL 업데이트
+        console.log(currentIntroData.image);
+        console.log(response.data);
     } catch (error: any) {
         console.error("API 호출 오류:", error);
         if (error.response?.status === 400) {
