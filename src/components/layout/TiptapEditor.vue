@@ -70,61 +70,24 @@
                     <line x1="10" y1="6" x2="21" y2="6"></line>
                     <line x1="10" y1="12" x2="21" y2="12"></line>
                     <line x1="10" y1="18" x2="21" y2="18"></line>
-                    <text x="3" y="7" font-family="Arial" font-size="12">1.</text>
-                    <text x="3" y="13" font-family="Arial" font-size="12">2.</text>
-                    <text x="3" y="19" font-family="Arial" font-size="12">3.</text>
+                    <text x="3" y="7" font-family="Arial" font-size="5">1</text>
+                    <text x="3" y="13" font-family="Arial" font-size="5">2</text>
+                    <text x="3" y="19" font-family="Arial" font-size="5">3</text>
                 </svg>
             </button>
 
             <button type="button" @click="setLink" :class="{'is-active': editor.isActive('link')}" title="링크 추가/수정">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L9.44 10.63a5 5 0 0 0 .54 7.54z"></path>
-                    <path d="M18 13a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.44-1.44a5 5 0 0 0-.54-7.54z"></path>
-                </svg>
+                <img src="/img/icon/link.svg" alt="링크 추가/수정 아이콘" />
             </button>
             <button type="button" @click="editor.chain().focus().unsetLink().run()" :disabled="!editor.isActive('link')" title="링크 제거">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L9.44 10.63a5 5 0 0 0 .54 7.54z"></path>
-                    <path d="M18 13a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.44-1.44a5 5 0 0 0-.54-7.54z"></path>
-                    <line x1="2" y1="2" x2="22" y2="22"></line>
-                </svg>
+                <img src="/img/icon/unlink.svg" alt="링크 제거 아이콘" />
             </button>
 
             <button type="button" @click="editor.chain().focus().undo().run()" title="실행 취소">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="feather feather-rotate-ccw"
-                >
-                    <polyline points="1 4 1 10 7 10"></polyline>
-                    <path d="M3.5 15a9 9 0 0 0 14.5 0"></path>
-                    <path d="M16 10l-3-3l3-3"></path>
-                </svg>
+                <img src="/img/icon/arrow-left.svg" alt="실행 취소 아이콘" />
             </button>
             <button type="button" @click="editor.chain().focus().redo().run()" title="다시 실행">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="feather feather-rotate-cw"
-                >
-                    <polyline points="23 4 23 10 17 10"></polyline>
-                    <path d="M20.5 15a9 9 0 0 0-14.5 0"></path>
-                    <path d="M8 10l3-3l-3-3"></path>
-                </svg>
+                <img src="/img/icon/arrow-right.svg" alt="다시 실행 아이콘" />
             </button>
         </div>
         <EditorContent :editor="editor" class="editor-content" />
@@ -303,7 +266,6 @@ onBeforeUnmount(() => {
 }
 .editor-content :deep(.tiptap p) {
     margin-top: 0;
-    margin-bottom: 1rem;
 }
 
 /* 드롭다운 스타일 */

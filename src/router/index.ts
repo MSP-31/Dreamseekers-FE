@@ -20,6 +20,12 @@ const router = createRouter({
                     component: () => import("@/views/intro/GreetingPage.vue"),
                 },
                 {
+                    // 자식 라우트: /intro/greeting
+                    path: "greeting/edit", // 부모 경로를 제외한 상대 경로
+                    name: "greetingEdit",
+                    component: () => import("@/views/intro/GreetingFormPage.vue"),
+                },
+                {
                     // 자식 라우트: /intro/instructors
                     path: "instructors", // 부모 경로를 제외한 상대 경로
                     name: "instructors",
