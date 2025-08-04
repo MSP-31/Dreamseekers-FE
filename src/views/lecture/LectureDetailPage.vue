@@ -46,7 +46,7 @@ import PageHeader from "@/components/layout/PageHeader.vue";
 import LectureCard from "@/components/LectureCard.vue";
 // dummyData 대신 API 연동을 위해 필요한 타입만 import
 import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api"; // apiClient 임포트
 

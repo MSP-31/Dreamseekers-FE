@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import {ref, reactive, computed, onMounted} from "vue";
 import CalendarModal from "./CalendarModal.vue"; // 모달 컴포넌트 임포트
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 
 // FullCalendar 관련 임포트
 import FullCalendar from "@fullcalendar/vue3"; // Vue 3 사용 시 @fullcalendar/vue3

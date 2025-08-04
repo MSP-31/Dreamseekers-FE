@@ -31,7 +31,7 @@
 import {ref, onMounted} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import ReusableMultiImageFormModal from "@/components/layout/ReusableMultiImageFormModal.vue";
+import ReusableMultiImageFormModal from "@/components/main/MultiImageFormModal.vue";
 import apiClient from "@/api";
 
 // API 응답 데이터 타입을 백엔드에 맞게 재정의

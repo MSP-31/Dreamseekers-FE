@@ -1,15 +1,6 @@
 <template>
-    <div
-        v-if="show"
-        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 transition-opacity duration-300 ease-in-out"
-        :class="{'opacity-100': show, 'opacity-0 pointer-events-none': !show}"
-        @click.self="closeModal"
-    >
-        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-2xl transform transition-all duration-300 ease-in-out" :class="{'scale-100': show, 'scale-95': !show}">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800">{{ modalTitle }}</h3>
-                <button @click="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-            </div>
+    <BaseModal :show="show" :modalTitle="modalTitle" :submitButtonText="submitButtonText" @update:show="closeModal" @submit="handleSubmit">
+        <template #content>
             <form @submit.prevent="handleSubmit">
                 <table class="w-full">
                     <tbody>
@@ -60,6 +51,7 @@
                                     <p class="mt-2 text-xs text-gray-500">최대 10개까지 이미지를 선택할 수 있습니다.</p>
                                 </td>
                             </template>
+
                             <template v-else-if="!['id', 'date', 'startTime', 'endTime'].includes(field.name)">
                                 <th class="text-left py-3 pr-4 align-top">
                                     <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
@@ -86,21 +78,13 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="text-right">
-                    <button type="button" @click="closeModal" class="mr-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
-                        취소
-                    </button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
-                        {{ submitButtonText }}
-                    </button>
-                </div>
             </form>
-        </div>
-    </div>
+        </template>
+    </BaseModal>
 </template>
-
 <script setup lang="ts">
 import {reactive, ref, watch} from "vue";
+import BaseModal from "../layout/BaseModal.vue";
 import type {AcademyIntroFormField} from "@/types/common";
 
 const props = defineProps({
@@ -117,8 +101,6 @@ const formData = reactive<Record<string, any>>({});
 const newImageFiles = ref<File[]>([]);
 const newImagePreviews = ref<string[]>([]);
 const initialPreviewUrls = ref<string[]>([]);
-
-// 삭제된 기존 이미지 URL을 저장할 배열을 추가
 const deletedInitialImageUrls = ref<string[]>([]);
 
 // 'multiple-image' 타입의 필드 이름을 찾습니다.

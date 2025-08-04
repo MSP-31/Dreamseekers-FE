@@ -29,7 +29,7 @@ import {ref, onMounted, computed} from "vue";
 import apiClient from "@/api";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 import SlideItem from "@/components/main/SlideItem.vue";
 import {FormField} from "@/types/common";
 

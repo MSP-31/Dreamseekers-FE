@@ -32,7 +32,7 @@
 import {ref, reactive, onMounted} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 import {IntroData, FormField} from "@/types/common";
 import apiClient from "@/api";
 
