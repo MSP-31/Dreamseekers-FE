@@ -1,7 +1,9 @@
 <template>
     <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.jpg">
         <div v-if="isAdmin" class="text-right mb-6">
-            <router-link to="/intro/greeting/edit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">수정</router-link>
+            <router-link to="/intro/greeting/edit" class="bg-[var(--dream-main)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out"
+                >수정</router-link
+            >
         </div>
 
         <div class="flex flex-col lg:flex-row items-start gap-8 p-6 bg-white shadow-lg rounded-lg">

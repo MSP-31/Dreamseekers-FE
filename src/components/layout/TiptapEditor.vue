@@ -181,7 +181,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* 이전과 동일한 스타일 코드 */
 .tiptap-container {
     border: 1px solid #e2e8f0;
     border-radius: 0.25rem;

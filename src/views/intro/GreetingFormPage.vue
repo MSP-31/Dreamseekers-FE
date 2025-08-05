@@ -33,8 +33,8 @@
 
             <div class="pt-5">
                 <div class="flex justify-end space-x-3">
-                    <router-link to="/intro/greeting" class="btn-base bg-gray-200 hover:bg-gray-300 text-gray-700"> 취소 </router-link>
-                    <button type="submit" class="btn-base bg-[var(--dream-main)] hover:bg-opacity-80 text-white">등록</button>
+                    <router-link to="/intro/greeting" class="px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300"> 취소 </router-link>
+                    <button type="submit" class="px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium btn-base bg-[var(--dream-main)] hover:bg-opacity-80 text-white">등록</button>
                 </div>
             </div>
         </form>
