@@ -20,6 +20,12 @@ const router = createRouter({
                     component: () => import("@/views/intro/GreetingPage.vue"),
                 },
                 {
+                    // 자식 라우트: /intro/greeting
+                    path: "greeting/edit", // 부모 경로를 제외한 상대 경로
+                    name: "greetingEdit",
+                    component: () => import("@/views/intro/GreetingFormPage.vue"),
+                },
+                {
                     // 자식 라우트: /intro/instructors
                     path: "instructors", // 부모 경로를 제외한 상대 경로
                     name: "instructors",
@@ -47,12 +53,12 @@ const router = createRouter({
                     name: "lectureList",
                     component: () => import("@/views/lecture/LectureListPage.vue"),
                 },
-                {
-                    path: "detail/:id", // 부모 경로를 제외한 상대 경로
-                    name: "lectureDetail",
-                    component: () => import("@/views/lecture/LectureDetailPage.vue"),
-                    props: true,
-                },
+                // {
+                //     path: "detail/:id", // 부모 경로를 제외한 상대 경로
+                //     name: "lectureDetail",
+                //     component: () => import("@/views/lecture/LectureDetailPage.vue"),
+                //     props: true,
+                // },
                 {
                     path: "calender",
                     name: "calender",
@@ -118,11 +124,11 @@ const router = createRouter({
                     name: "userLogin",
                     component: () => import("@/views/user/Login.vue"),
                 },
-                {
-                    path: "signup",
-                    name: "userSignup",
-                    component: () => import("@/views/user/Signup.vue"),
-                },
+                // {
+                //     path: "signup",
+                //     name: "userSignup",
+                //     component: () => import("@/views/user/Signup.vue"),
+                // },
                 {
                     path: "setting",
                     name: "userSetting",

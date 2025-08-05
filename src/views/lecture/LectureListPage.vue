@@ -1,76 +1,64 @@
 <template>
-    <div class="font-[var(--font-body)]">
-        <PageHeader title="주요 강의" backgroundImageUrl="/img/top_header/lecture.jpg" />
+    <PageLayout title="주요 강의" backgroundImageUrl="/img/top_header/lecture.jpg">
+        <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
+            {{ searchQuery ? `"${searchQuery}" 검색 결과` : "전체 강의" }}
+        </h1>
 
-        <div class="main-content">
-            <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
-                {{ searchQuery ? `"${searchQuery}" 검색 결과` : "전체 강의" }}
-            </h1>
-
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                <form @submit.prevent="performSearch" class="w-full sm:w-auto flex-grow sm:max-w-md">
-                    <div class="relative">
-                        <input
-                            type="text"
-                            v-model="searchInput"
-                            placeholder="강의명을 입력해주세요"
-                            class="search-text w-full pl-4 pr-10 py-2 border border-[var(--dream-gray-dark)] rounded-md shadow-sm focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)]"
-                        />
-                        <button type="submit" class="search-image absolute inset-y-0 right-0 flex items-center pr-3">
-                            <img src="/img/icon/search_black_24dp.svg" alt="검색" class="h-5 w-5 text-gray-400" />
-                        </button>
-                    </div>
-                </form>
-                <button
-                    v-if="isAdmin"
-                    @click="openModal()"
-                    class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out w-full sm:w-auto"
-                >
-                    강의 추가
-                </button>
-            </div>
-
-            <div v-if="searchQuery && filteredLectures.length === 0" class="text-center text-gray-500 py-8">
-                <p>"{{ searchQuery }}"에 대한 검색 결과가 없습니다.</p>
-            </div>
-
-            <ul v-else-if="filteredLectures.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <LectureCard
-                    v-for="lecture in filteredLectures"
-                    :key="lecture.id"
-                    :lecture="lecture"
-                    :is-staff="isAdmin"
-                    :detail-url="`/lecture/detail/${lecture.id}`"
-                    @edit="openModal"
-                    @delete="handleDelete"
-                />
-            </ul>
-            <div v-else class="text-center text-gray-500 py-8">
-                <p>표시할 강의가 없습니다.</p>
-            </div>
-
-            <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
-
-            <ReusableFormModal
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <form @submit.prevent="performSearch" class="w-full sm:w-auto flex-grow sm:max-w-md">
+                <div class="relative">
+                    <input
+                        type="text"
+                        v-model="searchInput"
+                        placeholder="강의명을 입력해주세요"
+                        class="search-text w-full pl-4 pr-10 py-2 border border-[var(--dream-gray-dark)] rounded-md shadow-sm focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)]"
+                    />
+                    <button type="submit" class="search-image absolute inset-y-0 right-0 flex items-center pr-3">
+                        <img src="/img/icon/search_black_24dp.svg" alt="검색" class="h-5 w-5 text-gray-400" />
+                    </button>
+                </div>
+            </form>
+            <button
                 v-if="isAdmin"
-                v-model:show="showModal"
-                :modal-title="isEditing ? '강의 정보 수정' : '새 강의 추가'"
-                :form-fields="formSchema"
-                :initial-data="initialModalData"
-                :submit-button-text="isEditing ? '수정 완료' : '등록'"
-                @submit="handleModalSubmit"
-            />
+                @click="openModal()"
+                class="bg-[var(--dream-main)] hover:bg-opacity-80 text-white font-semibold py-2 px-6 rounded-md shadow-sm transition duration-150 ease-in-out w-full sm:w-auto"
+            >
+                강의 추가
+            </button>
         </div>
-    </div>
+
+        <div v-if="searchQuery && filteredLectures.length === 0" class="text-center text-gray-500 py-8">
+            <p>"{{ searchQuery }}"에 대한 검색 결과가 없습니다.</p>
+        </div>
+
+        <ul v-else-if="filteredLectures.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <LectureCard v-for="lecture in filteredLectures" :key="lecture.id" :lecture="lecture" :is-staff="isAdmin" @edit="openModal" @delete="handleDelete" />
+        </ul>
+        <div v-else class="text-center text-gray-500 py-8">
+            <p>표시할 강의가 없습니다.</p>
+        </div>
+
+        <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
+
+        <ReusableFormModal
+            v-if="isAdmin"
+            v-model:show="showModal"
+            :modal-title="isEditing ? '강의 정보 수정' : '새 강의 추가'"
+            :form-fields="formSchema"
+            :initial-data="initialModalData"
+            :submit-button-text="isEditing ? '수정 완료' : '등록'"
+            @submit="handleModalSubmit"
+        />
+    </PageLayout>
 </template>
 
 <script setup lang="ts">
 import {ref, computed, onMounted} from "vue"; // onMounted 추가
-import PageHeader from "@/components/layout/PageHeader.vue";
+import PageLayout from "@/components/layout/PageLayout.vue";
 import LectureCard from "@/components/LectureCard.vue";
 import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 import apiClient from "@/api";
 
 const authStore = useAuthStore();

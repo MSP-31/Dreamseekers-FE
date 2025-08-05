@@ -1,40 +1,47 @@
 <template>
     <PageLayout title="설정" backgroundImageUrl="/img/top_header/setting.jpg">
-        <div v-if="isAdmin" class="text-right mb-6">
-            <button @click="openAddModal" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">추가</button>
-        </div>
-        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SlideItem v-for="s in slides" :key="s.id" :slide="s" :isAdmin="isAdmin" @edit="handleEditSlide" @delete="handleDeleteSlide" />
-        </ul>
+        <div v-if="isAdmin">
+            <div class="text-right mb-6">
+                <button @click="openAddModal" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">추가</button>
+            </div>
+            <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <SlideItem v-for="s in slides" :key="s.id" :slide="s" :isAdmin="isAdmin" @edit="handleEditSlide" @delete="handleDeleteSlide" />
+            </ul>
 
-        <!-- 추가 모달 -->
-        <ReusableFormModal
-            v-model:show="showModal"
-            :modalTitle="modalConfig.title"
-            :formFields="modalConfig.formFields"
-            :initialData="currentSlideData"
-            :submitButtonText="modalConfig.submitText"
-            @submit="handleModalSubmit"
-        />
+            <!-- 추가 모달 -->
+            <ReusableFormModal
+                v-model:show="showModal"
+                :modalTitle="modalConfig.title"
+                :formFields="modalConfig.formFields"
+                :initialData="currentSlideData"
+                :submitButtonText="modalConfig.submitText"
+                @submit="handleModalSubmit"
+            />
+        </div>
+        <div v-else class="text-center text-gray-500 py-8">
+            <p>관리자 권한이 필요합니다.</p>
+        </div>
     </PageLayout>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import apiClient from "@/api";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import ReusableFormModal from "@/components/layout/ReusableFormModal.vue";
+import ReusableFormModal from "@/components/main/FormModal.vue";
 import SlideItem from "@/components/main/SlideItem.vue";
 import {FormField} from "@/types/common";
 
 const authStore = useAuthStore();
-const isAdmin = authStore.isAdmin;
+const isAdmin = computed(() => authStore.isAdmin);
 
 // Slides 데이터 타입 정의
 interface SlideItem {
     id: number;
     image: string | null;
+    title?: string;
+    contents?: string;
 }
 
 const slides = ref<SlideItem[]>([]);
@@ -44,8 +51,12 @@ const showModal = ref(false);
 const isEditMode = ref(false); // 현재 모드가 수정 모드인지 추적
 const editingSlideId = ref<number | null>(null); // 수정 중인 슬라이드의 ID
 
-// 폼 필드 정의
-const slideFormFields: FormField[] = [{id: "image", name: "image", label: "슬라이드 이미지", type: "image"}];
+// 폼 필드 정의 'title', 'contents'
+const slideFormFields: FormField[] = [
+    {id: "title", name: "title", label: "제목", type: "text"},
+    {id: "contents", name: "contents", label: "내용", type: "textarea"},
+    {id: "image", name: "image", label: "슬라이드 이미지", type: "image"},
+];
 
 // 모달 설정 객체
 const modalConfig = ref({
@@ -80,9 +91,10 @@ const handleEditSlide = (slide: SlideItem) => {
     currentSlideData.value = {
         id: slide.id,
         image: slide.image,
+        title: slide.title,
+        contents: slide.contents,
     };
     showModal.value = true;
-    console.log("수정할 슬라이드:", slide);
 };
 
 // "삭제" 버튼 클릭 시 호출
@@ -103,8 +115,8 @@ const handleDeleteSlide = async (slideId: number) => {
 const handleModalSubmit = async (payload: FormData) => {
     try {
         if (isEditMode.value && editingSlideId.value) {
-            // 수정 모드일 때 PUT 요청
-            await apiClient.put(`/main/slides/${editingSlideId.value}/`, payload, {
+            // 수정 모드일 때 PATCH 요청
+            await apiClient.patch(`/main/slides/${editingSlideId.value}/`, payload, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -136,7 +148,6 @@ const fetchData = async () => {
     try {
         const response = await apiClient.get("/main/slides/");
         slides.value = response.data;
-        console.log("슬라이드 데이터:", slides.value); // 슬라이드 데이터 확인")
     } catch (error: any) {
         console.error("API 호출 오류:", error);
         if (error.response?.status === 400) {
