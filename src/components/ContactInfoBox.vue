@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import type {ContactInfo, BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 
-const _props = defineProps<{
+defineProps<{
     contactInfo: ContactInfo;
     businessInfo: BusinessInfo;
 }>();

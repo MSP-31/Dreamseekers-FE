@@ -59,14 +59,13 @@
                     </div>
                 </form>
 
-                <!-- 구분선 -->
+                <!--
                 <div class="flex items-center justify-center my-4">
                     <div class="w-full border-t border-gray-300"></div>
                     <span class="px-2 text-sm text-gray-500 bg-gray-50">또는</span>
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
 
-                <!-- 회원가입 링크 -->
                 <div>
                     <router-link
                         to="/user/signup"
@@ -75,6 +74,7 @@
                         회원가입
                     </router-link>
                 </div>
+                -->
             </div>
         </div>
     </div>

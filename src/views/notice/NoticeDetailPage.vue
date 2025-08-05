@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg">
+    <PageLayout title="소통 마당" background-image-url="/img/top_header/forum.jpg">
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">공지사항</h1>
         <div v-if="post" class="max-w-3xl mx-auto">
             <div class="border-t-2 border-gray-700">
@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="board-content py-6 px-2 min-h-[200px]">
-                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ post.contents }}</p>
+                    <div class="prose max-w-none" v-html="sanitizedContents"></div>
 
                     <div v-if="post.image_details && post.image_details.length > 0" class="mt-8 space-y-4">
                         <img v-for="(image, index) in post.image_details" :key="`image-${index}`" :src="image.image" :alt="post.title" class="max-w-full h-auto rounded-md shadow-md mx-auto" />
@@ -63,12 +63,13 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageLayout from "@/components/layout/PageLayout.vue";
 import {type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
-import apiClient from "@/api"; // API 클라이언트 임포트
+import apiClient from "@/api";
+import DOMPurify from "dompurify";
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;
@@ -78,10 +79,34 @@ const router = useRouter();
 
 const post = ref<NoticePost | null>(null);
 
-// 공지사항 상세 정보 불러오기 함수
-const fetchNoticeDetail = async () => {
-    const noticeId = route.params.id; // 라우트 파라미터에서 id 가져오기
+const sanitizedContents = computed(() => {
+    if (!post.value || !post.value.contents) {
+        return "";
+    }
 
+    // DOMPurify의 `addHook`을 사용하여 정제 과정에서 <a> 태그 속성 조작
+    DOMPurify.addHook("afterSanitizeAttributes", function (node) {
+        // `href` 속성이 있고 `target` 속성이 없다면, `target="_blank"`를 추가
+        if (node.tagName === "A" && "href" in node && !node.getAttribute("target")) {
+            node.setAttribute("target", "_blank");
+            node.setAttribute("rel", "noopener noreferrer");
+        }
+    });
+
+    // DOMPurify로 콘텐츠 정제. 여기서 `addHook`이 실행됩니다.
+    const cleanHTML = DOMPurify.sanitize(post.value.contents, {
+        USE_PROFILES: {html: true},
+        ADD_ATTR: ["target", "rel"], // `target`과 `rel` 속성을 허용 목록에 추가
+    });
+
+    // 후크를 제거하여 다른 정제 과정에 영향을 주지 않도록 합니다.
+    DOMPurify.removeHook("afterSanitizeAttributes");
+
+    return cleanHTML;
+});
+
+const fetchNoticeDetail = async () => {
+    const noticeId = route.params.id;
     if (!noticeId) {
         console.error("Notice ID is missing.");
         post.value = null;
@@ -93,14 +118,13 @@ const fetchNoticeDetail = async () => {
         post.value = response.data;
     } catch (error: any) {
         console.error(`Error fetching notice ${noticeId}:`, error);
-        post.value = null; // 데이터를 가져오지 못하면 null로 설정
-        // 사용자에게 오류 메시지를 표시하거나, 목록으로 리다이렉트하는 등의 처리
+        post.value = null;
         alert(error.response?.data?.detail || "공지사항을 불러오는 데 실패했습니다.");
     }
 };
 
 onMounted(() => {
-    fetchNoticeDetail(); // 컴포넌트 마운트 시 공지사항 상세 정보 불러오기
+    fetchNoticeDetail();
 });
 
 const formatDate = (dateString: string): string => {
@@ -110,14 +134,14 @@ const formatDate = (dateString: string): string => {
 
 const handleDelete = async () => {
     if (!post.value) {
-        return; // 게시물이 없으면 삭제 시도하지 않음
+        return;
     }
 
     if (window.confirm("정말로 이 공지사항을 삭제하시겠습니까?")) {
         try {
-            await apiClient.delete(`/notice/${post.value.id}`); // id 사용
+            await apiClient.delete(`/notice/${post.value.id}`);
             alert("공지사항이 삭제되었습니다.");
-            router.push("/notice"); // 삭제 성공 시 목록 페이지로 이동
+            router.push("/notice");
         } catch (error: any) {
             console.error(`Error deleting notice ${post.value.id}:`, error);
             alert(error.response?.data?.detail || "공지사항 삭제에 실패했습니다.");

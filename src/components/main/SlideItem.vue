@@ -3,6 +3,12 @@
         <div class="relative p-5 flex-grow">
             <div class="block">
                 <img :src="slide.image" :alt="slide.id" class="w-full h-48 object-cover rounded-md" />
+                <h2 class="text-xl font-semibold text-[var(--dream-text)] mb-2 truncate">
+                    {{ slide.title }}
+                </h2>
+                <p class="text-sm text-[var(--dream-sub)] leading-relaxed line-clamp-3">
+                    {{ slide.contents }}
+                </p>
             </div>
         </div>
 
@@ -19,7 +25,8 @@
 interface SlideItem {
     id: number;
     image: string | null; // 이미지 URL을 포함하는 객체 또는 null
-    // created_at, updated_at 필드를 사용한다면 여기에 추가
+    title?: string;
+    contents?: string;
 }
 
 defineProps<{
