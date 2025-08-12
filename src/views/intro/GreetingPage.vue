@@ -9,7 +9,6 @@
         <div class="flex flex-col lg:flex-row items-start gap-8 p-6 bg-white shadow-lg rounded-lg">
             <img :src="currentIntroData.image" alt="대표 이미지" class="w-full lg:w-1/3 h-auto object-cover rounded-md shadow" />
             <div class="lg:w-2/3">
-                <h2 class="text-2xl font-semibold text-700 mb-4">{{ currentIntroData.title }}</h2>
                 <div class="prose max-w-none" v-html="sanitizedContents"></div>
             </div>
         </div>
@@ -32,16 +31,16 @@ const isAdmin = authStore.isAdmin;
 
 // 현재 페이지에 표시될 인사말 데이터 (초기값은 더미 데이터)
 const currentIntroData = reactive<IntroData>({
-    title: "",
     contents: "",
     image: "",
     id: 0,
+    title: "",
 });
 
 const fetchData = async () => {
     try {
         const response = await apiClient.get("/intro/greeting");
-        currentIntroData.title = response.data.title;
+        console.log(response);
         currentIntroData.contents = response.data.contents;
         currentIntroData.image = response.data.image; // 서버에서 반환된 새 이미지 URL 업데이트
     } catch (error: any) {

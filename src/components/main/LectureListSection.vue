@@ -7,7 +7,7 @@
                 <p class="text-gray-600">모두가 공감하는 현실적인 교육 대상별 차별화된 맞춤형 강의내용</p>
             </div>
             <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <LectureCard v-for="lecture in lectureItem" :key="lecture.id" :lecture="lecture" :is-staff="false" :detail-url="`/lecture/detail/${lecture.id}`" />
+                <LectureCard v-for="lecture in lectureItem" :key="lecture.id" :lecture="lecture" :is-staff="false" />
             </ul>
         </div>
     </div>

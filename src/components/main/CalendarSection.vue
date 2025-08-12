@@ -114,8 +114,8 @@ const openAddModal = (schedule?: ScheduleEntry) => {
     }
     currentData.date = schedule?.date || new Date().toISOString().substring(0, 10);
     currentData.title = schedule?.title;
-    currentData.startTime = schedule?.startTime;
-    currentData.endTime = schedule?.endTime;
+    currentData.startTime = schedule?.startTime || "00:00";
+    currentData.endTime = schedule?.endTime || "00:00";
     currentData.allDay = schedule?.allDay || false;
     currentData.id = schedule?.id;
 };
@@ -123,7 +123,6 @@ const openAddModal = (schedule?: ScheduleEntry) => {
 // 모달에서 submit 이벤트 발생 시 호출될 핸들러
 const handleModalSubmit = async (payload: FormData) => {
     const idValue = payload.get("id");
-    console.log("idValue:", idValue);
     if (idValue === null || String(idValue).trim() === "") {
         try {
             await apiClient.post("/lecture/calendar", payload);
