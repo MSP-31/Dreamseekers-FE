@@ -38,8 +38,8 @@ import {ref, reactive, onMounted, computed} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import TiptapEditor from "@/components/layout/TiptapEditor.vue";
-import ImageUploader from "@/components/layout/ImageUploader.vue";
+import TiptapEditor from "@/components/utils/TiptapEditor.vue";
+import ImageUploader from "@/components/utils/ImageUploader.vue";
 import apiClient from "@/api";
 
 interface IntroData {

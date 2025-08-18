@@ -97,9 +97,9 @@
 
 <script setup lang="ts">
 import {reactive, watch} from "vue";
-import BaseModal from "../layout/BaseModal.vue";
+import BaseModal from "@/components/common/BaseModal.vue";
 import type {FormField} from "@/types/common";
-import ImageUploader from "../layout/ImageUploader.vue";
+import ImageUploader from "@/components/utils/ImageUploader.vue";
 
 // --- Props 정의 ---
 const props = defineProps({

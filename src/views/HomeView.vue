@@ -5,17 +5,16 @@
             <LectureListSection :lectureItem="mainData.lectureItem" />
             <p class="text-3xl font-bold mb-2">강의 일정표</p>
             <CalendarSection :schedules="mainData.schedules" :is-staff="authStore.isAdmin" />
-            <ContactMapSection :contacts="dummyContacts" :business-info="dummyBusinessInfo" :naver-map-client-id="naverClientId" />
+            <ContactMapSection />
         </div>
     </main>
 </template>
 
 <script setup lang="ts">
-import SlideSection from "../components/main/SlideSection.vue";
-import LectureListSection from "../components/main/LectureListSection.vue";
-import CalendarSection from "../components/main/CalendarSection.vue";
-import ContactMapSection from "../components/main/ContactMapSection.vue";
-import {dummyContacts, dummyBusinessInfo, naverClientId} from "@/data/dummyData.ts"; // 데이터 모듈
+import SlideSection from "@/components/main/SlideSection.vue";
+import LectureListSection from "@/components/main/LectureListSection.vue";
+import CalendarSection from "@/components/main/CalendarSection.vue";
+import ContactMapSection from "@/components/main/ContactMapSection.vue";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api";
 import {onMounted, ref} from "vue";

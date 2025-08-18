@@ -120,7 +120,7 @@
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import PageLayout from "@/components/layout/PageLayout.vue";
-import TiptapEditor from "@/components/layout/TiptapEditor.vue";
+import TiptapEditor from "@/components/utils/TiptapEditor.vue";
 import {type NoticeFormData, type NoticeFormField, type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api";
