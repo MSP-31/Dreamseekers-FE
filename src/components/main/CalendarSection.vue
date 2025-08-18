@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, computed} from "vue";
 import CalendarModal from "./CalendarModal.vue"; // 모달 컴포넌트 임포트
 import ReusableFormModal from "@/components/main/FormModal.vue";
 

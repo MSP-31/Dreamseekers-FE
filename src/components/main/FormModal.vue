@@ -48,7 +48,7 @@
                                             v-model="formData[field.name]"
                                             :inputId="field.id"
                                             :buttonText="field.label"
-                                            :maxSizeMB="1"
+                                            :maxSizeMB="0.2"
                                             :maxWidthOrHeight="1024"
                                             :initialPreviewUrl="initialData[field.name]"
                                             @error="handleImageUploaderError"

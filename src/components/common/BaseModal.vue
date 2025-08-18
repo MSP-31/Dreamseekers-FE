@@ -11,7 +11,7 @@
                 <button @click="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
             <slot name="content"></slot>
-            <div class="text-right mt-6">
+            <div class="text-right mt-6" v-if="submitButtonText">
                 <button type="button" @click="closeModal" class="mr-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
                     취소
                 </button>
@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
     show: {type: Boolean, default: false},
     modalTitle: {type: String, default: "모달"},
-    submitButtonText: {type: String, default: "등록"},
+    submitButtonText: {type: String},
 });
 
 const emit = defineEmits(["update:show", "submit"]);
