@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import LectureCard from "@/components/LectureCard.vue";
+import LectureCard from "@/components/main/LectureCard.vue";
 import type {LectureItem} from "@/data/dummyData.ts";
 import {PropType} from "vue";
 

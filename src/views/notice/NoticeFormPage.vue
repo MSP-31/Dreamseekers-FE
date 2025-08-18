@@ -119,7 +119,7 @@
 // 스크립트 부분은 기존과 동일합니다.
 import {ref, reactive, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import TiptapEditor from "@/components/utils/TiptapEditor.vue";
 import {type NoticeFormData, type NoticeFormField, type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";

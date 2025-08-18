@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import {reactive, onMounted, computed} from "vue";
 import {useAuthStore} from "@/stores/auth";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import {IntroData} from "@/types/common";
 import DOMPurify from "dompurify";
 import apiClient from "@/api";

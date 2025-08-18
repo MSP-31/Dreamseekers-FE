@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import CalendarSection from "@/components/main/CalendarSection.vue";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import {useAuthStore} from "@/stores/auth";
 
 const authStore = useAuthStore();

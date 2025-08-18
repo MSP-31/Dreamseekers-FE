@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
-import PageHeader from "@/components/layout/PageHeader.vue";
+import PageHeader from "@/components/common/PageHeader.vue";
 import {
     dummyInquiryPosts,
     dummyPaginationData,
@@ -110,7 +110,7 @@ import {
     type PaginationData,
 } from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
 import {useAuthStore} from "@/stores/auth";
-import SubMenuBreadcrumb from "@/components/layout/SubMenuBreadcrumb.vue";
+import SubMenuBreadcrumb from "@/components/common/SubMenuBreadcrumb.vue";
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;

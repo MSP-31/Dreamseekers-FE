@@ -8,7 +8,7 @@
 
 <script setup>
 import TopHeader from "@/components/common/TopHeader.vue";
-import NavigationBar from "../layout/NavigationBar.vue";
+import NavigationBar from "../common/NavigationBar.vue";
 
 defineEmits(["logout"]);
 </script>

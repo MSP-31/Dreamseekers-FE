@@ -5,6 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import ContactMapSection from "@/components/main/ContactMapSection.vue";
 </script>

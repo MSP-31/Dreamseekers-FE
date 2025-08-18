@@ -28,10 +28,10 @@
 <script setup lang="ts">
 import {ref, onMounted, watch, computed} from "vue";
 import {useRouter, useRoute} from "vue-router";
-import PageLayout from "@/components/layout/PageLayout.vue";
-import SearchBar from "@/components/layout/SearchBar.vue";
-import DynamicTable from "@/components/layout/DynamicTable.vue";
-import {type TableHeader} from "@/components/layout/DynamicTable.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
+import SearchBar from "@/components/common/SearchBar.vue";
+import DynamicTable from "@/components/common/DynamicTable.vue";
+import {type TableHeader} from "@/components/common/DynamicTable.vue";
 import {type NoticePost, type PaginatedResponse, type PaginationState} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api";

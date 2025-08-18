@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import {ref, onMounted, computed} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import {type NoticePost} from "@/types/pagination";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api";

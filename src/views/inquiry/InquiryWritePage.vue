@@ -82,7 +82,7 @@
 import {ref, reactive, computed} from "vue";
 import {useRouter} from "vue-router";
 import {dummyUserData, inquiryWriteFormSchema, consentModalContent, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 
 const router = useRouter();
 
