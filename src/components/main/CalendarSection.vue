@@ -49,7 +49,8 @@ const props = defineProps({
 
 export interface ScheduleEntry {
     id: string; // 고유 ID (선택 사항이지만 FullCalendar에서 이벤트 관리에 유용)
-    date: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    startDate: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    endDate: string; // 'YYYY-MM-DD' 형식의 종료 날짜 문자열
     startTime: string; // 'HH:mm' 형식의 시작 시간
     endTime: string; // 'HH:mm' 형식의 종료 시간
     title: string; // 이벤트 제목
@@ -82,7 +83,8 @@ interface FormField {
 // 폼 필드 정의
 const calendarFormFields: FormField[] = [
     {id: "id", name: "id", label: "ID", type: "number"}, // 수정용
-    {id: "date", name: "date", label: "날짜", type: "date"},
+    {id: "startDate", name: "startDate", label: " 시작 날짜", type: "date"},
+    {id: "endDate", name: "endDate", label: "종료 날짜", type: "date"},
     {id: "title", name: "title", label: "제목", type: "text"},
     {id: "startTime", name: "startTime", label: "시작 시간", type: "time"},
     {id: "endTime", name: "endTime", label: "종료 시간", type: "time"},
@@ -112,7 +114,8 @@ const openAddModal = (schedule?: ScheduleEntry) => {
         modalConfig.title = "일정 추가";
         modalConfig.submitText = "추가";
     }
-    currentData.date = schedule?.date || new Date().toISOString().substring(0, 10);
+    currentData.startDate = schedule?.startDate || new Date().toISOString().substring(0, 10);
+    currentData.endDate = schedule?.endDate || new Date().toISOString().substring(0, 10);
     currentData.title = schedule?.title;
     currentData.startTime = schedule?.startTime || "00:00";
     currentData.endTime = schedule?.endTime || "00:00";
@@ -163,12 +166,18 @@ const fullCalendarEvents = (rawData: any[]): any[] => {
     // rawData는 서버에서 /lecture/calendar API를 통해 받은 일정 데이터 배열입니다.
     // 서버 응답 형태가 `ScheduleEntry[]` 배열이라고 가정합니다.
     rawData.forEach((schedule) => {
-        const eventDate = new Date(schedule.date); // schedule.date는 'YYYY-MM-DD' 형식일 것
-        const formattedDate = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, "0")}-${eventDate.getDate().toString().padStart(2, "0")}`;
+        // --- 시작 날짜 및 시간 처리 ---
+        const startEventDate = new Date(schedule.startDate);
+        const startFormattedDate = `${startEventDate.getFullYear()}-${(startEventDate.getMonth() + 1).toString().padStart(2, "0")}-${startEventDate.getDate().toString().padStart(2, "0")}`;
+        const startDateTime = schedule.startTime ? `${startFormattedDate}T${schedule.startTime.substring(0, 5)}` : startFormattedDate;
 
-        // 시간이 null 또는 비어있는 경우 '00:00'으로 처리하거나 allDay: true로 설정하는 로직 추가 고려
-        const startDateTime = schedule.startTime ? `${formattedDate}T${schedule.startTime.substring(0, 5)}` : formattedDate;
-        const endDateTime = schedule.endTime ? `${formattedDate}T${schedule.endTime.substring(0, 5)}` : formattedDate;
+        // --- 종료 날짜 및 시간 처리 ---
+        // endDate 필드가 없거나 null이면 startDate를 사용합니다.
+        const endEventDate = schedule.endDate ? new Date(schedule.endDate) : startEventDate;
+        const endFormattedDate = `${endEventDate.getFullYear()}-${(endEventDate.getMonth() + 1).toString().padStart(2, "0")}-${endEventDate.getDate().toString().padStart(2, "0")}`;
+
+        // 종료 시간이 없으면 종료 날짜만 사용
+        const endDateTime = schedule.endTime ? `${endFormattedDate}T${schedule.endTime.substring(0, 5)}` : endFormattedDate;
 
         events.push({
             title: schedule.title,
@@ -381,7 +390,6 @@ const handleDeleteSchedule = async (scheduleId: string) => {
 
 // 일정 수정
 const handleEditSchedule = async (schedule: ScheduleEntry) => {
-    console.log(schedule);
     closeModal();
     openAddModal(schedule);
 };
@@ -391,22 +399,6 @@ const handleEventResize = (info: any) => {
     // info.event.start, info.event.end 등을 사용하여 일정 시간을 업데이트
     console.log("Event resized:", info.event);
 };
-
-// onMounted(async () => {
-//     try {
-//         const response = await apiClient.get<ScheduleData>("/lecture/calendar");
-//         schedules.value = response.data;
-//         console.log("강의 일정 데이터:", response.data);
-//     } catch (error: any) {
-//         console.error("강의 일정 API 호출 오류:", error);
-//         if (error.response) {
-//             const errorMessage = error.response.data?.detail || error.response.data?.message || `서버 오류: ${error.response.status}`;
-//             alert(`강의 데이터를 불러오는 데 실패했습니다: ${errorMessage}`);
-//         } else {
-//             alert("강의 데이터를 불러오는 데 실패했습니다: 네트워크 연결을 확인하세요.");
-//         }
-//     }
-// });
 </script>
 
 <style>
