@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import TopHeader from "./TopHeader.vue";
-import NavigationBar from "./NavigationBar.vue";
+import TopHeader from "@/components/common/TopHeader.vue";
+import NavigationBar from "../common/NavigationBar.vue";
 
 defineEmits(["logout"]);
 </script>

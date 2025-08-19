@@ -42,8 +42,8 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue"; // reactive 제거, onMounted 추가
 import {useRoute} from "vue-router";
-import PageHeader from "@/components/layout/PageHeader.vue";
-import LectureCard from "@/components/LectureCard.vue";
+import PageHeader from "@/components/common/PageHeader.vue";
+import LectureCard from "@/components/main/LectureCard.vue";
 // dummyData 대신 API 연동을 위해 필요한 타입만 import
 import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
 import ReusableFormModal from "@/components/main/FormModal.vue";

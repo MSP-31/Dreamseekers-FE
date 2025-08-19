@@ -54,8 +54,8 @@
 
 <script setup lang="ts">
 import {ref, computed, onMounted} from "vue"; // onMounted 추가
-import PageLayout from "@/components/layout/PageLayout.vue";
-import LectureCard from "@/components/LectureCard.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
+import LectureCard from "@/components/main/LectureCard.vue";
 import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureFormSchemaField} from "@/data/dummyData";
 import {useAuthStore} from "@/stores/auth";
 import ReusableFormModal from "@/components/main/FormModal.vue";

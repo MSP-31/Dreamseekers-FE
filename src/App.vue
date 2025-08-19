@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import TheHeader from "@/components/layout/AppHeader.vue";
-import TheFooter from "@/components/layout/AppFooter.vue";
-import FloatingButtons from "@/components/layout/FloatingButtons.vue";
+import TheHeader from "@/components/common/AppHeader.vue";
+import TheFooter from "@/components/common/AppFooter.vue";
+import FloatingButtons from "@/components/common/FloatingButtons.vue";
 </script>

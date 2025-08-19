@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import type {ActivityNewsItem} from "@/data/dummyData";
 import apiClient from "@/api";
 
