@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
 import {useAuthStore} from "@/stores/auth";
-import PageLayout from "@/components/layout/PageLayout.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
 import ReusableMultiImageFormModal from "@/components/main/MultiImageFormModal.vue";
 import apiClient from "@/api";
 

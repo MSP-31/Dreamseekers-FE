@@ -17,10 +17,18 @@
                             <div v-if="schedule.allDay">
                                 종일 <span class="text-sm text-gray-700"> : {{ schedule.title }}</span>
                             </div>
-                            <div v-else>
+                            <div v-else-if="schedule.endDate === schedule.startDate || schedule.endDate === null">
                                 {{ schedule.startTime.substring(0, 5) }} - {{ schedule.endTime.substring(0, 5) }}
                                 <span class="text-sm text-gray-700"> : {{ schedule.title }}</span>
                             </div>
+                            <div v-else class="flex items-start justify-between">
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-sm text-[var(--dream-main)]">{{ schedule.startDate.substring(5, 10) }} ~ {{ schedule.endDate.substring(5, 10) }}</span>
+                                    <span class="text-sm text-gray-700">{{ schedule.startTime.substring(0, 5) }} - {{ schedule.endTime.substring(0, 5) }}</span>
+                                </div>
+                                <span class="text-sm text-gray-700 font-semibold ml-4"> : {{ schedule.title }} </span>
+                            </div>
+
                             <div v-if="isStaff" class="flex items-center space-x-2">
                                 <span @click="$emit('edit-schedule', schedule)" class="text-sm text-gray-700 cursor-pointer"
                                     ><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#888888">
@@ -45,7 +53,8 @@ import {computed, type PropType} from "vue";
 
 export interface ScheduleEntry {
     id: string; // 고유 ID (선택 사항이지만 FullCalendar에서 이벤트 관리에 유용)
-    date: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    startDate: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    endDate: string; // 'YYYY-MM-DD' 형식의 종료 날짜 문자열
     startTime: string; // 'HH:mm' 형식의 시작 시간
     endTime: string; // 'HH:mm' 형식의 종료 시간
     title: string; // 이벤트 제목

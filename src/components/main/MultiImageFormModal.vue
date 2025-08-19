@@ -84,7 +84,7 @@
 </template>
 <script setup lang="ts">
 import {reactive, ref, watch} from "vue";
-import BaseModal from "../layout/BaseModal.vue";
+import BaseModal from "@/components/common/BaseModal.vue";
 import type {AcademyIntroFormField} from "@/types/common";
 
 const props = defineProps({

@@ -1,58 +1,34 @@
 <template>
-    <div class="py-12">
-        <div class="content-box container mx-auto px-4">
-            <h1 class="text-3xl font-bold text-dream-text text-center mb-8">오시는 길</h1>
+    <!-- Map Area -->
+    <NaverMap />
 
-            <!-- 지도 -->
-            <NaverMap />
-
-            <div class="map_address text-center mb-8">
-                <h3 class="text-xl font-semibold text-dream-text">꿈을찾는사람들교육원</h3>
-                <h2 class="text-lg text-gray-700 mb-3">{{ contacts.address }} / {{ contacts.sub_address }}</h2>
-                <a :href="contacts.map_add" target="_blank" class="inline-block bg-[var(--dream-main)] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition-colors">
-                    지도에서 보기
-                </a>
-            </div>
-
-            <div class="info_box bg-white p-6 rounded-lg shadow-lg">
-                <table class="w-full text-sm text-left text-gray-700">
-                    <tbody>
-                        <tr class="border-b">
-                            <th class="py-3 px-2 md:px-4 font-semibold w-1/4 md:w-1/5">이용시간</th>
-                            <td class="py-3 px-2 md:px-4">
-                                평일 {{ contacts.weekday_start_time }} - {{ contacts.weekday_end_time }}<br />
-                                주말 {{ contacts.weekend_start_time }} - {{ contacts.weekend_end_time }}
-                            </td>
-                        </tr>
-                        <tr class="border-b">
-                            <th class="py-3 px-2 md:px-4 font-semibold">전화번호</th>
-                            <td class="py-3 px-2 md:px-4">
-                                {{ contacts.phone }}<br />
-                                {{ contacts.sub_phone }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- Address and Map Link -->
+    <div class="map_address text-left py-6 border-b border-[var(--dream-text)] mb-8 relative">
+        <h3 class="text-lg font-semibold text-[var(--dream-text)] mb-1">꿈을찾는사람들교육원</h3>
+        <h2 class="text-2xl font-bold text-[var(--dream-main)]">{{ contactInfo.address }} / {{ contactInfo.sub_address }}</h2>
+        <a
+            :href="contactInfo.map_add"
+            target="_blank"
+            class="absolute right-0 top-2 bg-[var(--dream-blue)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out"
+        >
+            지도에서 보기
+        </a>
     </div>
+
+    <!-- Contact and Business Info Box (Separated Component) -->
+    <ContactInfoBox :contactInfo="contactInfo" :businessInfo="businessInfo" />
+
+    <!-- Empty decorative divider (from original .board-title) -->
+    <div class="mt-12 border-t border-[var(--dream-gray-dark)] opacity-30"></div>
 </template>
 
 <script setup lang="ts">
-import {type PropType} from "vue";
-import type {Contact, BusinessInfo} from "@/data/dummyData.ts";
-import NaverMap from "./NaverMap.vue";
+import {reactive} from "vue";
+import ContactInfoBox from "@/components/main/ContactInfoBox.vue";
+import {contactInfoData, businessInfoData, type ContactInfo, type BusinessInfo} from "@/data/dummyData"; // dummyData.ts 경로에 맞게 수정
+import NaverMap from "@/components/utils/NaverMap.vue";
 
-defineProps({
-    contacts: {type: Object as PropType<Contact>, required: true},
-    businessInfo: {type: Object as PropType<BusinessInfo>, required: true},
-    naverMapClientId: {type: String, required: true},
-});
-
-// window 객체에 naver 속성을 사용하기 위해 타입 선언 (필요한 경우)
-declare global {
-    interface Window {
-        naver: any;
-    }
-}
+// 현재 페이지에 표시될 데이터
+const contactInfo = reactive<ContactInfo>({...contactInfoData});
+const businessInfo = reactive<BusinessInfo>({...businessInfoData});
 </script>

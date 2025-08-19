@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch, defineProps, defineEmits} from "vue";
+import {ref, watch} from "vue";
 import imageCompression from "browser-image-compression";
 
 const props = defineProps<{

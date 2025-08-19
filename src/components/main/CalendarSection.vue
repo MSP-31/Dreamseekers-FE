@@ -28,12 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, computed, onMounted} from "vue";
+import {ref, reactive, computed} from "vue";
 import CalendarModal from "./CalendarModal.vue"; // 모달 컴포넌트 임포트
 import ReusableFormModal from "@/components/main/FormModal.vue";
 
 // FullCalendar 관련 임포트
-import FullCalendar from "@fullcalendar/vue3"; // Vue 3 사용 시 @fullcalendar/vue3
+import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -49,7 +49,8 @@ const props = defineProps({
 
 export interface ScheduleEntry {
     id: string; // 고유 ID (선택 사항이지만 FullCalendar에서 이벤트 관리에 유용)
-    date: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    startDate: string; // 'YYYY-MM-DD' 형식의 날짜 문자열
+    endDate: string; // 'YYYY-MM-DD' 형식의 종료 날짜 문자열
     startTime: string; // 'HH:mm' 형식의 시작 시간
     endTime: string; // 'HH:mm' 형식의 종료 시간
     title: string; // 이벤트 제목
@@ -82,7 +83,8 @@ interface FormField {
 // 폼 필드 정의
 const calendarFormFields: FormField[] = [
     {id: "id", name: "id", label: "ID", type: "number"}, // 수정용
-    {id: "date", name: "date", label: "날짜", type: "date"},
+    {id: "startDate", name: "startDate", label: " 시작 날짜", type: "date"},
+    {id: "endDate", name: "endDate", label: "종료 날짜", type: "date"},
     {id: "title", name: "title", label: "제목", type: "text"},
     {id: "startTime", name: "startTime", label: "시작 시간", type: "time"},
     {id: "endTime", name: "endTime", label: "종료 시간", type: "time"},
@@ -112,10 +114,11 @@ const openAddModal = (schedule?: ScheduleEntry) => {
         modalConfig.title = "일정 추가";
         modalConfig.submitText = "추가";
     }
-    currentData.date = schedule?.date || new Date().toISOString().substring(0, 10);
+    currentData.startDate = schedule?.startDate || new Date().toISOString().substring(0, 10);
+    currentData.endDate = schedule?.endDate || new Date().toISOString().substring(0, 10);
     currentData.title = schedule?.title;
-    currentData.startTime = schedule?.startTime;
-    currentData.endTime = schedule?.endTime;
+    currentData.startTime = schedule?.startTime || "00:00";
+    currentData.endTime = schedule?.endTime || "00:00";
     currentData.allDay = schedule?.allDay || false;
     currentData.id = schedule?.id;
 };
@@ -123,7 +126,6 @@ const openAddModal = (schedule?: ScheduleEntry) => {
 // 모달에서 submit 이벤트 발생 시 호출될 핸들러
 const handleModalSubmit = async (payload: FormData) => {
     const idValue = payload.get("id");
-    console.log("idValue:", idValue);
     if (idValue === null || String(idValue).trim() === "") {
         try {
             await apiClient.post("/lecture/calendar", payload);
@@ -164,12 +166,18 @@ const fullCalendarEvents = (rawData: any[]): any[] => {
     // rawData는 서버에서 /lecture/calendar API를 통해 받은 일정 데이터 배열입니다.
     // 서버 응답 형태가 `ScheduleEntry[]` 배열이라고 가정합니다.
     rawData.forEach((schedule) => {
-        const eventDate = new Date(schedule.date); // schedule.date는 'YYYY-MM-DD' 형식일 것
-        const formattedDate = `${eventDate.getFullYear()}-${(eventDate.getMonth() + 1).toString().padStart(2, "0")}-${eventDate.getDate().toString().padStart(2, "0")}`;
+        // --- 시작 날짜 및 시간 처리 ---
+        const startEventDate = new Date(schedule.startDate);
+        const startFormattedDate = `${startEventDate.getFullYear()}-${(startEventDate.getMonth() + 1).toString().padStart(2, "0")}-${startEventDate.getDate().toString().padStart(2, "0")}`;
+        const startDateTime = schedule.startTime ? `${startFormattedDate}T${schedule.startTime.substring(0, 5)}` : startFormattedDate;
 
-        // 시간이 null 또는 비어있는 경우 '00:00'으로 처리하거나 allDay: true로 설정하는 로직 추가 고려
-        const startDateTime = schedule.startTime ? `${formattedDate}T${schedule.startTime.substring(0, 5)}` : formattedDate;
-        const endDateTime = schedule.endTime ? `${formattedDate}T${schedule.endTime.substring(0, 5)}` : formattedDate;
+        // --- 종료 날짜 및 시간 처리 ---
+        // endDate 필드가 없거나 null이면 startDate를 사용합니다.
+        const endEventDate = schedule.endDate ? new Date(schedule.endDate) : startEventDate;
+        const endFormattedDate = `${endEventDate.getFullYear()}-${(endEventDate.getMonth() + 1).toString().padStart(2, "0")}-${endEventDate.getDate().toString().padStart(2, "0")}`;
+
+        // 종료 시간이 없으면 종료 날짜만 사용
+        const endDateTime = schedule.endTime ? `${endFormattedDate}T${schedule.endTime.substring(0, 5)}` : endFormattedDate;
 
         events.push({
             title: schedule.title,
@@ -237,6 +245,18 @@ const calendarOptions = reactive({
                 },
             });
 
+            // schedules.value에 데이터를 할당해야 합니다.
+            // 먼저 날짜를 키로 하는 객체로 변환하는 함수를 만듭니다.
+            const transformedData: ScheduleData = {};
+            response.data.forEach((schedule: ScheduleEntry) => {
+                const dateKey = schedule.startDate; // 또는 시작 날짜를 YYYY-MM-DD 형식으로 변환
+                if (!transformedData[dateKey]) {
+                    transformedData[dateKey] = [];
+                }
+                transformedData[dateKey].push(schedule);
+            });
+            schedules.value = transformedData; // schedules.value에 할당
+
             // 서버 응답 데이터를 FullCalendar 이벤트 형식으로 변환
             const transformedEvents = fullCalendarEvents(response.data); // 위에서 정의한 함수 사용
 
@@ -260,10 +280,16 @@ const calendarOptions = reactive({
     },
     eventClick: (info: any) => {
         // 이벤트 클릭 이벤트 핸들러
-        // 이벤트 클릭 시에도 모달을 열 수 있습니다.
         // info.event.start: 클릭한 이벤트의 시작 날짜 (Date 객체)
         // info.event.extendedProps.originalSchedule: 원본 일정 데이터
         openModal(info.event.start, info.event.extendedProps.originalSchedule);
+
+        // "+ more" 팝오버에서 이벤트를 클릭했을 때, 해당 팝오버를 닫습니다.
+        // FullCalendar에 팝오버를 직접 닫는 API가 없으므로, 클릭된 요소의 가장 가까운 상위 팝오버를 찾아 제거합니다.
+        const popover = (info.jsEvent.target as HTMLElement).closest(".fc-popover");
+        if (popover) {
+            popover.remove();
+        }
     },
     editable: props.isStaff, // isStaff prop에 따라 이벤트 편집 가능 여부 설정 (드래그앤드롭 등)
     eventDrop: (info: any) => {
@@ -284,14 +310,37 @@ const calendarOptions = reactive({
 const openModal = (date: Date, schedule?: ScheduleEntry | ScheduleEntry[]) => {
     selectedDate.value = date;
     // dateKey 생성 (MM-DD 형식이므로, V-calendar 구현체에 맞게 조정)
-    const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const dateKey = `${year}-${month}-${day}`;
 
     if (schedule) {
         // 특정 이벤트 클릭 시 해당 이벤트만 전달
         selectedSchedules.value = Array.isArray(schedule) ? schedule : [schedule];
     } else {
-        // 날짜 클릭 시 해당 날짜의 모든 일정 전달
-        selectedSchedules.value = schedules.value[dateKey] || [];
+        // 날짜 클릭 시 해당 날짜의 모든 일정 전달 (수정된 로직)
+        const schedulesOnClickedDate: ScheduleEntry[] = [];
+
+        // schedules.value의 모든 일정들을 순회합니다.
+        for (const startDate in schedules.value) {
+            schedules.value[startDate].forEach((entry) => {
+                const start = new Date(entry.startDate);
+                const end = new Date(entry.endDate);
+                const clicked = new Date(dateKey); // YYYY-MM-DD 형식으로 Date 객체 생성
+
+                // 클릭한 날짜가 일정의 시작과 끝 날짜 사이에 있는지 확인합니다.
+                // 시간을 제외하고 날짜만 비교하기 위해 시간을 자정으로 맞춥니다.
+                const startMidnight = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+                const endMidnight = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+                const clickedMidnight = new Date(clicked.getFullYear(), clicked.getMonth(), clicked.getDate());
+
+                if (clickedMidnight >= startMidnight && clickedMidnight <= endMidnight) {
+                    schedulesOnClickedDate.push(entry);
+                }
+            });
+        }
+        selectedSchedules.value = schedulesOnClickedDate;
     }
     isModalOpen.value = true;
 };
@@ -301,27 +350,6 @@ const closeModal = () => {
     selectedDate.value = null;
     selectedSchedules.value = [];
 };
-
-// 추가
-// const handleAddSchedule = (newSchedule: ScheduleEntry) => {
-//     if (selectedDate.value) {
-//         const year = selectedDate.value.getFullYear();
-//         const month = selectedDate.value.getMonth() + 1;
-//         const day = selectedDate.value.getDate();
-//         const dateKey = `${year}-${month}-${day}`;
-
-//         // 내부 schedules.value를 직접 업데이트
-//         if (!schedules.value[dateKey]) {
-//             schedules.value[dateKey] = [];
-//         }
-//         schedules.value[dateKey].push(newSchedule);
-
-//         // if (fullCalendarRef.value) {
-//         //   fullCalendarRef.value.getApi().refetchEvents();
-//         // }
-//     }
-//     closeModal();
-// };
 
 const handleEventDrop = (info: any) => {
     const event = info.event;
@@ -382,7 +410,6 @@ const handleDeleteSchedule = async (scheduleId: string) => {
 
 // 일정 수정
 const handleEditSchedule = async (schedule: ScheduleEntry) => {
-    console.log(schedule);
     closeModal();
     openAddModal(schedule);
 };
@@ -392,22 +419,6 @@ const handleEventResize = (info: any) => {
     // info.event.start, info.event.end 등을 사용하여 일정 시간을 업데이트
     console.log("Event resized:", info.event);
 };
-
-// onMounted(async () => {
-//     try {
-//         const response = await apiClient.get<ScheduleData>("/lecture/calendar");
-//         schedules.value = response.data;
-//         console.log("강의 일정 데이터:", response.data);
-//     } catch (error: any) {
-//         console.error("강의 일정 API 호출 오류:", error);
-//         if (error.response) {
-//             const errorMessage = error.response.data?.detail || error.response.data?.message || `서버 오류: ${error.response.status}`;
-//             alert(`강의 데이터를 불러오는 데 실패했습니다: ${errorMessage}`);
-//         } else {
-//             alert("강의 데이터를 불러오는 데 실패했습니다: 네트워크 연결을 확인하세요.");
-//         }
-//     }
-// });
 </script>
 
 <style>

@@ -8,7 +8,7 @@
 
             <ul class="desktop-menu space-x-16">
                 <li v-for="item in processedMenuItems" :key="item.title" class="relative group">
-                    <router-link :to="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-2xl font-semibold">{{ item.title }}</router-link>
+                    <router-link :to="item.link" class="text-gray-700 hover:text-[var(--dream-main)] py-2 block text-xl font-semibold">{{ item.title }}</router-link>
                     <div
                         v-if="item.submenu && item.submenu.length > 0"
                         class="absolute left-0 mt-0 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 invisible group-hover:visible z-20"

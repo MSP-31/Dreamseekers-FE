@@ -2,102 +2,102 @@
     <BaseModal :show="show" :modalTitle="modalTitle" :submitButtonText="submitButtonText" @update:show="closeModal" @submit="handleSubmit">
         <template #content>
             <form @submit.prevent="handleSubmit">
-                <table class="w-full">
-                    <tbody>
-                        <tr v-if="formFields.some((field) => field.name === 'date')">
-                            <th class="text-left py-3 pr-4 align-top">
-                                <label :for="formFields.find((f) => f.name === 'date')?.id" class="block text-sm font-medium text-gray-700">날짜</label>
-                            </th>
-                            <td class="py-3 w-full flex items-center space-x-2">
-                                <input
-                                    v-if="formFields.find((f) => f.name === 'date')"
-                                    type="date"
-                                    :id="formFields.find((f) => f.name === 'date')?.id"
-                                    :name="formFields.find((f) => f.name === 'date')?.name"
-                                    v-model="formData[formFields.find(f => f.name === 'date')?.name as string]"
-                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-grow w-40"
-                                />
-                                <input
-                                    v-if="formFields.find((f) => f.name === 'startTime')"
-                                    type="time"
-                                    :id="formFields.find((f) => f.name === 'startTime')?.id"
-                                    :name="formFields.find((f) => f.name === 'startTime')?.name"
-                                    v-model="formData[formFields.find(f => f.name === 'startTime')?.name as string]"
-                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm w-40"
-                                    step="60"
-                                />
-                                <span class="text-gray-500">~</span>
-                                <input
-                                    v-if="formFields.find((f) => f.name === 'endTime')"
-                                    type="time"
-                                    :id="formFields.find((f) => f.name === 'endTime')?.id"
-                                    :name="formFields.find((f) => f.name === 'endTime')?.name"
-                                    v-model="formData[formFields.find(f => f.name === 'endTime')?.name as string]"
-                                    class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm w-40"
-                                    step="60"
-                                />
-                            </td>
-                        </tr>
-                        <template v-for="field in formFields" :key="field.name">
-                            <template v-if="!['id', 'date', 'startTime', 'endTime'].includes(field.name)">
-                                <tr v-if="field.type === 'image'">
-                                    <td colspan="2" class="py-3">
-                                        <ImageUploader
-                                            v-model="formData[field.name]"
-                                            :inputId="field.id"
-                                            :buttonText="field.label"
-                                            :maxSizeMB="1"
-                                            :maxWidthOrHeight="1024"
-                                            :initialPreviewUrl="initialData[field.name]"
-                                            @error="handleImageUploaderError"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr v-else>
-                                    <th class="text-left py-3 pr-4 align-top">
-                                        <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
-                                    </th>
-                                    <td class="py-3 w-full">
-                                        <input
-                                            v-if="field.type === 'text'"
-                                            :type="field.type"
-                                            :id="field.id"
-                                            :name="field.name"
-                                            v-model="formData[field.name]"
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        />
-                                        <textarea
-                                            v-else-if="field.type === 'textarea'"
-                                            :id="field.id"
-                                            :name="field.name"
-                                            v-model="formData[field.name]"
-                                            rows="5"
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-none"
-                                        ></textarea>
-                                        <input
-                                            v-else-if="field.type === 'checkbox'"
-                                            :type="field.type"
-                                            :id="field.id"
-                                            :name="field.name"
-                                            v-model="formData[field.name]"
-                                            class="mt-1 h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                        />
-                                    </td>
-                                </tr>
-                            </template>
-                        </template>
-                    </tbody>
-                </table>
+                <div class="space-y-4">
+                    <div v-if="formFields.some((field) => ['startDate', 'endDate'].includes(field.name))">
+                        <div class="mt-1 flex flex-wrap space-x-2">
+                            <label for="startDate" class="block text-sm font-medium text-gray-700">시작 날짜</label>
+                            <input
+                                v-if="formFields.find((f) => f.name === 'startDate')"
+                                type="date"
+                                :id="formFields.find((f) => f.name === 'startDate')?.id"
+                                :name="formFields.find((f) => f.name === 'startDate')?.name"
+                                v-model="formData[formFields.find(f => f.name === 'startDate')?.name as string]"
+                                class="block flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                            <input
+                                v-if="formFields.find((f) => f.name === 'startTime')"
+                                type="time"
+                                :id="formFields.find((f) => f.name === 'startTime')?.id"
+                                :name="formFields.find((f) => f.name === 'startTime')?.name"
+                                :disabled="formData.allDay"
+                                v-model="formData[formFields.find(f => f.name === 'startTime')?.name as string]"
+                                class="block flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                step="60"
+                            />
+                        </div>
+                        <div class="mt-1 flex flex-wrap space-x-2">
+                            <label for="startDate" class="block text-sm font-medium text-gray-700">종료 날짜</label>
+                            <input
+                                v-if="formFields.find((f) => f.name === 'endDate')"
+                                type="date"
+                                :id="formFields.find((f) => f.name === 'endDate')?.id"
+                                :name="formFields.find((f) => f.name === 'endDate')?.name"
+                                v-model="formData[formFields.find(f => f.name === 'endDate')?.name as string]"
+                                class="block flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                            <input
+                                v-if="formFields.find((f) => f.name === 'endTime')"
+                                type="time"
+                                :id="formFields.find((f) => f.name === 'endTime')?.id"
+                                :name="formFields.find((f) => f.name === 'endTime')?.name"
+                                :disabled="formData.allDay"
+                                v-model="formData[formFields.find(f => f.name === 'endTime')?.name as string]"
+                                class="block flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                step="60"
+                            />
+                        </div>
+                    </div>
+
+                    <template v-for="field in formFields" :key="field.name">
+                        <div v-if="!['id', 'startDate', 'endDate', 'startTime', 'endTime'].includes(field.name)" class="space-y-1">
+                            <label :for="field.id" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+
+                            <input
+                                v-if="field.type === 'text'"
+                                :type="field.type"
+                                :id="field.id"
+                                :name="field.name"
+                                v-model="formData[field.name]"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                            <textarea
+                                v-else-if="field.type === 'textarea'"
+                                :id="field.id"
+                                :name="field.name"
+                                v-model="formData[field.name]"
+                                rows="5"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-none"
+                            ></textarea>
+                            <input
+                                v-else-if="field.type === 'checkbox'"
+                                :type="field.type"
+                                :id="field.id"
+                                :name="field.name"
+                                v-model="formData[field.name]"
+                                class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            />
+                            <ImageUploader
+                                v-else-if="field.type === 'image'"
+                                v-model="formData[field.name]"
+                                :inputId="field.id"
+                                :buttonText="field.label"
+                                :maxSizeMB="0.2"
+                                :maxWidthOrHeight="1024"
+                                :initialPreviewUrl="initialData[field.name]"
+                                @error="handleImageUploaderError"
+                            />
+                        </div>
+                    </template>
+                </div>
             </form>
         </template>
     </BaseModal>
 </template>
-
 <script setup lang="ts">
 import {reactive, watch} from "vue";
-import BaseModal from "../layout/BaseModal.vue";
+import BaseModal from "@/components/common/BaseModal.vue";
 import type {FormField} from "@/types/common";
-import ImageUploader from "../layout/ImageUploader.vue";
+import ImageUploader from "@/components/utils/ImageUploader.vue";
 
 // --- Props 정의 ---
 const props = defineProps({

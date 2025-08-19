@@ -3,20 +3,7 @@
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">인사말 수정</h1>
 
         <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isAdmin">
-            <div>
-                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">제목</label>
-                <input
-                    type="text"
-                    id="title"
-                    v-model="formData.title"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
-                />
-            </div>
-
-            <div>
-                <label for="contents" class="block text-sm font-medium text-gray-700 mb-1">내용</label>
-                <TiptapEditor v-model="formData.contents" />
-            </div>
+            <TiptapEditor v-model="formData.contents" />
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">대표 이미지</label>
@@ -50,9 +37,9 @@
 import {ref, reactive, onMounted, computed} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
-import PageLayout from "@/components/layout/PageLayout.vue";
-import TiptapEditor from "@/components/layout/TiptapEditor.vue";
-import ImageUploader from "@/components/layout/ImageUploader.vue";
+import PageLayout from "@/components/common/PageLayout.vue";
+import TiptapEditor from "@/components/utils/TiptapEditor.vue";
+import ImageUploader from "@/components/utils/ImageUploader.vue";
 import apiClient from "@/api";
 
 interface IntroData {
