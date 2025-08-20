@@ -1,6 +1,5 @@
 <template>
-    <div class="relative w-full overflow-hidden" style="height: 500px">
-        <!-- 슬라이드 높이 고정 예시 -->
+    <div class="relative w-full overflow-hidden" style="height: 500px" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
         <div v-for="(slide, index) in slides" :key="slide.id" :class="['absolute inset-0 transition-opacity duration-1000 ease-in-out', currentIndex === index ? 'opacity-100' : 'opacity-0']">
             <img :src="slide.image" :alt="'꿈을찾는사람들교육원' + slide.id" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-black/20 flex flex-col justify-center items-center text-white p-8">
@@ -9,17 +8,9 @@
             </div>
         </div>
 
-        <!-- Navigation Buttons -->
-        <button @click="prevSlide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
-            &#10094;
-            <!-- < -->
-        </button>
-        <button @click="nextSlide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">
-            &#10095;
-            <!-- > -->
-        </button>
+        <button @click="prevSlide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">&#10094;</button>
+        <button @click="nextSlide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-opacity-75 focus:outline-none z-10">&#10095;</button>
 
-        <!-- Pagination Dots -->
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
             <button
                 v-for="(slide, index) in slides"
@@ -44,6 +35,7 @@ const props = defineProps({
 
 const currentIndex = ref(0);
 let slideInterval = null;
+const touchStartX = ref(0); // <-- 터치 시작점 변수 추가
 
 const nextSlide = () => {
     currentIndex.value = (currentIndex.value + 1) % props.slides.length;
@@ -55,6 +47,24 @@ const prevSlide = () => {
 
 const goToSlide = (index) => {
     currentIndex.value = index;
+};
+
+// 터치 이벤트 핸들러 추가
+const handleTouchStart = (event) => {
+    touchStartX.value = event.touches[0].clientX;
+};
+
+const handleTouchEnd = (event) => {
+    const touchEndX = event.changedTouches[0].clientX;
+    const distance = touchStartX.value - touchEndX;
+
+    if (distance > 50) {
+        // 왼쪽으로 스와이프 (다음)
+        nextSlide();
+    } else if (distance < -50) {
+        // 오른쪽으로 스와이프 (이전)
+        prevSlide();
+    }
 };
 
 onMounted(() => {
