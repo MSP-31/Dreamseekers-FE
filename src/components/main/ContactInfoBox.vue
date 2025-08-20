@@ -3,36 +3,38 @@
         <table class="w-full text-left border-collapse">
             <tbody>
                 <tr class="border-b border-[var(--dream-gray-dark)]">
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)]">주차안내</th>
-                    <td class="py-3 text-[var(--dream-sub)]">{{ businessInfo.parking_info }}</td>
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] text-sm md:text-base">주차안내</th>
+                    <td class="py-3 text-[var(--dream-sub)] text-sm md:text-base">{{ businessInfo.parking_info }}</td>
                 </tr>
                 <tr class="border-b border-[var(--dream-gray-dark)]">
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)]">전화번호</th>
-                    <td class="py-3 text-[var(--dream-sub)]">
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] text-sm md:text-base">전화번호</th>
+                    <td class="py-3 text-[var(--dream-sub)] text-sm md:text-base">
                         {{ contactInfo.phone }}<br />
                         {{ contactInfo.sub_phone }}
                     </td>
                 </tr>
                 <tr class="border-b border-[var(--dream-gray-dark)]">
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)]">이용시간</th>
-                    <td class="py-3 text-[var(--dream-sub)]">
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] text-sm md:text-base">이용시간</th>
+                    <td class="py-3 text-[var(--dream-sub)] text-sm md:text-base">
                         평일 {{ contactInfo.weekday_start_time }} - {{ contactInfo.weekday_end_time }}<br />
                         주말 {{ contactInfo.weekend_start_time }} - {{ contactInfo.weekend_end_time }}
                     </td>
                 </tr>
                 <tr class="border-b border-[var(--dream-gray-dark)]">
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)]">이용안내</th>
-                    <td class="py-3 text-[var(--dream-sub)] whitespace-pre-line">{{ businessInfo.usage_guide }}</td>
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] text-sm md:text-base">이용안내</th>
+                    <td class="py-3 text-[var(--dream-sub)] whitespace-pre-line text-sm md:text-base">{{ businessInfo.usage_guide }}</td>
                 </tr>
-                <tr>
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] align-top">사업자 정보</th>
-                    <td class="py-3 text-[var(--dream-sub)]">
+                <tr class="border-b border-[var(--dream-gray-dark)]">
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] align-top text-sm md:text-base">사업자 정보</th>
+                    <td class="py-3 text-[var(--dream-sub)] text-sm md:text-base">
                         상호명: 꿈을찾는사람들교육원<br />
                         대표: {{ businessInfo.rep }}<br />
                         이메일: {{ businessInfo.email }}<br />
                     </td>
-                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] align-top">입금 정보</th>
-                    <td class="py-3 text-[var(--dream-sub)]">
+                </tr>
+                <tr>
+                    <th class="py-3 pr-4 w-1/4 font-semibold text-[var(--dream-text)] align-top text-sm md:text-base">입금 정보</th>
+                    <td class="py-3 text-[var(--dream-sub)] text-sm md:text-base">
                         예금주: {{ businessInfo.depositor }}<br />
                         은행: {{ businessInfo.bank }}<br />
                         계좌번호: {{ businessInfo.account }}

@@ -1,11 +1,14 @@
 <template>
     <main>
         <SlideSection :slides="mainData.slides" />
-        <div class="relative text-center text-black flex-1 my-0 mx-[20%] space-y-12">
+        <div class="relative text-center text-black flex-1 my-0 space-y-12">
             <LectureListSection :lectureItem="mainData.lectureItem" />
             <p class="text-3xl font-bold mb-2">강의 일정표</p>
-            <CalendarSection :schedules="mainData.schedules" :is-staff="authStore.isAdmin" />
-            <ContactMapSection />
+            <div class="px-[1%] md:px-[20%]">
+                <CalendarSection :schedules="mainData.schedules" :is-staff="authStore.isAdmin" />
+                <p class="text-3xl font-bold mb-2 pt-12">오시는 길</p>
+                <ContactMapSection />
+            </div>
         </div>
     </main>
 </template>
