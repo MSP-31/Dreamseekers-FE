@@ -195,116 +195,106 @@ const fullCalendarEvents = (rawData: any[]): any[] => {
 
 // `isStaff` prop에 따라 동적으로 변경될 headerToolbar.right 값
 const rightToolbarButtons = computed(() => {
+    // 여기에 listWeek 뷰 버튼 추가
     return props.isStaff ? "today,addEventButton" : "today";
 });
 
 // FullCalendar 옵션 설정
-const calendarOptions = reactive({
-    plugins: [
-        dayGridPlugin, // 월별 보기
-        interactionPlugin, // 드래그 앤 드롭, 날짜 클릭 등
-        timeGridPlugin, // 주별, 일별 시간 보기
-        listPlugin, // 목록 보기
-    ],
-    initialView: "dayGridMonth", // 초기 뷰를 월별로 설정
+const calendarOptions = computed(() => ({
+    height: 600,
+    contentHeight: 600,
+    plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+    initialView: "dayGridMonth",
+
+    // 이 부분을 함수로 변경하여 반응형 헤더 툴바를 구현합니다.
     headerToolbar: {
-        // 캘린더 헤더에 표시할 버튼 및 제목 설정
         left: "prev,next",
         center: "title",
-        right: rightToolbarButtons,
+        right: props.isStaff ? "today,addEventButton" : "today",
     },
-    customButtons: {
-        // addEventButton에 대한 설정
-        addEventButton: {
-            text: "등록",
-            click: function () {
-                openAddModal();
+
+    // 768px 미만일 때 적용될 반응형 옵션
+    responsive: {
+        768: {
+            headerToolbar: {
+                left: "prev,next",
+                center: "title",
+                right: props.isStaff ? "today,addEventButton" : "today",
+            },
+            buttonText: {
+                listWeek: "목록",
+                dayGridMonth: "월",
+            },
+        },
+        0: {
+            // 768px보다 작을 때
+            headerToolbar: {
+                left: "prev,next",
+                center: "title",
+                right: props.isStaff ? "today,addEventButton" : "today",
+            },
+            buttonText: {
+                listWeek: "목록",
+                dayGridMonth: "월",
             },
         },
     },
-    locale: "ko", // 한글 로케일 적용
+
+    customButtons: {
+        addEventButton: {
+            text: "등록",
+            click: () => openAddModal(),
+        },
+    },
+    locale: "ko",
     buttonText: {
-        // 버튼 텍스트 한글화
         today: "오늘",
         month: "월",
         week: "주",
         day: "일",
         list: "목록",
     },
-    events: async (fetchInfo: {startStr: string; endStr: string; timeZone: string}, successCallback: (events: any[]) => void, failureCallback: (error: any) => void) => {
+    events: async (fetchInfo: any, successCallback: any, failureCallback: any) => {
         try {
-            // 날짜 추출
-            const startDateFormatted = fetchInfo.startStr.substring(0, 10);
-            const endDateFormatted = fetchInfo.endStr.substring(0, 10);
-
-            // FullCalendar가 요청하는 날짜 범위 (startStr, endStr)를 사용하여 API 호출
             const response = await apiClient.get("/lecture/calendar", {
                 params: {
-                    start_date: startDateFormatted, // 서버에서 인식할 파라미터 이름 확인
-                    end_date: endDateFormatted, // 서버에서 인식할 파라미터 이름 확인
+                    start_date: fetchInfo.startStr.substring(0, 10),
+                    end_date: fetchInfo.endStr.substring(0, 10),
                 },
             });
-
-            // schedules.value에 데이터를 할당해야 합니다.
-            // 먼저 날짜를 키로 하는 객체로 변환하는 함수를 만듭니다.
             const transformedData: ScheduleData = {};
             response.data.forEach((schedule: ScheduleEntry) => {
-                const dateKey = schedule.startDate; // 또는 시작 날짜를 YYYY-MM-DD 형식으로 변환
+                const dateKey = schedule.startDate;
                 if (!transformedData[dateKey]) {
                     transformedData[dateKey] = [];
                 }
                 transformedData[dateKey].push(schedule);
             });
-            schedules.value = transformedData; // schedules.value에 할당
-
-            // 서버 응답 데이터를 FullCalendar 이벤트 형식으로 변환
-            const transformedEvents = fullCalendarEvents(response.data); // 위에서 정의한 함수 사용
-
-            // FullCalendar에 이벤트 전달
-            successCallback(transformedEvents);
+            schedules.value = transformedData;
+            successCallback(fullCalendarEvents(response.data));
         } catch (error) {
             console.error("FullCalendar 이벤트 로드 실패:", error);
-            failureCallback(error); // FullCalendar에 오류를 알림
+            failureCallback(error);
         }
     },
-
-    dayMaxEvents: 2, // 예시: 2개까지만 표시하고 그 이상은 "+N more"로 표시
-    // "+N more" 링크 클릭 시 동작 정의
-    moreLinkClick: function (info: any) {
-        return "popover"; // 'popover' 또는 'dayGridDay', 'timeGridDay', 'listWeek', 'listDay' 등 뷰 이름 반환
-    },
-
-    dateClick: (info: any) => {
-        // 날짜 클릭 이벤트 핸들러
-        openModal(new Date(info.dateStr)); // info.dateStr은 'YYYY-MM-DD' 형식의 문자열
-    },
+    dayMaxEvents: 2,
+    moreLinkClick: (info: any) => "popover",
+    dateClick: (info: any) => openModal(new Date(info.dateStr)),
     eventClick: (info: any) => {
-        // 이벤트 클릭 이벤트 핸들러
-        // info.event.start: 클릭한 이벤트의 시작 날짜 (Date 객체)
-        // info.event.extendedProps.originalSchedule: 원본 일정 데이터
         openModal(info.event.start, info.event.extendedProps.originalSchedule);
-
-        // "+ more" 팝오버에서 이벤트를 클릭했을 때, 해당 팝오버를 닫습니다.
-        // FullCalendar에 팝오버를 직접 닫는 API가 없으므로, 클릭된 요소의 가장 가까운 상위 팝오버를 찾아 제거합니다.
         const popover = (info.jsEvent.target as HTMLElement).closest(".fc-popover");
         if (popover) {
             popover.remove();
         }
     },
-    editable: props.isStaff, // isStaff prop에 따라 이벤트 편집 가능 여부 설정 (드래그앤드롭 등)
+    editable: props.isStaff,
     eventDrop: (info: any) => {
-        // 이벤트 드래그 앤 드롭 후
-        if (props.isStaff) {
-            handleEventDrop(info);
-        }
+        if (props.isStaff) handleEventDrop(info);
     },
     eventResize: (info: any) => {
-        // 이벤트 리사이즈 후 (timeGrid 등에서)
-        if (props.isStaff) {
-            handleEventResize(info);
-        }
+        if (props.isStaff) handleEventResize(info);
     },
-});
+}));
 
 // Modal 관련 함수
 const openModal = (date: Date, schedule?: ScheduleEntry | ScheduleEntry[]) => {
@@ -443,5 +433,15 @@ const handleEventResize = (info: any) => {
 .fc-day-header {
     color: #6b7280; /* text-gray-600 */
     font-weight: 600; /* font-semibold */
+}
+
+/* 모바일 화면에서 제목 글씨 크기 줄이기 */
+@media (max-width: 767px) {
+    .fc .fc-toolbar-title {
+        font-size: 1.25rem; /* Tailwind의 text-xl과 유사 */
+    }
+    .fc .fc-toolbar-chunk .fc-button-group button {
+        padding: 0.25rem 0.5rem; /* 패딩 줄이기 */
+    }
 }
 </style>

@@ -6,17 +6,35 @@
                 <p class="text-gray-600">전문적인 지식으로 사례화된 교육을 실시하며 대면강의와 온라인 강의가능합니다.</p>
                 <p class="text-gray-600">모두가 공감하는 현실적인 교육 대상별 차별화된 맞춤형 강의내용</p>
             </div>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <LectureCard v-for="lecture in lectureItem" :key="lecture.id" :lecture="lecture" :is-staff="false" />
-            </ul>
+
+            <div class="flex justify-end mb-4">
+                <router-link to="/lecture/list" class="px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium bg-[var(--dream-main)] text-white shadow-md">
+                    전체 강의목록
+                </router-link>
+            </div>
+
+            <Carousel :autoplay="5000" :wrap-around="true" :breakpoints="breakpoints">
+                <Slide v-for="lecture in lectureItem" :key="lecture.id">
+                    <LectureCard :lecture="lecture" :is-staff="false" @open-modal="handleOpenModal" />
+                </Slide>
+                <template #addons>
+                    <Navigation />
+                    <Pagination />
+                </template>
+            </Carousel>
         </div>
     </div>
+    <LectureDetailModal class="mb-0" v-model:show="isModalOpen" :modal-title="'강의 상세 정보'" :initial-data="modalData" :form-fields="formFields" @close="handleCloseModal" />
 </template>
 
 <script setup lang="ts">
 import LectureCard from "@/components/main/LectureCard.vue";
 import type {LectureItem} from "@/data/dummyData.ts";
-import {PropType} from "vue";
+import {PropType, ref} from "vue";
+import {Carousel, Slide, Pagination, Navigation} from "vue3-carousel";
+import "vue3-carousel/dist/carousel.css";
+import LectureDetailModal from "@/components/main/DetailModala.vue";
+import {lectureFormSchema, type LectureFormSchemaField} from "@/data/dummyData";
 
 defineProps({
     lectureItem: {
@@ -25,4 +43,32 @@ defineProps({
         default: () => [],
     },
 });
+
+const breakpoints = {
+    0: {
+        itemsToShow: 1,
+        snapAlign: "center",
+    },
+    768: {
+        itemsToShow: 2,
+        snapAlign: "center",
+    },
+    1024: {
+        itemsToShow: 4,
+        snapAlign: "start",
+    },
+};
+
+const isModalOpen = ref(false);
+const modalData = ref({});
+const formFields = ref<LectureFormSchemaField[]>(lectureFormSchema); // formFields 정의
+
+const handleOpenModal = (lecture: LectureItem) => {
+    modalData.value = lecture;
+    isModalOpen.value = true;
+};
+
+const handleCloseModal = () => {
+    isModalOpen.value = false;
+};
 </script>

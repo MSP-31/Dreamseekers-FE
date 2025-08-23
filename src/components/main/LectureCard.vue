@@ -1,6 +1,6 @@
 <template>
     <li class="bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl relative group flex flex-col border border-transparent hover:border-[var(--dream-main)]">
-        <div class="relative p-5 flex-grow" @click="openModal(lecture)">
+        <div class="relative p-5 flex-grow" @click="$emit('open-modal', lecture)">
             <img :src="lecture.image || '/img/dummy/placeholder-lecture.png'" :alt="lecture.title" class="w-full h-48 object-cover rounded-md mb-4" />
             <h2 class="text-xl font-semibold text-[var(--dream-text)] mb-2 truncate" :data-id="lecture.id">
                 {{ lecture.title }}
@@ -15,16 +15,11 @@
             <button @click="$emit('delete', lecture.id)" class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-2.5 rounded-md shadow-sm">삭제</button>
         </div>
     </li>
-    <LectureDetailModal v-model:show="showModal" :modal-title="'강의 상세 정보'" :form-fields="formSchema" :initial-data="initialModalData" />
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {LectureFormData, lectureFormSchema, type LectureFormSchemaField, type LectureItem} from "@/data/dummyData";
-import LectureDetailModal from "@/components/main/DetailModala.vue";
-
-const showModal = ref(false);
-const formSchema = ref<LectureFormSchemaField[]>(lectureFormSchema);
+import {defineEmits} from "vue";
+import type {LectureItem} from "@/data/dummyData.ts";
 
 defineProps<{
     lecture: LectureItem;
@@ -34,22 +29,6 @@ defineProps<{
 defineEmits<{
     (e: "edit", lecture: LectureItem): void;
     (e: "delete", lectureId: number): void;
+    (e: "open-modal", lecture: LectureItem): void; // 모달을 열기 위한 이벤트 추가
 }>();
-
-// 모달 초기 데이터
-const initialModalData = ref<LectureFormData>({
-    title: "",
-    contents: "",
-    image: null, // 이미지 필드도 포함
-});
-
-const openModal = (lecture: LectureItem) => {
-    initialModalData.value = {
-        // initialModalData를 업데이트하여 자식 컴포넌트에 전달
-        title: lecture.title,
-        contents: lecture.contents,
-        image: lecture.image || null, // 기존 이미지 URL 전달
-    };
-    showModal.value = true;
-};
 </script>

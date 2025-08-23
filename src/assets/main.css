@@ -67,6 +67,15 @@
         padding-right: 1rem; /* px-4 */
     }
 
+    @media (max-width: 767px) {
+        .main-content {
+            margin-left: 2%;
+            margin-right: 2%;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+
     /* Tiptap 에디터 내용물에 대한 전역 스타일 */
     .prose a {
         color: var(--dream-blue) !important;
