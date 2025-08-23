@@ -6,6 +6,13 @@
                 <p class="text-gray-600">전문적인 지식으로 사례화된 교육을 실시하며 대면강의와 온라인 강의가능합니다.</p>
                 <p class="text-gray-600">모두가 공감하는 현실적인 교육 대상별 차별화된 맞춤형 강의내용</p>
             </div>
+
+            <div class="flex justify-end mb-4">
+                <router-link to="/lecture/list" class="px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium bg-[var(--dream-main)] text-white shadow-md">
+                    전체 강의목록
+                </router-link>
+            </div>
+
             <Carousel :autoplay="5000" :wrap-around="true" :breakpoints="breakpoints">
                 <Slide v-for="lecture in lectureItem" :key="lecture.id">
                     <LectureCard :lecture="lecture" :is-staff="false" @open-modal="handleOpenModal" />
