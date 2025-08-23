@@ -32,7 +32,7 @@
         </div>
 
         <ul v-else-if="filteredLectures.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <LectureCard v-for="lecture in filteredLectures" :key="lecture.id" :lecture="lecture" :is-staff="isAdmin" @edit="openModal" @delete="handleDelete" />
+            <LectureCard v-for="lecture in filteredLectures" :key="lecture.id" :lecture="lecture" :is-staff="isAdmin" @open-modal="handleOpenModal" @edit="openModal" @delete="handleDelete" />
         </ul>
         <div v-else class="text-center text-gray-500 py-8">
             <p>표시할 강의가 없습니다.</p>
@@ -50,6 +50,7 @@
             @submit="handleModalSubmit"
         />
     </PageLayout>
+    <LectureDetailModal v-model:show="isModalOpen" :modal-title="'강의 상세 정보'" :initial-data="modalData" :form-fields="formFields" @close="handleCloseModal" />
 </template>
 
 <script setup lang="ts">
@@ -60,6 +61,7 @@ import {lectureFormSchema, type LectureItem, type LectureFormData, type LectureF
 import {useAuthStore} from "@/stores/auth";
 import ReusableFormModal from "@/components/main/FormModal.vue";
 import apiClient from "@/api";
+import LectureDetailModal from "@/components/main/DetailModala.vue";
 
 const authStore = useAuthStore();
 const isAdmin = authStore.isAdmin;
@@ -166,6 +168,19 @@ const fetchLectures = async () => {
             alert("강의 데이터를 불러오는 데 실패했습니다.");
         }
     }
+};
+
+const isModalOpen = ref(false);
+const modalData = ref({});
+const formFields = ref<LectureFormSchemaField[]>(lectureFormSchema); // formFields 정의
+
+const handleOpenModal = (lecture: LectureItem) => {
+    modalData.value = lecture;
+    isModalOpen.value = true;
+};
+
+const handleCloseModal = () => {
+    isModalOpen.value = false;
 };
 
 onMounted(() => {
