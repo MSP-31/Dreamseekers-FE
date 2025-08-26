@@ -366,7 +366,7 @@ export const dummyPaginationDataPage2: PaginationData = {
 // 문의 작성 페이지에 사용될 데이터 타입
 export interface InquiryWriteFormData {
     email: string;
-    phone: number | null;
+    phone: string;
     title: string;
     contents: string;
     // 필요한 경우 파일 첨부 등 추가 필드 정의

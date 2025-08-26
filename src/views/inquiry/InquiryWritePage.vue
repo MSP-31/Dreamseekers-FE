@@ -1,4 +1,5 @@
 <template>
+    <LoadingSpinner :isLoading="isLoading" />
     <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg">
         <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
             <table class="w-full mb-6">
@@ -49,22 +50,26 @@ import {ref, reactive, computed} from "vue";
 import apiClient from "@/api";
 import {inquiryWriteFormSchema, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
 import PageLayout from "@/components/common/PageLayout.vue";
+import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
+
+const isLoading = ref(false);
 
 const formSchema = ref<InquiryWriteFormField[]>(inquiryWriteFormSchema);
 
 const initialFormData: InquiryWriteFormData = {
     email: "",
-    phone: null,
+    phone: "",
     title: "",
     contents: "",
 };
 const formData = reactive<InquiryWriteFormData>({...initialFormData});
 
 const isFormValid = computed(() => {
-    return formData.title.trim() !== "" && formData.contents.trim() !== "" && formData.phone !== null && formData.email.trim() !== "";
+    return formData.title.trim() !== "" && formData.contents.trim() !== "" && formData.phone !== "" && formData.email.trim() !== "";
 });
 
 const handleSubmit = async () => {
+    isLoading.value = true;
     try {
         await apiClient.post("/lecture/inquiries", formData);
         alert("문의가 성공적으로 등록되었습니다.");
@@ -72,6 +77,9 @@ const handleSubmit = async () => {
         console.error("API 요청 오류:", error);
         const errorMessage = error.response?.data?.detail || error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
         alert(errorMessage);
+    } finally {
+        // 요청이 성공하든 실패하든 isLoading을 false로 설정
+        isLoading.value = false;
     }
 };
 </script>
