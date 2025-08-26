@@ -365,6 +365,8 @@ export const dummyPaginationDataPage2: PaginationData = {
 
 // 문의 작성 페이지에 사용될 데이터 타입
 export interface InquiryWriteFormData {
+    email: string;
+    phone: number | null;
     title: string;
     contents: string;
     // 필요한 경우 파일 첨부 등 추가 필드 정의
@@ -374,32 +376,17 @@ export interface InquiryWriteFormField {
     id: string;
     name: keyof InquiryWriteFormData;
     label: string;
-    type: "text" | "textarea"; // 예시: 텍스트와 텍스트 영역만
+    type: "text" | "textarea";
     placeholder?: string;
 }
 
 // 문의 작성 폼 스키마
 export const inquiryWriteFormSchema: InquiryWriteFormField[] = [
+    {id: "inquiry-email", name: "email", label: "이메일", type: "text", placeholder: "ex) example@naver.com"},
+    {id: "inquiry-phone", name: "phone", label: "연락처", type: "text", placeholder: "ex) 01012345678"},
     {id: "inquiry-title", name: "title", label: "제목", type: "text", placeholder: "문의 제목을 입력해주세요."},
     {id: "inquiry-contents", name: "contents", label: "내용", type: "textarea", placeholder: "문의 내용을 상세히 작성해주세요."},
 ];
-
-// 사용자 정보 더미 데이터 (실제로는 로그인 상태에서 가져옴)
-export const dummyUserData = {
-    username: "홍길동",
-    email: "hong@example.com",
-};
-
-export const consentModalContent = {
-    title: "개인정보 수집 및 이용 동의 안내",
-    paragraphs: [
-        "[수집 목적 및 이용] 본 동의서는 강의 문의에 대한 처리 및 회신을 목적으로 개인정보를 수집하고 이용하는 데 있어, 정보 주체의 동의를 얻기 위함입니다.",
-        "[수집 항목] 다음과 같은 개인정보를 수집하고 있습니다 [이름,이메일,연락처,주소]", // 실제 수집 항목에 맞게 수정 필요
-        "[보유 및 이용 기간] 수집된 개인정보는 요청 처리 후 회원 탈퇴 시까지 보유되며, 회원 탈퇴 시 해당 정보는 지체 없이 파기됩니다.",
-        "[동의 거부 권리 및 거부 시 불이익 안내] 본 동의는 정보 주체가 자유롭게 거부할 수 있는 권리가 있으며, 동의 거부 시 강의 문의에 대한 처리 및 회신 서비스 이용에 제한이 있을 수 있음을 알려드립니다.",
-        "본인은 위와 같은 개인정보 수집 및 이용에 대해 충분히 이해하였으며, 이에 동의합니다.",
-    ],
-};
 
 // ---------------
 // 활동 소식 페이지에 사용될 데이터 타입
