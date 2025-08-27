@@ -1,6 +1,6 @@
 <template>
     <div class="font-[var(--font-body)]">
-        <PageHeader :title="mainLecture?.title || '강의 상세'" backgroundImageUrl="/img/top_header/lecture.jpg" />
+        <PageHeader :title="mainLecture?.title || '강의 상세'" backgroundImageUrl="/img/top_header/lecture.webp" />
 
         <div class="main-content">
             <div v-if="mainLecture">

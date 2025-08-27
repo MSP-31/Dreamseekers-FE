@@ -164,134 +164,6 @@ export const businessInfoData: BusinessInfo = {
     usage_guide: "예약\n주차", // 예시 이용 안내 (줄바꿈 포함)
 };
 //-----------------------------
-export const lectureSubItemsData: {[mainLectureId: number]: LectureSubItem[]} = {
-    1: [
-        // mainLectureId: 1 (도박 중독, 이제 그만! '스마트한 선택' 예방 강좌)의 하위 항목들
-        {
-            id: 101,
-            mainLectureId: 1,
-            title: "도박 중독의 이해와 심각성",
-            contents: "도박 중독의 정의, 유형, 그리고 개인 및 사회에 미치는 심각한 영향에 대해 심층적으로 학습합니다. 실제 사례를 통해 문제의 본질을 이해합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 102,
-            mainLectureId: 1,
-            title: "충동 제어 및 스트레스 관리 기법",
-            contents: "도박 충동을 효과적으로 관리하고 스트레스를 건강하게 해소하는 다양한 전략과 기법을 배웁니다. 자기 통제력을 강화하는 실제적인 방법을 제시합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 103,
-            mainLectureId: 1,
-            title: "건강한 여가 활동 및 대안 찾기",
-            contents: "도박 외에 삶의 만족도를 높일 수 있는 건강하고 즐거운 여가 활동을 탐색하고 실천하는 방법을 모색합니다. 긍정적인 생활 습관 형성을 돕습니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 104,
-            mainLectureId: 1,
-            title: "재정 관리와 회복 지원 시스템",
-            contents: "도박으로 인한 재정 문제를 해결하고, 중독에서 벗어나기 위한 전문적인 회복 프로그램 및 지원 기관에 대한 정보를 제공합니다.",
-            image: "/img/1.jpg",
-        },
-    ],
-    2: [
-        // mainLectureId: 2 (마약류 오남용 방지 '안전한 우리 사회' 지킴이 강좌)의 하위 항목들
-        {
-            id: 201,
-            mainLectureId: 2,
-            title: "마약류의 종류와 신체적/정신적 영향",
-            contents: "다양한 마약류의 종류(필로폰, 대마초, 코카인 등)를 알아보고, 각 약물이 인체에 미치는 치명적인 신체적, 정신적 부작용에 대해 구체적으로 배웁니다.",
-            image: "/img/1.jpg", // 이미지 경로는 그대로 유지
-        },
-        {
-            id: 202,
-            mainLectureId: 2,
-            title: "마약 중독의 진행 과정과 사회적 위험",
-            contents: "마약 중독이 어떻게 시작되고 진행되는지 단계별로 이해하고, 중독으로 인해 발생하는 개인 및 사회 전체의 문제점과 위험성을 논의합니다.",
-            image: "/img/1.jpg", // 이미지 경로는 그대로 유지
-        },
-        {
-            id: 203,
-            mainLectureId: 2,
-            title: "약물 오남용 예방을 위한 대처 전략",
-            contents: "청소년 및 성인이 약물 오남용 유혹에 직면했을 때 현명하게 대처하고 거절하는 방법을 학습합니다. 위기 상황 시 도움을 요청하는 방법을 포함합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 204,
-            mainLectureId: 2,
-            title: "마약 관련 법규 및 회복 지원 시스템",
-            contents: "마약류 관련 법규와 처벌 기준을 이해하고, 중독자들을 위한 치료 및 재활 프로그램, 법적 지원 체계에 대한 정보를 제공합니다.",
-            image: "/img/1.jpg",
-        },
-    ],
-    3: [
-        // mainLectureId: 3 (성폭력 및 디지털 성범죄 예방 '존중과 안전' 교육)의 하위 항목들
-        {
-            id: 301,
-            mainLectureId: 3,
-            title: "성인지 감수성 향상과 폭력의 이해",
-            contents: "성인지 감수성의 중요성을 이해하고, 성폭력 및 성차별적 행동의 다양한 형태를 인식합니다. 건강한 성문화 조성을 위한 태도를 함양합니다.",
-            image: "/img/1.jpg", // 이미지 경로는 그대로 유지
-        },
-        {
-            id: 302,
-            mainLectureId: 3,
-            title: "디지털 성범죄의 유형과 예방",
-            contents: "사이버 성폭력, 불법 촬영물, 몸캠피싱 등 디지털 성범죄의 주요 유형과 발생 원인을 학습하고, 온라인 환경에서 자신을 보호하는 방법을 배웁니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 303,
-            mainLectureId: 3,
-            title: "피해자 중심의 관점과 2차 피해 방지",
-            contents: "성폭력 및 디지털 성범죄 피해자를 존중하고 지지하는 태도를 배우며, 2차 피해를 예방하기 위한 언행과 행동 수칙을 익힙니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 304,
-            mainLectureId: 3,
-            title: "성폭력 발생 시 대처 및 법적 지원",
-            contents: "성폭력 발생 시 즉각적으로 대처하는 방법, 증거 확보, 신고 절차, 그리고 법률 및 심리 상담 등 이용 가능한 지원 서비스를 안내합니다.",
-            image: "/img/1.jpg",
-        },
-    ],
-    4: [
-        // mainLectureId: 4 (학교 폭력 및 사이버 폭력 예방 '평화로운 교실' 만들기)의 하위 항목들 (새로 추가됨)
-        {
-            id: 401,
-            mainLectureId: 4,
-            title: "학교 폭력의 유형과 특징 이해",
-            contents: "신체 폭력, 언어 폭력, 집단 따돌림, 성폭력 등 다양한 학교 폭력의 유형과 그 특징을 상세히 알아봅니다. 학교 폭력의 심각성과 예방의 필요성을 강조합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 402,
-            mainLectureId: 4,
-            title: "사이버 폭력의 실태와 예방 전략",
-            contents: "사이버 왕따, 디지털 성폭력, 사이버 명예훼손 등 온라인에서 발생하는 폭력의 실태를 파악하고, 온라인 환경에서 안전하게 자신을 보호하는 방법을 학습합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 403,
-            mainLectureId: 4,
-            title: "건강한 또래 관계 형성 및 갈등 해결",
-            contents: "친구들과 긍정적인 관계를 맺고, 갈등 상황 발생 시 평화롭고 효과적으로 문제를 해결하는 방법을 배웁니다. 공감과 소통의 중요성을 강조합니다.",
-            image: "/img/1.jpg",
-        },
-        {
-            id: 404,
-            mainLectureId: 4,
-            title: "피해 발생 시 신고 및 도움 요청 방법",
-            contents: "학교 폭력 또는 사이버 폭력 피해를 겪었을 때 누구에게, 어떻게 도움을 요청하고 신고할 수 있는지 구체적인 절차와 지원 기관을 안내합니다. 2차 피해 방지 교육을 포함합니다.",
-            image: "/img/1.jpg",
-        },
-    ],
-};
-
-//-----------------------------
 
 // 문의 내역 페이지에 사용될 데이터 타입
 export interface InquiryPost {
@@ -314,55 +186,6 @@ export interface PaginationData {
     custom_range: number[]; // 페이지네이션에 표시할 페이지 번호 배열 (예: [1, 2, 3, 4, 5])
 }
 
-// 문의 내역 더미 데이터
-export const dummyInquiryPosts: InquiryPost[] = [
-    {pk: 10, title: "강의 문의합니다.", author: "사용자1", created_at: "2023-10-26"},
-    {pk: 9, title: "수강료 관련 질문", author: "관리자", created_at: "2023-10-25"},
-    {pk: 8, title: "교재 문의", author: "사용자2", created_at: "2023-10-24"},
-    {pk: 7, title: "시간표 문의", author: "사용자3", created_at: "2023-10-23"},
-    {pk: 6, title: "온라인 강의 문의", author: "사용자4", created_at: "2023-10-22"},
-    {pk: 5, title: "오프라인 강의 문의", author: "사용자5", created_at: "2023-10-21"},
-    {pk: 4, title: "환불 규정 문의", author: "사용자6", created_at: "2023-10-20"},
-    {pk: 3, title: "시설 이용 문의", author: "사용자7", created_at: "2023-10-19"},
-    {pk: 2, title: "기타 문의 사항", author: "사용자8", created_at: "2023-10-18"},
-    {pk: 1, title: "웹사이트 오류 보고", author: "관리자", created_at: "2023-10-17"},
-];
-
-// 페이지네이션 더미 데이터 (예시: 전체 10개 중 페이지 1, 페이지당 5개)
-export const dummyPaginationData: PaginationData = {
-    count: dummyInquiryPosts.length, // 전체 게시글 수
-    start_index: 1, // 현재 페이지의 첫 항목 인덱스 (1-based)
-    number: 1, // 현재 페이지 번호
-    has_other_pages: true,
-    has_previous: false, // 첫 페이지이므로 이전 페이지 없음
-    has_next: true, // 다음 페이지 있음
-    previous_page_number: null,
-    next_page_number: 2,
-    custom_range: [1, 2], // 예시: 2페이지까지 있다고 가정
-};
-
-// 예시: 페이지 2의 더미 데이터
-export const dummyInquiryPostsPage2: InquiryPost[] = [
-    {pk: 5, title: "오프라인 강의 문의 (2)", author: "사용자5", created_at: "2023-10-21"},
-    {pk: 4, title: "환불 규정 문의 (2)", author: "사용자6", created_at: "2023-10-20"},
-    {pk: 3, title: "시설 이용 문의 (2)", author: "사용자7", created_at: "2023-10-19"},
-    {pk: 2, title: "기타 문의 사항 (2)", author: "사용자8", created_at: "2023-10-18"},
-    {pk: 1, title: "웹사이트 오류 보고 (2)", author: "관리자", created_at: "2023-10-17"},
-];
-
-// 예시: 페이지 2의 페이지네이션 데이터
-export const dummyPaginationDataPage2: PaginationData = {
-    count: dummyInquiryPosts.length,
-    start_index: 6, // 페이지 2의 첫 항목 인덱스 (1-based)
-    number: 2,
-    has_other_pages: true,
-    has_previous: true,
-    has_next: false, // 마지막 페이지이므로 다음 페이지 없음
-    previous_page_number: 1,
-    next_page_number: null,
-    custom_range: [1, 2],
-};
-
 // 문의 작성 페이지에 사용될 데이터 타입
 export interface InquiryWriteFormData {
     email: string;
@@ -383,7 +206,7 @@ export interface InquiryWriteFormField {
 // 문의 작성 폼 스키마
 export const inquiryWriteFormSchema: InquiryWriteFormField[] = [
     {id: "inquiry-email", name: "email", label: "이메일", type: "text", placeholder: "ex) example@naver.com"},
-    {id: "inquiry-phone", name: "phone", label: "연락처", type: "text", placeholder: "ex) 01012345678"},
+    {id: "inquiry-phone", name: "phone", label: "연락처", type: "text", placeholder: "ex) 010-1234-5678"},
     {id: "inquiry-title", name: "title", label: "제목", type: "text", placeholder: "문의 제목을 입력해주세요."},
     {id: "inquiry-contents", name: "contents", label: "내용", type: "textarea", placeholder: "문의 내용을 상세히 작성해주세요."},
 ];

@@ -1,6 +1,6 @@
 <template>
     <LoadingSpinner :isLoading="isLoading" />
-    <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg">
+    <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.webp">
         <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
             <table class="w-full mb-6">
                 <tbody>
@@ -19,13 +19,14 @@
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
                                 />
                                 <textarea
-                                    v-else-if="field.type === 'textarea'"
+                                    v-else-if="field.type === 'textarea' && !field.name.includes('contents')"
                                     :id="field.id"
                                     v-model="formData[field.name]"
                                     :placeholder="field.placeholder"
                                     rows="8"
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
                                 ></textarea>
+                                <TiptapEditor v-if="field.name === 'contents'" v-model="formData.contents" />
                             </td>
                         </tr>
                     </template>
@@ -51,6 +52,7 @@ import apiClient from "@/api";
 import {inquiryWriteFormSchema, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
 import PageLayout from "@/components/common/PageLayout.vue";
 import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
+import TiptapEditor from "@/components/utils/TiptapEditor.vue";
 
 const isLoading = ref(false);
 
@@ -73,6 +75,10 @@ const handleSubmit = async () => {
     try {
         await apiClient.post("/lecture/inquiries", formData);
         alert("문의가 성공적으로 등록되었습니다.");
+        formData.title = "";
+        formData.contents = "";
+        formData.phone = "";
+        formData.email = "";
     } catch (error: any) {
         console.error("API 요청 오류:", error);
         const errorMessage = error.response?.data?.detail || error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";

@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.jpg">
+    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.webp">
         <div v-if="isAdmin" class="text-right mb-6">
             <router-link to="/intro/greeting/edit" class="bg-[var(--dream-main)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out"
                 >수정</router-link

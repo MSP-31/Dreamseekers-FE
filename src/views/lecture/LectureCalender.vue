@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="강의 일정" backgroundImageUrl="/img/top_header/inquiry.jpg">
+    <PageLayout title="강의 일정" backgroundImageUrl="/img/top_header/inquiry.webp">
         <CalendarSection :is-staff="authStore.isAdmin" />
     </PageLayout>
 </template>

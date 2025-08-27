@@ -126,6 +126,14 @@ const router = createRouter({
             ],
         },
     ],
+    // 페이지 이동시 스크롤을 상단으로 고정 단, 뒤로가기의 경우에는 이전 위치 유지
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return {top: 0};
+        }
+    },
 });
 
 export default router;

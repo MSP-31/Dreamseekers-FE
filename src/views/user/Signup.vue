@@ -2,7 +2,7 @@
     <div class="flex h-screen bg-gray-50">
         <!-- 왼쪽 이미지 섹션 (데스크톱에서만 보임) -->
         <div class="hidden lg:block lg:w-1/2">
-            <img src="/img/1.jpg" alt="회원가입 배경 이미지" class="object-cover w-full h-full" />
+            <img src="/img/login.webp" alt="회원가입 배경 이미지" class="object-cover w-full h-full" />
         </div>
 
         <!-- 오른쪽 회원가입 폼 섹션 -->
