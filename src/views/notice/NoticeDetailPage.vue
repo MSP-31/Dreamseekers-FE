@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="소통 마당" background-image-url="/img/top_header/forum.jpg">
+    <PageLayout title="소통 마당" background-image-url="/img/top_header/forum.webp">
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">공지사항</h1>
         <div v-if="post" class="max-w-3xl mx-auto">
             <div class="border-t-2 border-gray-700">

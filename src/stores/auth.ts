@@ -31,33 +31,30 @@ export const useAuthStore = defineStore("auth", {
 
         // 로그아웃 : API 호출 후 상태 초기화
         async logout() {
-            await apiClient.post("/user/logout");
-            // 프론트엔드 상태 초기화
-            this.user = null;
-            this.isAuthenticated = false;
+            try {
+                await apiClient.post("/user/logout");
+            } catch (error) {
+                // 서버와의 통신이 실패하더라도 로그아웃 처리는 계속 진행합니다.
+                console.error("Logout API call failed, but clearing session locally:", error);
+            } finally {
+                // API 호출 성공 여부와 관계없이 프론트엔드 상태를 초기화합니다.
+                this.user = null;
+                this.isAuthenticated = false;
+            }
         },
 
         // 사용자 정보 가져오기 : 인증 상태 확인 및 사용자 정보 업데이트
         async fetchUser() {
             try {
-                // dj-rest-auth의 기본 사용자 정보 URL
                 const response = await apiClient.get<User>("/user/account");
                 this.user = response.data;
                 this.isAuthenticated = true;
             } catch (error: any) {
                 this.user = null;
                 this.isAuthenticated = false;
-
-                // 401 Unauthorized 에러
-                if (error.response && error.response.status === 401) {
-                    // 콘솔에 아무것도 출력하지 않음
-                }
-                // 400 Bad Request 에러 (refresh 토큰 만료 등)
-                else if (error.response && error.response.status === 400) {
-                    // 콘솔에 아무것도 출력하지 않음
-                }
-                // 그 외의 예상치 못한 오류는 여전히 콘솔에 출력 (디버깅 목적)
-                else {
+                const status = error.response?.status;
+                // 401, 400 오류는 로그인하지 않은 사용자의 정상적인 흐름이므로 콘솔에 출력하지 않습니다.
+                if (status !== 401 && status !== 400) {
                     console.error("Failed to fetch user:", error);
                 }
             }

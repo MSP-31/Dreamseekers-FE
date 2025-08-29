@@ -161,8 +161,6 @@ const handleSubmit = () => {
         const fieldDef = props.formFields.find((f) => f.name === key);
 
         // 이미지 필드 처리 (blob 또는 file 인스턴스 모두 검사)
-        // console.log(`Processing key: ${key}, value:`, value, `instanceof File: ${value instanceof File}, instanceof Blob: ${value instanceof Blob}`); // 디버깅용 로그
-
         if (fieldDef && fieldDef.type === "image") {
             if (value instanceof File || value instanceof Blob) {
                 // File 또는 Blob 인스턴스 모두 허용
@@ -187,7 +185,6 @@ const handleSubmit = () => {
                 const finalFileName = fileToSend.name || `${key}_${Date.now()}.jpeg`;
 
                 payload.append(key, fileToSend, finalFileName);
-                console.log(`Appending image: key=${key}, name=${finalFileName}, size=${fileToSend.size}, type=${fileToSend.type}`);
             } else if (value === null && props.initialData[key]) {
                 // 이미지가 제거된 경우:
                 // 이미지가 null이면 해당 필드를 payload에 아예 추가하지 않습니다.

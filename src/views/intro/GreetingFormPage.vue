@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.jpg">
+    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.webp">
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">인사말 수정</h1>
 
         <form @submit.prevent="handleSubmit" class="max-w-3xl mx-auto space-y-6" v-if="isAdmin">

@@ -19,7 +19,6 @@
                 </Slide>
                 <template #addons>
                     <Navigation />
-                    <Pagination />
                 </template>
             </Carousel>
         </div>

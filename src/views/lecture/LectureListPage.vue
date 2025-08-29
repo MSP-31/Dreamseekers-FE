@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="주요 강의" backgroundImageUrl="/img/top_header/lecture.jpg">
+    <PageLayout title="주요 강의" backgroundImageUrl="/img/top_header/lecture.webp">
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
             {{ searchQuery ? `"${searchQuery}" 검색 결과` : "전체 강의" }}
         </h1>

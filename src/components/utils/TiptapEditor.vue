@@ -117,13 +117,6 @@ const editor = useEditor({
         StarterKit,
         TextStyle.configure(),
         Color, // 글자색 기능 활성화
-        Link.configure({
-            autolink: true, // URL을 입력하면 자동으로 링크로 변환
-            openOnClick: false, // 에디터 모드에서는 클릭 시 페이지 이동 방지
-            HTMLAttributes: {
-                target: "_blank", // 하이퍼링크 클릭 시 새 창에서 열기
-            },
-        }),
     ],
     onUpdate: ({editor}) => {
         emit("update:modelValue", editor.getHTML());
@@ -223,6 +216,7 @@ onBeforeUnmount(() => {
     line-height: 1.5;
     font-size: 16px;
 }
+
 .editor-content :deep(.tiptap:focus) {
     outline: none;
 }
