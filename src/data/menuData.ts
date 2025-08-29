@@ -23,7 +23,7 @@ export const menuItemsData: MenuItem[] = [
     },
     {
         title: "강의 문의/일정",
-        link: "/lecture/calender", // 기본적으로는 inquiry/write로 리디렉션될 수 있지만, 최상위 링크는 inquiry로 통일 (라우터 가드 등에서 처리)
+        link: "/inquiry/write", // 기본적으로는 inquiry/write로 리디렉션될 수 있지만, 최상위 링크는 inquiry로 통일 (라우터 가드 등에서 처리)
         submenu: [
             // isStaff 여부에 따라 동적으로 추가될 항목은 컴포넌트에서 처리
             {title: "강의 문의", link: "/inquiry/write"},

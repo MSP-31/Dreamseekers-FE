@@ -213,33 +213,6 @@ const calendarOptions = computed(() => ({
         right: props.isStaff ? "today,addEventButton" : "today",
     },
 
-    // 768px 미만일 때 적용될 반응형 옵션
-    responsive: {
-        768: {
-            headerToolbar: {
-                left: "prev,next",
-                center: "title",
-                right: props.isStaff ? "today,addEventButton" : "today",
-            },
-            buttonText: {
-                listWeek: "목록",
-                dayGridMonth: "월",
-            },
-        },
-        0: {
-            // 768px보다 작을 때
-            headerToolbar: {
-                left: "prev,next",
-                center: "title",
-                right: props.isStaff ? "today,addEventButton" : "today",
-            },
-            buttonText: {
-                listWeek: "목록",
-                dayGridMonth: "월",
-            },
-        },
-    },
-
     customButtons: {
         addEventButton: {
             text: "등록",

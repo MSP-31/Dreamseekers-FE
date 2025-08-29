@@ -40,7 +40,6 @@ const currentIntroData = reactive<IntroData>({
 const fetchData = async () => {
     try {
         const response = await apiClient.get("/intro/greeting");
-        console.log(response);
         currentIntroData.contents = response.data.contents;
         currentIntroData.image = response.data.image; // 서버에서 반환된 새 이미지 URL 업데이트
     } catch (error: any) {

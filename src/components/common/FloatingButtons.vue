@@ -37,12 +37,12 @@
         </ul>
 
         <div class="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-100 flex justify-evenly items-center h-16">
-            <router-link :to="`/inquiry/write`" title="오시는 길" class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/2 h-full">
+            <router-link :to="`/inquiry/write`" title="강의 문의" class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/3 h-full border-black/10">
                 <span class="w-6 h-6 bg-center bg-no-repeat bg-contain filter invert" :style="{backgroundImage: `url(${textIconUrl})`}" aria-hidden="true"></span>
                 <span class="mt-1">강의 문의</span>
             </router-link>
 
-            <router-link :to="`/intro/contact/`" title="오시는 길" class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/2 h-full">
+            <router-link :to="`/intro/contact/`" title="오시는 길" class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/3 h-full border-black/10">
                 <span class="w-6 h-6 bg-center bg-no-repeat bg-contain filter invert" :style="{backgroundImage: `url(${mapIconUrl})`}" aria-hidden="true"></span>
                 <span class="mt-1">오시는 길</span>
             </router-link>
@@ -54,7 +54,7 @@
                 tabindex="0"
                 @keydown.enter="scrollToTop"
                 @keydown.space.prevent="scrollToTop"
-                class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/2 h-full"
+                class="flex flex-col items-center justify-center text-sm text-gray-700 w-1/3 h-full"
             >
                 <span class="w-6 h-6 bg-center bg-no-repeat bg-contain" :style="{backgroundImage: `url(${upwardIconUrl})`}" aria-hidden="true"></span>
                 <span class="mt-1">상단으로</span>
