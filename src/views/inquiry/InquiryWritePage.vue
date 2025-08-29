@@ -1,51 +1,48 @@
 <template>
-    <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.jpg">
+    <LoadingSpinner :isLoading="isLoading" />
+    <PageLayout title="강의 문의" backgroundImageUrl="/img/top_header/inquiry.webp">
         <form @submit.prevent="handleSubmit" class="max-w-2xl mx-auto">
             <table class="w-full mb-6">
                 <tbody>
-                    <tr class="border-b border-gray-200">
-                        <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">작성자</th>
-                        <td class="py-3 text-gray-800">{{ currentUser.username }}</td>
-                    </tr>
-                    <tr class="border-b border-gray-200">
-                        <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">이메일</th>
-                        <td class="py-3 text-gray-800">{{ currentUser.email }}</td>
-                    </tr>
                     <template v-for="field in formSchema" :key="field.id">
-                        <tr class="border-b border-gray-200">
-                            <th class="py-3 pr-4 w-1/4 text-left font-medium text-gray-700 align-top">
-                                <label :for="field.id">{{ field.label }}</label>
+                        <tr class="block md:table-row border-b border-gray-200">
+                            <th class="block md:table-cell pt-4 pb-1 md:py-3 md:pr-4 md:w-1/8 text-left font-medium text-gray-700 md:align-middle">
+                                <label :for="field.id" class="cursor-pointer">{{ field.label }}</label>
                             </th>
-                            <td class="py-3">
-                                <input
-                                    v-if="field.type === 'text'"
-                                    :type="field.type"
-                                    :id="field.id"
-                                    v-model="formData[field.name]"
-                                    :placeholder="field.placeholder"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
-                                />
-                                <textarea
-                                    v-else-if="field.type === 'textarea'"
-                                    :id="field.id"
-                                    v-model="formData[field.name]"
-                                    :placeholder="field.placeholder"
-                                    rows="8"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
-                                ></textarea>
+                            <td class="block md:table-cell pb-4 md:py-3 relative">
+                                <template v-if="field.type === 'text'">
+                                    <input
+                                        :type="field.type"
+                                        :id="field.id"
+                                        v-model="formData[field.name]"
+                                        :placeholder="field.placeholder"
+                                        @blur="validateField(field.name)"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm"
+                                        :class="{'border-red-500 focus:border-red-500 focus:ring-red-500': errors[field.name]}"
+                                    />
+                                </template>
+                                <template v-else-if="field.type === 'textarea' && !field.name.includes('contents')">
+                                    <textarea
+                                        :id="field.id"
+                                        v-model="formData[field.name]"
+                                        :placeholder="field.placeholder"
+                                        rows="8"
+                                        @blur="validateField(field.name)"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
+                                        :class="{'border-red-500 focus:border-red-500 focus:ring-red-500': errors[field.name]}"
+                                    ></textarea>
+                                </template>
+                                <template v-if="field.name === 'contents'">
+                                    <div :class="{'border border-red-500 rounded-md': errors.contents}">
+                                        <TiptapEditor v-model="formData.contents" @blur="validateField('contents')" />
+                                    </div>
+                                </template>
+                                <p v-if="errors[field.name]" class="mt-1 text-sm text-red-600">{{ errors[field.name] }}</p>
                             </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
-
-            <div class="mb-6 text-left">
-                <label for="consent-check" class="flex items-center cursor-pointer text-sm text-gray-700">
-                    <input type="checkbox" id="consent-check" v-model="consentChecked" class="h-4 w-4 text-[var(--dream-main)] border-gray-300 rounded focus:ring-[var(--dream-main)] mr-2" />
-                    개인정보 수집 및 이용에 동의합니다.
-                </label>
-                <button type="button" @click="openConsentModal" class="ml-2 text-xs text-[var(--dream-blue)] hover:underline">내용보기</button>
-            </div>
 
             <div class="text-right">
                 <button
@@ -57,102 +54,94 @@
                 </button>
             </div>
         </form>
-
-        <!-- Consent Modal -->
-        <div v-if="showConsentModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="closeConsentModal">
-            <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold text-[var(--dream-text)]">{{ consentContent.title }}</h3>
-                    <button @click="closeConsentModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-                </div>
-                <div class="space-y-3 text-sm text-gray-600 max-h-80 overflow-y-auto pr-2">
-                    <p v-for="(paragraph, index) in consentContent.paragraphs" :key="index">
-                        {{ paragraph }}
-                    </p>
-                </div>
-                <div class="mt-6 text-right">
-                    <button @click="closeConsentModal" class="bg-[var(--dream-gray-dark)] hover:bg-opacity-80 text-white font-semibold py-2 px-4 rounded-md shadow-sm">닫기</button>
-                </div>
-            </div>
-        </div>
     </PageLayout>
 </template>
 
 <script setup lang="ts">
 import {ref, reactive, computed} from "vue";
-import {useRouter} from "vue-router";
-import {dummyUserData, inquiryWriteFormSchema, consentModalContent, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
+import apiClient from "@/api";
+import {inquiryWriteFormSchema, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
 import PageLayout from "@/components/common/PageLayout.vue";
+import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
+import TiptapEditor from "@/components/utils/TiptapEditor.vue";
 
-const router = useRouter();
+const isLoading = ref(false);
 
-const currentUser = ref(dummyUserData); // 실제 앱에서는 로그인된 사용자 정보 사용
 const formSchema = ref<InquiryWriteFormField[]>(inquiryWriteFormSchema);
 
 const initialFormData: InquiryWriteFormData = {
+    email: "",
+    phone: "",
     title: "",
     contents: "",
 };
 const formData = reactive<InquiryWriteFormData>({...initialFormData});
 
-const consentChecked = ref(false);
-const showConsentModal = ref(false);
-const consentContent = ref(consentModalContent);
-
-const isFormValid = computed(() => {
-    return formData.title.trim() !== "" && formData.contents.trim() !== "" && consentChecked.value;
+const errors = reactive({
+    email: "",
+    phone: "",
+    title: "",
+    contents: "",
 });
 
-const openConsentModal = () => {
-    showConsentModal.value = true;
+const validateEmail = (email: string): boolean => {
+    // 간단한 이메일 형식 검증을 위한 정규식
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
 };
 
-const closeConsentModal = () => {
-    showConsentModal.value = false;
-};
+const isFormValid = computed(() => {
+    const isContentsValid = formData.contents && formData.contents.replace(/<[^>]*>/g, "").trim() !== "";
+    return formData.title.trim() !== "" && isContentsValid && formData.phone.trim() !== "" && validateEmail(formData.email);
+});
 
-const handleSubmit = () => {
-    if (!isFormValid.value) {
-        alert("제목, 내용 입력 및 개인정보 수집 동의가 필요합니다.");
-        return;
+const validateField = (field: keyof InquiryWriteFormData) => {
+    switch (field) {
+        case "title":
+            errors.title = formData.title.trim() === "" ? "제목을 입력해주세요." : "";
+            break;
+        case "contents":
+            errors.contents = !formData.contents || formData.contents.replace(/<[^>]*>/g, "").trim() === "" ? "내용을 입력해주세요." : "";
+            break;
+        case "phone":
+            errors.phone = formData.phone.trim() === "" ? "연락처를 입력해주세요." : "";
+            break;
+        case "email":
+            if (formData.email.trim() === "") {
+                errors.email = "이메일을 입력해주세요.";
+            } else if (!validateEmail(formData.email)) {
+                errors.email = "올바른 이메일 형식이 아닙니다.";
+            } else {
+                errors.email = "";
+            }
+            break;
     }
-    console.log("문의 제출:", {
-        user: currentUser.value,
-        ...formData,
-        consent: consentChecked.value,
+};
+
+const resetForm = () => {
+    Object.assign(formData, initialFormData);
+    Object.keys(errors).forEach((key) => {
+        errors[key as keyof typeof errors] = "";
     });
-    // 실제 애플리케이션에서는 여기서 API 호출
-    alert("문의가 성공적으로 등록되었습니다."); // 성공 메시지 (임시)
-    router.push("/inquiry"); // 문의 목록 페이지로 이동 (예시)
+};
+
+const handleSubmit = async () => {
+    // 모든 필드를 다시 한번 검증합니다.
+    (Object.keys(formData) as Array<keyof InquiryWriteFormData>).forEach((field) => validateField(field));
+    if (!isFormValid.value) return;
+
+    isLoading.value = true;
+    try {
+        await apiClient.post("/lecture/inquiries", formData);
+        alert("문의가 성공적으로 등록되었습니다.");
+        resetForm();
+    } catch (error: any) {
+        console.error("API 요청 오류:", error);
+        const errorMessage = error.response?.data?.detail || error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
+        alert(errorMessage);
+    } finally {
+        // 요청이 성공하든 실패하든 isLoading을 false로 설정
+        isLoading.value = false;
+    }
 };
 </script>
-
-<style scoped>
-/* Tailwind CSS를 주로 사용하므로 scoped style은 최소화합니다. */
-/* 필요한 경우 여기에 컴포넌트 특정 스타일을 추가할 수 있습니다. */
-
-/* 모달 트랜지션 (다른 페이지와 유사하게) */
-.fixed.inset-0 {
-    transition: opacity 0.3s ease-in-out;
-}
-.fixed.inset-0 > div {
-    /* 모달 컨텐츠 div */
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-/* 스크롤바 스타일 (선택적) */
-.max-h-80.overflow-y-auto::-webkit-scrollbar {
-    width: 6px;
-}
-.max-h-80.overflow-y-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-.max-h-80.overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 10px;
-}
-.max-h-80.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-}
-</style>

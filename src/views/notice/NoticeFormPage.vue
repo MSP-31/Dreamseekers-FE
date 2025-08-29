@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg">
+    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.webp">
         <h1 class="text-3xl font-bold text-center mb-8 text-[var(--dream-text)]">
             {{ isEditMode ? "공지사항 수정" : "공지사항 작성" }}
         </h1>

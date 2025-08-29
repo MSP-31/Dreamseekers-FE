@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.jpg">
+    <PageLayout title="교육원 소개" backgroundImageUrl="/img/top_header/intro.webp">
         <div v-if="isAdmin" class="text-right mb-6">
             <router-link to="/intro/greeting/edit" class="bg-[var(--dream-main)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out"
                 >수정</router-link
@@ -40,7 +40,6 @@ const currentIntroData = reactive<IntroData>({
 const fetchData = async () => {
     try {
         const response = await apiClient.get("/intro/greeting");
-        console.log(response);
         currentIntroData.contents = response.data.contents;
         currentIntroData.image = response.data.image; // 서버에서 반환된 새 이미지 URL 업데이트
     } catch (error: any) {

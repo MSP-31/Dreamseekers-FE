@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="설정" backgroundImageUrl="/img/top_header/setting.jpg">
+    <PageLayout title="설정" backgroundImageUrl="/img/top_header/setting.webp">
         <div v-if="isAdmin">
             <div class="text-right mb-6">
                 <button @click="openAddModal" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">추가</button>

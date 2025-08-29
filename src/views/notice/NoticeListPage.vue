@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg">
+    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.webp">
         <SearchBar :initial-search-query="currentSearchQuery" :initial-search-type="currentSearchType" @search="handleSearch" @clear-search="handleClearSearch" />
 
         <DynamicTable :headers="tableHeaders" :items="displayNotices" :pagination="pagination" @change-page="changePage" @go-to-detail="goToDetail">

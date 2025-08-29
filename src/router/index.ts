@@ -53,12 +53,6 @@ const router = createRouter({
                     name: "lectureList",
                     component: () => import("@/views/lecture/LectureListPage.vue"),
                 },
-                // {
-                //     path: "detail/:id", // 부모 경로를 제외한 상대 경로
-                //     name: "lectureDetail",
-                //     component: () => import("@/views/lecture/LectureDetailPage.vue"),
-                //     props: true,
-                // },
                 {
                     path: "calender",
                     name: "calender",
@@ -70,11 +64,6 @@ const router = createRouter({
             path: "/inquiry",
             name: "inquiry",
             children: [
-                {
-                    path: "list",
-                    name: "inquiryList",
-                    component: () => import("@/views/inquiry/InquiryListPage.vue"),
-                },
                 {
                     path: "write",
                     name: "inquiryWrite",
@@ -137,6 +126,14 @@ const router = createRouter({
             ],
         },
     ],
+    // 페이지 이동시 스크롤을 상단으로 고정 단, 뒤로가기의 경우에는 이전 위치 유지
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return {top: 0};
+        }
+    },
 });
 
 export default router;

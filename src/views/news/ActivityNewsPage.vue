@@ -1,5 +1,5 @@
 <template>
-    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.jpg">
+    <PageLayout title="소통 마당" backgroundImageUrl="/img/top_header/forum.webp">
         <!-- 1. 로딩 상태 UI -->
         <div v-if="isLoading" class="text-center text-gray-500 py-16">
             <p>데이터를 불러오는 중입니다...</p>
