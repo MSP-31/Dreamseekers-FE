@@ -57,12 +57,8 @@ export interface ScheduleEntry {
     allDay: boolean; // 하루 종일 이벤트인지 여부
 }
 
-export interface ScheduleData {
-    [date: string]: ScheduleEntry[];
-}
-
 // 컴포넌트 내부에서 관리할 schedules 상태 선언
-const schedules = ref<ScheduleData>({});
+const allSchedules = ref<ScheduleEntry[]>([]);
 
 // FullCalendar 인스턴스 참조
 const fullCalendarRef = ref<typeof FullCalendar | null>(null);
@@ -235,15 +231,8 @@ const calendarOptions = computed(() => ({
                     end_date: fetchInfo.endStr.substring(0, 10),
                 },
             });
-            const transformedData: ScheduleData = {};
-            response.data.forEach((schedule: ScheduleEntry) => {
-                const dateKey = schedule.startDate;
-                if (!transformedData[dateKey]) {
-                    transformedData[dateKey] = [];
-                }
-                transformedData[dateKey].push(schedule);
-            });
-            schedules.value = transformedData;
+            // API로부터 받은 모든 일정 데이터를 저장합니다.
+            allSchedules.value = response.data;
             successCallback(fullCalendarEvents(response.data));
         } catch (error) {
             console.error("FullCalendar 이벤트 로드 실패:", error);
@@ -272,37 +261,25 @@ const calendarOptions = computed(() => ({
 // Modal 관련 함수
 const openModal = (date: Date, schedule?: ScheduleEntry | ScheduleEntry[]) => {
     selectedDate.value = date;
-    // dateKey 생성 (MM-DD 형식이므로, V-calendar 구현체에 맞게 조정)
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const dateKey = `${year}-${month}-${day}`;
 
     if (schedule) {
         // 특정 이벤트 클릭 시 해당 이벤트만 전달
         selectedSchedules.value = Array.isArray(schedule) ? schedule : [schedule];
     } else {
-        // 날짜 클릭 시 해당 날짜의 모든 일정 전달 (수정된 로직)
-        const schedulesOnClickedDate: ScheduleEntry[] = [];
+        // 날짜 클릭 시, 해당 날짜에 포함되는 모든 일정을 찾습니다.
+        const clickedDate = new Date(date);
+        clickedDate.setHours(0, 0, 0, 0); // 시간 정보를 제거하여 날짜만 비교
 
-        // schedules.value의 모든 일정들을 순회합니다.
-        for (const startDate in schedules.value) {
-            schedules.value[startDate].forEach((entry) => {
-                const start = new Date(entry.startDate);
-                const end = new Date(entry.endDate);
-                const clicked = new Date(dateKey); // YYYY-MM-DD 형식으로 Date 객체 생성
+        const schedulesOnClickedDate = allSchedules.value.filter((entry) => {
+            const start = new Date(entry.startDate);
+            start.setHours(0, 0, 0, 0);
 
-                // 클릭한 날짜가 일정의 시작과 끝 날짜 사이에 있는지 확인합니다.
-                // 시간을 제외하고 날짜만 비교하기 위해 시간을 자정으로 맞춥니다.
-                const startMidnight = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-                const endMidnight = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-                const clickedMidnight = new Date(clicked.getFullYear(), clicked.getMonth(), clicked.getDate());
+            // endDate가 없는 단일 일정의 경우 startDate를 사용합니다.
+            const end = entry.endDate ? new Date(entry.endDate) : new Date(entry.startDate);
+            end.setHours(0, 0, 0, 0);
 
-                if (clickedMidnight >= startMidnight && clickedMidnight <= endMidnight) {
-                    schedulesOnClickedDate.push(entry);
-                }
-            });
-        }
+            return clickedDate >= start && clickedDate <= end;
+        });
         selectedSchedules.value = schedulesOnClickedDate;
     }
     isModalOpen.value = true;
@@ -316,26 +293,6 @@ const closeModal = () => {
 
 const handleEventDrop = (info: any) => {
     const event = info.event;
-    const oldDate = info.oldEvent.start;
-    const newDate = event.start;
-
-    const oldDateKey = `${oldDate.getFullYear()}-${oldDate.getMonth() + 1}-${oldDate.getDate()}`;
-    const newDateKey = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`;
-
-    // 이전 날짜에서 이벤트 제거
-    if (schedules.value[oldDateKey]) {
-        const originalSchedule = event.extendedProps.originalSchedule;
-        schedules.value[oldDateKey] = schedules.value[oldDateKey].filter((s: ScheduleEntry) => s !== originalSchedule);
-        if (schedules.value[oldDateKey].length === 0) {
-            delete schedules.value[oldDateKey];
-        }
-    }
-
-    // 새 날짜에 이벤트 추가
-    if (!schedules.value[newDateKey]) {
-        schedules.value[newDateKey] = [];
-    }
-    schedules.value[newDateKey].push(event.extendedProps.originalSchedule);
 
     // 필요하다면 서버에 업데이트된 데이터 전송
     // updateScheduleOnServer(schedules.value);
@@ -350,11 +307,8 @@ const handleDeleteSchedule = async (scheduleId: string) => {
 
             alert("일정이 성공적으로 삭제되었습니다.");
 
-            // schedules 데이터를 업데이트하여 FullCalendar 및 모달을 새로고침
-            // 예를 들어, 삭제된 항목을 schedules.value에서 제거하는 로직
-            for (const dateKey in schedules.value) {
-                schedules.value[dateKey] = schedules.value[dateKey].filter((s) => s.id !== scheduleId);
-            }
+            // allSchedules 배열에서 삭제된 일정을 제거합니다.
+            allSchedules.value = allSchedules.value.filter((s) => s.id !== scheduleId);
 
             // FullCalendar 이벤트 새로고침 (schedules 데이터가 변경되었으므로 computed 속성이 재계산될 것)
             if (fullCalendarRef.value) {
