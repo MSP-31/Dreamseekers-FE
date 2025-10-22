@@ -1,6 +1,9 @@
 <template>
     <div>
-        <ul class="hidden md:flex fixed z-30 right-0 bottom-[50px] pr-[10px] flex-col items-end space-y-[10px] md:right-[50px] md:pr-0">
+        <ul
+            class="hidden md:flex fixed z-30 right-0 bottom-[50px] pr-[10px] flex-col items-end space-y-[10px] md:right-[50px] md:pr-0 transition-opacity duration-500 ease-in-out"
+            :class="{'opacity-0': !isVisible, 'opacity-100': isVisible}"
+        >
             <li>
                 <router-link
                     :to="`/inquiry/write`"
@@ -64,6 +67,8 @@
 </template>
 
 <script setup>
+import {ref, onMounted, onUnmounted} from "vue";
+
 const mapIconUrl = "/img/icon/map_white_24dp.svg";
 const textIconUrl = "/img/icon/textsms_white_24dp.svg";
 const upwardIconUrl = "/img/icon/arrow_upward_white_24dp.svg";
@@ -71,4 +76,30 @@ const upwardIconUrl = "/img/icon/arrow_upward_white_24dp.svg";
 const scrollToTop = () => {
     window.scrollTo({top: 0, behavior: "smooth"});
 };
+
+// 플로팅 버튼 가시성
+const isVisible = ref(false);
+
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+    // 현재 스크롤 위치를 감지
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    console.log(scrollTop);
+
+    // 스크롤 위치가 100px보다 클 때만 isVisible을 true로 설정 (임계값 100px)
+    isVisible.value = scrollTop > 250;
+};
+
+// 3. 컴포넌트 마운트 시 이벤트 리스너 등록
+onMounted(() => {
+    // 데스크톱 환경 (md)에서만 플로팅 버튼이 보이므로, 스크롤 감지 리스너를 추가
+    window.addEventListener("scroll", handleScroll);
+    // 초기 로드 시 스크롤 위치를 한 번 확인하여 isVisible 초기화
+    handleScroll();
+});
+
+// 4. 컴포넌트 언마운트 시 이벤트 리스너 제거 (메모리 누수 방지)
+onUnmounted(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
 </script>

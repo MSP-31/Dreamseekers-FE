@@ -1,5 +1,5 @@
 <template>
-    <nav class="bg-white shadow-md">
+    <nav class="shadow-md">
         <div class="container mx-auto px-4 h-20 flex justify-between items-center">
             <router-link to="/" class="flex items-center">
                 <img class="h-10 w-auto mr-2" src="/img/logo.svg" alt="꿈을 찾는 사람들 교육원" />
@@ -69,11 +69,7 @@
 
 <script setup lang="ts">
 import {ref, computed} from "vue";
-import {useAuthStore} from "@/stores/auth"; // Pinia 스토어 임포트
 import {menuItemsData, type MenuItem} from "@/data/menuData"; // 분리된 데이터 임포트
-
-// Pinia authStore 인스턴스 가져오기
-const authStore = useAuthStore();
 
 const isMobileMenuOpen = ref(false);
 const toggleMobileMenu = () => (isMobileMenuOpen.value = !isMobileMenuOpen.value);
@@ -83,37 +79,6 @@ const closeMobileMenu = () => (isMobileMenuOpen.value = false);
 const processedMenuItems = computed<MenuItem[]>(() => {
     // 원본 데이터를 수정하지 않기 위해 깊은 복사본 생성
     const items = JSON.parse(JSON.stringify(menuItemsData)) as MenuItem[];
-
-    // '강의 문의' 메뉴 찾기
-    const inquiryMenu = items.find((menu) => menu.title === "강의 문의");
-
-    /*
-    if (inquiryMenu) {
-        // 1. isStaff 여부에 따라 '강의 상담 문의' 서브메뉴 추가/제거
-        const isAdmin = authStore.isAdmin;
-
-        if (!isAdmin) {
-            // 일반 사용자일 경우 '강의 상담 문의' 추가
-            inquiryMenu.submenu = [
-                {title: "강의 상담 문의", link: "/inquiry/write"},
-                ...(inquiryMenu.submenu || []), // 기존 서브메뉴가 있다면 그 뒤에 추가
-            ];
-        } else {
-            // 스태프일 경우 '강의 상담 문의' 제거 (원본 데이터에 없으므로 이 로직은 필요 없을 수 있음)
-            // 만약 원본 데이터에 항상 있고 스태프일 때만 제거하려면 아래와 같이 필터링
-            inquiryMenu.submenu = (inquiryMenu.submenu || []).filter((sub) => sub.link !== "/inquiry/write");
-        }
-
-        // 2. '문의 내역' 서브메뉴 타이틀 변경
-        const myInquiryItem = (inquiryMenu.submenu || []).find((sub) => sub.link === "/inquiry");
-        if (myInquiryItem) {
-            myInquiryItem.title = isAdmin ? "문의 내역" : "내 문의 내역";
-        }
-
-        // 3. '강의 문의' 최상위 링크 변경
-        inquiryMenu.link = isAdmin ? "/inquiry" : "/inquiry/write";
-    }
-    */
 
     return items;
 });
