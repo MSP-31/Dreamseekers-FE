@@ -1,4 +1,3 @@
-<!-- Header.vue -->
 <template>
     <!-- 고정된 헤더: 스크롤/호버 상태에 따라 투명(header-transparent) 또는 솔리드(header-solid) 스타일 적용 -->
     <header
@@ -171,7 +170,7 @@ const processedMenuItems = computed<MenuItem[]>(() => {
 const scrollToSection = (hash: string) => {
     // 메인 섹션 목록: 스크롤 스냅 지점
     const sections = ["#intro", "#courses", "#schedule", "#community", "#footer"];
-    const appElement = document.getElementById("app");
+    const appContainer = document.getElementById("app-container");
 
     // 대상 요소 선택
     const targetElement = document.querySelector(hash);
@@ -182,13 +181,13 @@ const scrollToSection = (hash: string) => {
         scrollSnapTarget = targetElement?.closest(".scroll-section") || targetElement;
     }
 
-    if (scrollSnapTarget && appElement) {
+    if (scrollSnapTarget && appContainer) {
         // 섹션 인덱스 기반 스크롤 위치 계산
         const sectionIndex = sections.indexOf(`#${scrollSnapTarget.id}`);
-        const scrollPosition = sectionIndex >= 0 ? sectionIndex * window.innerHeight : scrollSnapTarget.getBoundingClientRect().top + appElement.scrollTop;
+        const scrollPosition = sectionIndex >= 0 ? sectionIndex * window.innerHeight : scrollSnapTarget.getBoundingClientRect().top + appContainer.scrollTop;
 
         // 메인 섹션으로 스크롤
-        appElement.scrollTo({
+        appContainer.scrollTo({
             top: scrollPosition,
             behavior: "smooth",
         });
@@ -196,8 +195,8 @@ const scrollToSection = (hash: string) => {
         // 서브 앵커인 경우 추가 스크롤
         if (scrollSnapTarget !== targetElement && targetElement) {
             setTimeout(() => {
-                const subPosition = targetElement.getBoundingClientRect().top + appElement.scrollTop;
-                appElement.scrollTo({
+                const subPosition = targetElement.getBoundingClientRect().top + appContainer.scrollTop;
+                appContainer.scrollTo({
                     top: subPosition,
                     behavior: "smooth",
                 });
@@ -214,23 +213,24 @@ const scrollToSection = (hash: string) => {
 // 스크롤 이벤트 처리: 헤더 스타일(투명/솔리드) 전환
 const handleScroll = (event: Event) => {
     const scrollTop = (event.target as HTMLElement).scrollTop;
+    console.log(scrollTop);
     headerScrolled.value = scrollTop > 50; // 50px 초과 시 솔리드 헤더
 };
 
 // 컴포넌트 마운트 시 스크롤 이벤트 리스너 등록
 onMounted(() => {
-    const appElement = document.getElementById("app");
-    if (appElement) {
-        appElement.addEventListener("scroll", handleScroll);
-        handleScroll({target: appElement} as Event); // 초기 상태 설정
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        appContainer.addEventListener("scroll", handleScroll);
+        handleScroll({target: appContainer} as Event); // 초기 상태 설정
     }
 });
 
 // 컴포넌트 언마운트 시 스크롤 이벤트 리스너 제거
 onUnmounted(() => {
-    const appElement = document.getElementById("app");
-    if (appElement) {
-        appElement.removeEventListener("scroll", handleScroll);
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        appContainer.removeEventListener("scroll", handleScroll);
     }
 });
 </script>

@@ -1,9 +1,8 @@
 <template>
-    <!-- 인트로 섹션 -->
     <section
         v-if="slides.length > 0"
         id="intro"
-        class="scroll-section hero-vignette bg-black flex flex-col items-center justify-center p-4 min-h-[100vh]"
+        class="scroll-section hero-vignette bg-black flex flex-col items-center justify-center p-4 h-[100dvh]"
         @touchstart="handleTouchStart"
         @touchmove="handleTouchMove"
         @touchend="handleTouchEnd"
@@ -20,12 +19,12 @@
                     <h1 class="text-5xl md:text-7xl font-extrabold mb-4" v-scroll-animate>
                         {{ slides[activeSlide].title }}
                     </h1>
-                    <p class="text-xl md:text-2xl max-w-2xl mx-auto font-light delay-1" v-scroll-animate>
+                    <p class="text-xl md:text-2xl max-w-2xl mx-auto font-light" v-scroll-animate>
                         {{ slides[activeSlide].contents || slides[activeSlide].subtitle }}
                     </p>
                     <router-link
                         to="#courses"
-                        class="mt-8 inline-block bg-main text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105 delay-2"
+                        class="mt-8 inline-block bg-main text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105"
                         v-scroll-animate
                         @click="scrollToSection('#courses')"
                     >
@@ -51,7 +50,7 @@
         <div id="about" class="absolute top-[100vh]"></div>
     </section>
     <!-- 슬라이드가 없을 때 대체 콘텐츠 -->
-    <section v-else id="intro" class="scroll-section bg-black flex items-center justify-center min-h-[100vh] text-white">
+    <section v-else id="intro" class="scroll-section bg-black flex items-center justify-center h-[100dvh] text-white">
         <p>슬라이드 데이터를 로드 중입니다...</p>
     </section>
 </template>
@@ -73,13 +72,18 @@ const props = defineProps<{
     slides: Slide[];
 }>();
 
+// emit
+const emit = defineEmits<{
+    (e: "scroll-to", hash: string): void;
+}>();
+
 // 상태 변수
 const activeSlide = ref(0);
 const touchStartX = ref(0);
-const touchEndX = ref(0); // Type 'Timeout' is not assignable to type 'number'.
+const touchEndX = ref(0);
 let slideInterval: number | null = null;
 
-// 슬라이드 함수 (기존과 동일)
+// 슬라이드 함수
 const nextSlide = () => {
     if (props.slides.length > 0) {
         activeSlide.value = (activeSlide.value + 1) % props.slides.length;
@@ -96,7 +100,7 @@ const goToSlide = (index: number) => {
     activeSlide.value = index;
 };
 
-// 터치 핸들러 (기존과 동일)
+// 터치 핸들러
 const handleTouchStart = (event: TouchEvent) => {
     touchStartX.value = event.touches[0].clientX;
     if (slideInterval) clearInterval(slideInterval);
@@ -126,9 +130,9 @@ const startSlider = () => {
     }
 };
 
-// 스크롤 함수 (기존과 동일)
+// 스크롤 함수
 const scrollToSection = (hash: string) => {
-    // ... (기존 코드 유지)
+    emit("scroll-to", hash); // 부모 컴포넌트로 이벤트 방출
 };
 
 // 마운트
@@ -140,8 +144,9 @@ onUnmounted(() => {
     if (slideInterval) clearInterval(slideInterval);
 });
 </script>
+
 <style scoped>
-/* 비네트 효과 */
+/* 비네트 효과 (상단 강화) */
 .hero-vignette::before {
     content: "";
     position: absolute;
@@ -149,24 +154,24 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent 30%, transparent 70%, rgba(0, 0, 0, 0.3));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 20%, transparent 40%, transparent 70%, rgba(0, 0, 0, 0.3) 100%);
     z-index: 2;
 }
 
 /* 슬라이드 트랜지션 */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-    transition: opacity 1s ease, transform 1s ease; /* opacity와 transform 동시 적용 */
+    transition: opacity 1s ease, transform 1s ease;
 }
 .slide-fade-enter-from,
 .slide-fade-leave-to {
     opacity: 0;
-    transform: translateX(20px); /* 약간 오른쪽에서 시작 */
+    transform: translateX(20px);
 }
 .slide-fade-enter-to,
 .slide-fade-leave-from {
     opacity: 1;
-    transform: translateX(0); /* 원래 위치로 */
+    transform: translateX(0);
 }
 
 /* 텍스트 트랜지션 */
@@ -177,7 +182,7 @@ onUnmounted(() => {
 .slide-text-fade-enter-from,
 .slide-text-fade-leave-to {
     opacity: 0;
-    transform: translateY(10px); /* 아래에서 위로 올라오는 효과 */
+    transform: translateY(10px);
 }
 .slide-text-fade-enter-to,
 .slide-text-fade-leave-from {
@@ -192,6 +197,6 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* 비네트보다 아래, 콘텐츠보다 위 */
+    z-index: 1;
 }
 </style>

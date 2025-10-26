@@ -58,23 +58,6 @@
                         </button>
                     </div>
                 </form>
-
-                <!--
-                <div class="flex items-center justify-center my-4">
-                    <div class="w-full border-t border-gray-300"></div>
-                    <span class="px-2 text-sm text-gray-500 bg-gray-50">또는</span>
-                    <div class="w-full border-t border-gray-300"></div>
-                </div>
-
-                <div>
-                    <router-link
-                        to="/user/signup"
-                        class="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-blue-500 rounded-md group hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        회원가입
-                    </router-link>
-                </div>
-                -->
             </div>
         </div>
     </div>
