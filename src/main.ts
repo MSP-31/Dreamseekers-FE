@@ -20,6 +20,8 @@ const scrollAnimate: Directive = {
                     if (entry.isIntersecting) {
                         // 요소가 화면에 보이면
                         el.classList.add("is-visible"); // is-visible 클래스 추가
+                        // 한 번 표시된 후 observer 해제 (영구 유지)
+                        observer.unobserve(el);
                     }
                 });
             },

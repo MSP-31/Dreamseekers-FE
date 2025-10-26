@@ -1,20 +1,36 @@
 <template>
-    <li class="bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl relative group flex flex-col border border-transparent hover:border-[var(--dream-main)]">
-        <div class="relative p-5 flex-grow" @click="$emit('open-modal', lecture)">
-            <img :src="lecture.image || '/img/dummy/placeholder-lecture.png'" :alt="lecture.title" class="w-full h-48 object-cover rounded-md mb-4" />
-            <h2 class="text-xl font-semibold text-[var(--dream-text)] mb-2 truncate" :data-id="lecture.id">
+    <div
+        class="bg-white shadow-xl rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ring-4 ring-transparent hover:ring-main/50 group"
+        @click="$emit('open-modal', lecture)"
+    >
+        <div class="h-36 bg-cover bg-center" :style="{backgroundImage: `url(${lecture.image || '/img/dummy/placeholder-lecture.png'})`}"></div>
+        <div class="p-5 flex flex-col">
+            <h3 class="text-xl font-bold text-gray-800 mb-2 truncate" :data-id="lecture.id">
                 {{ lecture.title }}
-            </h2>
-            <p class="text-sm text-[var(--dream-sub)] leading-relaxed line-clamp-3">
+            </h3>
+            <div class="flex flex-wrap gap-1 mb-3">
+                <span v-for="tag in lecture.tags" :key="tag" class="text-xs font-semibold bg-main/10 text-main px-2 py-0.5 rounded-full">
+                    {{ tag }}
+                </span>
+            </div>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
                 {{ lecture.contents }}
             </p>
+            <div class="flex flex-col space-y-2">
+                <button
+                    class="font-bold text-main hover:text-blue-700 transition-colors text-center text-sm bg-main/5 py-2 px-4 rounded-full"
+                    @click.stop="$emit('open-modal', lecture)"
+                    :aria-label="'View details for ' + lecture.title"
+                >
+                    자세히 보기 &rarr;
+                </button>
+            </div>
+            <div v-if="isStaff" class="absolute top-3 right-3 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <button @click.stop="$emit('edit', lecture)" class="bg-main hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2.5 rounded-full shadow-sm">수정</button>
+                <button @click.stop="$emit('delete', lecture.id)" class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-2.5 rounded-full shadow-sm">삭제</button>
+            </div>
         </div>
-
-        <div v-if="isStaff" class="absolute top-3 right-3 flex flex-col space-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <button @click="$emit('edit', lecture)" class="bg-[var(--dream-blue)] hover:bg-opacity-80 text-white text-xs font-semibold py-1 px-2.5 rounded-md shadow-sm">수정</button>
-            <button @click="$emit('delete', lecture.id)" class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-2.5 rounded-md shadow-sm">삭제</button>
-        </div>
-    </li>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -29,6 +45,6 @@ defineProps<{
 defineEmits<{
     (e: "edit", lecture: LectureItem): void;
     (e: "delete", lectureId: number): void;
-    (e: "open-modal", lecture: LectureItem): void; // 모달을 열기 위한 이벤트 추가
+    (e: "open-modal", lecture: LectureItem): void;
 }>();
 </script>
