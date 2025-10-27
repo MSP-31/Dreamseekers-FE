@@ -3,7 +3,7 @@
         <TheHeader />
         <router-view />
         <TheFooter />
-        <FloatingButtons />
+        <!-- <FloatingButtons /> -->
     </div>
 </template>
 

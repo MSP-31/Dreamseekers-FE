@@ -21,45 +21,37 @@
             v-scroll-animate
         />
 
-        <!-- 2. 강의 목록 섹션 -->
+        <!-- 2. 소개 섹션 -->
+        <WelcomeSection @goto="scrollToSection" />
+
+        <!-- 3. 이유 섹션-->
+        <WhyUsSection />
+
+        <!-- 4. 강의 목록 섹션 -->
         <section id="courses" class="scroll-section bg-gray-50 flex flex-col justify-center h-[100dvh] py-16 overflow-y-hidden">
             <div class="container mx-auto px-6">
                 <LectureListSection :lecture-item="mainData.lectureItem" v-scroll-animate />
             </div>
         </section>
 
-        <!-- 3. 강의 일정 섹션 -->
-        <section id="schedule" class="scroll-section bg-white flex items-center justify-center h-[100dvh] overflow-y-hidden">
-            <div class="flex flex-col items-center justify-center text-center p-6">
-                <span class="text-8xl mb-6 text-main" v-scroll-animate>🗓️</span>
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800" v-scroll-animate>강의 일정표</h2>
-                <div class="px-[1%] md:px-[20%]" v-scroll-animate>
-                    <CalendarSection :schedules="mainData.schedules" :is-staff="authStore.isAdmin" />
-                </div>
-            </div>
-        </section>
+        <!-- 5. 강의 일정 섹션 -->
+        <ProcessSection />
 
         <!-- 4. 오시는 길 섹션 -->
-        <section id="contact" class="scroll-section bg-gray-50 flex items-center justify-center h-[100dvh] overflow-y-hidden">
-            <div class="flex flex-col items-center justify-center text-center p-6">
-                <span class="text-8xl mb-6 text-main" v-scroll-animate>📍</span>
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800" v-scroll-animate>오시는 길</h2>
-                <div class="px-[1%] md:px-[20%]" v-scroll-animate>
-                    <ContactMapSection />
-                </div>
-            </div>
-        </section>
+        <ContactSection />
     </main>
 </template>
 
 <script setup lang="ts">
 import SlideSection from "@/components/main/SlideSection.vue";
 import LectureListSection from "@/components/main/LectureListSection.vue";
-import CalendarSection from "@/components/main/CalendarSection.vue";
-import ContactMapSection from "@/components/main/ContactMapSection.vue";
 import {useAuthStore} from "@/stores/auth";
 import apiClient from "@/api";
 import {onMounted, onUnmounted, ref} from "vue";
+import WelcomeSection from "@/components/main/WelcomeSection.vue";
+import WhyUsSection from "@/components/main/WhyUsSection.vue";
+import ProcessSection from "@/components/main/ProcessSection.vue";
+import ContactSection from "@/components/main/ContactSection.vue";
 
 const authStore = useAuthStore();
 const mainData = ref({
