@@ -1,6 +1,9 @@
 <template>
     <div>
-        <ul class="hidden md:flex fixed z-30 right-0 bottom-[50px] pr-[10px] flex-col items-end space-y-[10px] md:right-[50px] md:pr-0">
+        <ul
+            class="hidden md:flex fixed z-30 right-0 bottom-[50px] pr-[10px] flex-col items-end space-y-[10px] md:right-[50px] md:pr-0 transition-opacity duration-500 ease-in-out"
+            :class="{'opacity-0': !isVisible, 'opacity-100': isVisible}"
+        >
             <li>
                 <router-link
                     :to="`/inquiry/write`"
@@ -64,11 +67,44 @@
 </template>
 
 <script setup>
+import {ref, onMounted, onUnmounted} from "vue";
+
 const mapIconUrl = "/img/icon/map_white_24dp.svg";
 const textIconUrl = "/img/icon/textsms_white_24dp.svg";
 const upwardIconUrl = "/img/icon/arrow_upward_white_24dp.svg";
 
+const isVisible = ref(false);
+
 const scrollToTop = () => {
-    window.scrollTo({top: 0, behavior: "smooth"});
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        appContainer.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }
 };
+
+const handleScroll = () => {
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        const scrollTop = appContainer.scrollTop;
+        isVisible.value = scrollTop > 250; // 250px 이상 스크롤 시 버튼 표시
+    }
+};
+
+onMounted(() => {
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        appContainer.addEventListener("scroll", handleScroll);
+        handleScroll(); // 초기 스크롤 상태 확인
+    }
+});
+
+onUnmounted(() => {
+    const appContainer = document.getElementById("app-container");
+    if (appContainer) {
+        appContainer.removeEventListener("scroll", handleScroll);
+    }
+});
 </script>

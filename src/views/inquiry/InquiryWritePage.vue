@@ -21,7 +21,7 @@
                                         :class="{'border-red-500 focus:border-red-500 focus:ring-red-500': errors[field.name]}"
                                     />
                                 </template>
-                                <template v-else-if="field.type === 'textarea' && !field.name.includes('contents')">
+                                <template v-else-if="field.type === 'textarea'">
                                     <textarea
                                         :id="field.id"
                                         v-model="formData[field.name]"
@@ -31,11 +31,6 @@
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--dream-main)] focus:border-[var(--dream-main)] sm:text-sm resize-none"
                                         :class="{'border-red-500 focus:border-red-500 focus:ring-red-500': errors[field.name]}"
                                     ></textarea>
-                                </template>
-                                <template v-if="field.name === 'contents'">
-                                    <div :class="{'border border-red-500 rounded-md': errors.contents}">
-                                        <TiptapEditor v-model="formData.contents" @blur="validateField('contents')" />
-                                    </div>
                                 </template>
                                 <p v-if="errors[field.name]" class="mt-1 text-sm text-red-600">{{ errors[field.name] }}</p>
                             </td>
@@ -63,7 +58,6 @@ import apiClient from "@/api";
 import {inquiryWriteFormSchema, type InquiryWriteFormData, type InquiryWriteFormField} from "@/data/dummyData";
 import PageLayout from "@/components/common/PageLayout.vue";
 import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
-import TiptapEditor from "@/components/utils/TiptapEditor.vue";
 
 const isLoading = ref(false);
 
