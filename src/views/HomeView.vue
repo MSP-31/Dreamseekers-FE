@@ -3,11 +3,11 @@
         <!-- 도트 네비게이션 -->
         <div :class="['dot-navigation hidden md:block transition-opacity duration-300', {'opacity-0 pointer-events-none': activeSection === '#intro'}]">
             <a
-                v-for="(menu, index) in dotMenus"
+                v-for="menu in dotMenus"
                 :key="menu.name"
                 :href="menu.hash"
                 @click.prevent="scrollToSection(menu.hash)"
-                :class="['dot', {active: activeSection === menu.hash}, {dark: ['#courses', '#schedule', '#contact'].includes(activeSection)}]"
+                :class="['dot', {active: activeSection === menu.hash}, {dark: ['#info', '#courses', '#inquiry'].includes(activeSection)}]"
                 :title="menu.name"
             ></a>
         </div>
@@ -22,23 +22,25 @@
         />
 
         <!-- 2. 소개 섹션 -->
-        <WelcomeSection @goto="scrollToSection" />
+        <section id="info" class="scroll-section bg-gray-50 flex flex-col justify-center h-[100dvh] py-16 overflow-y-hidden">
+            <div class="container">
+                <WelcomeSection @goto="scrollToSection" />
+            </div>
+        </section>
 
-        <!-- 3. 이유 섹션-->
-        <WhyUsSection />
-
-        <!-- 4. 강의 목록 섹션 -->
+        <!-- 3. 강의 목록 섹션 -->
         <section id="courses" class="scroll-section bg-gray-50 flex flex-col justify-center h-[100dvh] py-16 overflow-y-hidden">
-            <div class="container mx-auto px-6">
+            <div class="container">
                 <LectureListSection :lecture-item="mainData.lectureItem" v-scroll-animate />
             </div>
         </section>
 
-        <!-- 5. 강의 일정 섹션 -->
-        <ProcessSection />
-
-        <!-- 4. 오시는 길 섹션 -->
-        <ContactSection />
+        <!-- 4. 문의 섹션 -->
+        <section id="inquiry" class="scroll-section bg-gray-50 flex flex-col justify-center h-[100dvh] py-16 overflow-y-hidden">
+            <div class="inquiry">
+                <ContactSection />
+            </div>
+        </section>
     </main>
 </template>
 
@@ -61,10 +63,10 @@ const mainData = ref({
 });
 const activeSection = ref("#intro");
 const dotMenus = [
-    {name: "교육원 소개", hash: "#intro"},
+    {name: "메인 슬라이드", hash: "#intro"},
+    {name: "교육원 소개", hash: "#info"},
     {name: "주요 강의", hash: "#courses"},
-    {name: "강의 일정", hash: "#schedule"},
-    {name: "오시는 길", hash: "#contact"},
+    {name: "강의 문의", hash: "#inquiry"},
 ];
 
 const fetchData = async () => {
@@ -90,7 +92,7 @@ const handleScroll = (event: Event) => {
     const scrollTop = target.scrollTop;
     const sectionHeight = window.innerHeight;
 
-    const sections = ["#intro", "#courses", "#schedule", "#contact"];
+    const sections = ["#intro", "#info", "#courses", "#inquiry"];
     let currentIndex = Math.round(scrollTop / sectionHeight);
 
     if (currentIndex < 0) currentIndex = 0;
