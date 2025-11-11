@@ -1,0 +1,22 @@
+// .devcontainer/devcontainer.json
+{
+    // 사용할 Dockerfile을 지정합니다. (docker-compose 없이 단일 컨테이너 사용)
+    "build": {
+        "dockerfile": "../Dockerfile.frontend",
+        "context": ".."
+    },
+
+    // 컨테이너 내부에서 코드가 위치할 경로입니다.
+    "workspaceFolder": "/workspaces/Dreamseekers-FE",
+
+    // 로컬 포트와 컨테이너 포트를 연결합니다. (Vue.js 기본 포트: 8080)
+    "forwardPorts": [8080],
+
+    // 컨테이너 시작 후 자동으로 실행될 명령어: 의존성 설치
+    "postCreateCommand": "chown -R node:node /workspaces/Dreamseekers-FE && npm install",
+    // 이 컨테이너에 접속할 때 자동으로 설치할 VS Code 확장 프로그램
+    "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "Vue.volar", "bradlc.vscode-tailwindcss", "ms-azuretools.vscode-docker"],
+
+    // 컨테이너 내부 사용자
+    "remoteUser": "node"
+}
